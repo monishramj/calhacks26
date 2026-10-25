@@ -1,7 +1,7 @@
 // G0 TEST · the §18 exercise as an authored fixture, its private expectations, and
 // hidden future-data exclusion from every model-facing input.
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { buildJobInput, computeInputSignature, validateWire } from '../src/index.ts';
 import {
@@ -269,7 +269,8 @@ describe('no model-facing or client code reads private fixtures', () => {
     return readdirSync(abs).flatMap((name) => {
       if (name === 'node_modules' || name.startsWith('.')) return [];
       const p = join(abs, name);
-      return statSync(p).isDirectory() ? files(relative(REPO_ROOT, p)) : [relative(REPO_ROOT, p)];
+      const rel = relative(REPO_ROOT, p).split(sep).join('/'); // '/' on every OS, so prefix checks work on Windows
+      return statSync(p).isDirectory() ? files(rel) : [rel];
     });
   };
   const sources = SCAN.flatMap(files).filter((f) => /\.(ts|tsx|js|mjs|cjs|py|json)$/.test(f));
