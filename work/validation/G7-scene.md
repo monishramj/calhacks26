@@ -32,3 +32,15 @@ Behavioral red evidence:
 **Shared integration need:** after IMPLEMENT, lead must supply optional scene `incidents` and source provenance from the adapter; current shell supplies selection only. No baked scene: D-004 remains proposed. npm install reported five dependency audit findings; shared dependency changes belong to the lead/state owners, not this lane.
 
 **Ready for next phase:** TEST complete with meaningful red behavior. Next separate request is G7 IMPLEMENT for the scene slice, followed by a separate REVIEW. No feature implementation attempted in TEST.
+
+## IMPLEMENT · 2026-10-25 01:34 PDT · Codex
+
+- User explicitly authorized automatic progression through phases and questions-board coordination in this chat; the separate-request stopping rule is overridden for this session. Phases still get separate evidence and commits.
+- Merged lead replay/DeskContext commit b417751. Lead confirmed on questions item 1025-012740 that scene paths are reserved and useDesk() is the integration seam; no overlapping Claude edits. Read answer and closed item.
+- Implemented exact place lookup, compact cosine density kernel (radius 45 exercise units, height 14 units per contribution, elevated base 24), identity deduplication and filtering, Three.js/R3F procedural ground/river/buildings, labeled markers, orbit/zoom, fixed-scale elevated mesh, keyboard-accessible incident controls, unplaced list, provenance, and local SVG fallback. Only confirmed incident input affects density.
+- Reads shared DeskContext; optional lane-local props support isolated tests without changing App. Existing selectedIncidentId/onSelectIncident exports remain compatible. Empty adapter means empty incidents; no production fixture import. Shared shell/config/package/lockfiles untouched.
+- Context probe, renderer error boundary, and context-loss listener lead to the 2D fallback. Lazy local renderer chunk avoids loading Three when WebGL is unavailable. Renderer uses demand frames and DPR cap 1.5; this is configuration, not a measured FPS claim.
+- npm test -- --reporter=dot: 36/36 pass, including all 25 original scene tests and lead shell/replay tests. No test weakened.
+- npm run build: passed after correcting OrbitControls event callback typing. Renderer chunk is large because Three is bundled locally; no runtime external dependencies added.
+- Real in-app browser at localhost:5181 renders procedural 3D and heatmap. Pointer-selecting School updates the shell history to INC-school. Narrow viewport exposed scene/panel overlap; fixed scrolling entirely within scene CSS. Actual WebGL-unavailable and context-loss behavior remain to review beyond jsdom.
+- Real providers: none; source remains fixture, inference banner says authored outputs/no model ran. Current base still has placeholder panels, owned by lead/panels. Backend acceptance remains unverified.
