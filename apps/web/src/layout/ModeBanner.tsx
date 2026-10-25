@@ -20,6 +20,7 @@ type Props = {
 export function ModeBanner({ mode, sourceProvenance, inferenceProvenance, children }: Props) {
   return (
     <header className={`mode-banner ${MODE_CLASS[mode]}`}>
+      <span className="brand" aria-label="LoR@">LoR<span className="brand-at">@</span></span>
       <strong className="mode-label" data-testid="run-mode">
         {mode === 'LIVE' ? 'Live' : mode === 'LOCAL REPLAY' ? 'Replay' : 'Offline'}
       </strong>
