@@ -37,6 +37,10 @@ venv/
 # SpacetimeDB / Rust build output
 target/
 
+# Agent worktrees created inside the repo
+.claude/worktrees/
+.worktrees/
+
 # OS / editor
 .DS_Store
 Thumbs.db

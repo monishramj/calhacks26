@@ -2,6 +2,8 @@
 
 _Maintained by the orchestrator on `main`. Status comes from validation files, never from claims alone._
 
+**Last orchestrator pass:** 2026-10-24 23:45 PDT. No workstream or lane branch has pushed yet, and there are no open PRs.
+
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
 ## Gates
@@ -28,6 +30,17 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | CP3 / M2 real local backend + Laya (+ Claude), two clients agree | T+5:30 | not started |
 | CP4 feature freeze; G9 evidence and pitch-claim check | T+7:00 | not started |
 | M3 radio-connected demo with failure tests and a baseline | by T+8:00 | not started |
+
+## Decisions due at CP1 (T+1:30)
+
+| # | Decision | Input it needs | Default if nobody decides |
+|---|---|---|---|
+| 1 | **Command post** (D-003): which machine runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio | C2 SpacetimeDB preflight, C3 Laya RAM/latency (flyby saw ~1.7 GB fp32), which machine stays at the demo table | C2's computer |
+| 2 | **Radio go/no-go** | C1 preflight: two radios, matching firmware/preset, codec weights + context hashes equal on both endpoints | No-go: G2 is marked "unverified", and the demo uses **labeled** scenario input (§8) |
+| 3 | **Laya go/no-go** | C3 preflight: loads, warm latency, output semantics | No-go: limited prototype with manual review, stated openly (§14), and C3 moves to G5 |
+| 4 | **Claude model pinned** | C3 smoke call | Leave `CLAUDE_MODEL` unset until a call succeeds; G5 stays unverified |
+| 5 | **Held-out reviewer**: someone not on ws/inference reviews the 30-case draft | Orchestrator draft (local, uncommitted until reviewed) | The orchestrator doesn't commit unreviewed labels |
+| 6 | **Scene geometry** (D-004 BLOSM) | A location not associated with Helene | Procedural placeholder scene |
 
 ## Preflight
 

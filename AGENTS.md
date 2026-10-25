@@ -54,7 +54,7 @@ Four computers, one workstream each. People sleep in shifts, so **a workstream b
 | C4 | Dashboard + replay (package C) | `ws/web` | G7, G6 UI, G8 replay | `apps/web/**`, `fixtures/replay/**`, `tests/e2e/**` |
 | Orchestrator | PM bookkeeping (agent + whoever is awake) | `main` only | Board, acceptance, G9 coordination | `work/BOARD.md`, `work/DECISIONS.md`, `work/PREFLIGHT.md`, `work/inbox/**`, `docs/**` |
 
-Each workstream also owns `work/status/<ws>.md` and its own `work/validation/` files (naming below). Full per-computer plans, startup tasks, and bootstrap prompts are in [`docs/WORKSTREAMS.md`](docs/WORKSTREAMS.md).
+Each workstream also owns `work/status/<ws>.md` and its own `work/validation/` files (naming below). A workstream may run several agents in parallel as **lanes**, each in its own worktree on a `ws/<ws>-<lane>` branch with non-overlapping paths. Rules are in `docs/WORKSTREAMS.md`. Full per-computer plans, startup tasks, and bootstrap prompts are in [`docs/WORKSTREAMS.md`](docs/WORKSTREAMS.md).
 
 **Editing a path you don't own:** don't. Write what you need in your status file under **Needs from others**, or open a small PR and tag the owner. Two workstreams never edit the same files at the same time (§11).
 

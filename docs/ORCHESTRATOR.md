@@ -24,6 +24,7 @@ for ws in codec-radio state inference web; do
   git show origin/ws/$ws:work/status/$ws.md
   git diff --stat origin/main...origin/ws/$ws
 done
+git branch -r --list 'origin/ws/*-*'   # lanes: check their status files and paths too
 gh pr list --state open
 ```
 

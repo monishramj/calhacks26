@@ -102,6 +102,16 @@ Hour-0 tasks:
 Write only to your owned paths. Report in 10 lines or fewer.
 ```
 
+### Lane (any tool; one per extra agent on a workstream)
+
+Set up the worktree first (`docs/WORKSTREAMS.md`, "Several agents on one workstream"), then open the tool in that folder:
+
+```text
+You are lane LANE of workstream ws/NAME on calhacks26, working in your own git worktree on branch ws/NAME-LANE. Read AGENTS.md, docs/KICKOFF.md, docs/WORKSTREAMS.md (the ws/NAME section and "Several agents on one workstream"), and the docs/GROUND_TRUTH.md sections your gate cites. Treat the §20 common context as pasted here.
+You own ONLY these paths: PATHS. Don't edit anything else; ask the lead lane for shared-file changes.
+Run GATE PHASE for your lane's slice. If you use subagents, they edit only your paths and never run git or install packages; you do. Record the phase in work/validation/Gx-LANE.md and work/status/NAME-LANE.md, commit with the AGENTS.md prefix plus [LANE], push ws/NAME-LANE, and stop with a report of 8 lines or fewer.
+```
+
 ---
 
 ## Manager prompts (reuse on any computer; replace NAME)

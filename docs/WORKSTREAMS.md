@@ -90,6 +90,32 @@ See `docs/ORCHESTRATOR.md`. Hour 0: initialize `work/BOARD.md` and `work/PREFLIG
 
 ---
 
+## Several agents on one workstream (lanes)
+
+A workstream can run several agents in parallel, from any tool (Claude Code, Codex, Cursor), and with subagents inside each. That includes a teammate's computer while they sleep. Lanes keep them from colliding:
+
+1. **One worktree and one branch per agent.** Never put two agents in the same folder.
+   ```bash
+   git fetch origin
+   git worktree add ../calhacks26-<ws>-<lane> -b ws/<ws>-<lane> origin/ws/<ws>
+   ```
+2. **Lane paths don't overlap.** Each lane owns subfolders inside the workstream's paths. The **lead lane** creates the folder skeleton first and keeps the shared files: `package.json`, configs, entry/App shell, shared types, and `work/status/<ws>.md`.
+3. **The lead merges lanes into `ws/<ws>`** often. Lane branches never PR straight to `main`; `ws/<ws>` does, as usual.
+4. **Each lane records its own evidence:** `work/validation/Gx-<lane>.md` and `work/status/<ws>-<lane>.md` on its lane branch. Same TEST → IMPLEMENT → REVIEW phases.
+5. **Subagents inside a lane** edit only that lane's paths and never run git or install dependencies. The lane's main agent does both.
+6. **Lane branch names use a hyphen** (`ws/web-scene`), never a slash. `ws/web/scene` can't coexist with `ws/web` in git.
+
+### Suggested lanes for ws/web (C4)
+
+| Lane | Suggested tool | Branch | Owns | Work |
+|---|---|---|---|---|
+| lead | main Opus chat | `ws/web` | `apps/web` root files (package.json, configs, `src/main.tsx`, `src/App.tsx`), `src/layout/**`, `src/adapters/**` except `replay/`, `work/status/web.md` | Shell, layout, adapter wiring, merging lanes, integration with live |
+| scene | Codex | `ws/web-scene` | `apps/web/src/scene/**`, `apps/web/public/scene/**` | G7: placeholder scene, markers, heatmap + density function, WebGL fallback; baked BLOSM scene after CP2 |
+| panels | Cursor | `ws/web-panels` | `apps/web/src/panels/**` | G6 UI: incoming feed, review band, confirmed queue, timeline, override controls |
+| replay | whichever lane frees up first | `ws/web-replay` | `apps/web/src/adapters/replay/**`, `fixtures/replay/**`, `tests/e2e/**` | G8 replay isolation, `dev:replay`, e2e story |
+
+The lead creates `src/scene/`, `src/panels/`, and `src/adapters/replay/` with a stub component or interface in each before the other lanes start. Lanes import from `packages/domain` and the lead's adapter interface. They never define their own contract types.
+
 ## When you finish early or get blocked
 
 - **Blocked on a prerequisite** (weights, radios, credentials): record it, tell the orchestrator via your status file, and keep building against fixtures. Don't generate features to avoid a blocking compatibility test (§19).

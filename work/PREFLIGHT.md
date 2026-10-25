@@ -2,6 +2,8 @@
 
 _Consolidated by the orchestrator from each workstream's status file. "Unknown" until someone checks on the actual machine._
 
+**Last checked:** 2026-10-24 23:45 PDT. No workstream has reported preflight results yet.
+
 | Prerequisite | Workstream | Machine | Status | Evidence / versions |
 |---|---|---|---|---|
 | Two Meshtastic radios, correct firmware and preset | ws/codec-radio | C1 + command post | unknown | |
