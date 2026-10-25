@@ -40,4 +40,4 @@ Tested with SpacetimeDB CLI and server **2.13.0** on macOS arm64, Node 22. The `
    spacetime logs incident-desk
    ```
 
-`src/index.ts` is still the `spacetime init --lang typescript` template (a `person` table, `add`, `sayHello`). It's a placeholder that proves the toolchain works. G3 TEST/IMPLEMENT replaces it with the §9 records.
+`src/index.ts` is the G3 module: tables, reducers, roles and freshness rules. Surface, publish steps (native and Docker), and the smoke run are in `work/status/state-spacetimedb.md`; evidence in `work/validation/G3.md`. `smoke.py` replays the G3 checks against a freshly published database.
