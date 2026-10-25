@@ -141,6 +141,34 @@ Run G6 TEST for the UI slice: the incoming feed shows original text with provena
 
 After each lane phase, the lead merges the lane branch into `ws/web` (`git merge origin/ws/web-scene`), and lanes merge `origin/ws/web` back in before their next phase.
 
+### C3 replacement · lead lane (Claude cloud session) · D-008
+
+```text
+You are the lead lane of workstream ws/inference (C3) on calhacks26, replacing the C3 agent while its human is away (D-008). Clone https://github.com/monishramj/calhacks26, then run: git checkout ws/inference && git merge origin/main
+Read AGENTS.md, CLAUDE.md, docs/KICKOFF.md, the C3 section of docs/WORKSTREAMS.md, apps/coordinator/README.md, apps/coordinator/src/inference/README.md, work/DECISIONS.md (D-007, D-008), docs/GROUND_TRUTH.md (§1, §4–§12, §17–§20 fully), work/status/inference.md, and work/inbox/inference.md. Treat the §20 common context as pasted here.
+You own apps/coordinator/** and work/eval/**. services/local-laya/** belongs to the laya lane. ANTHROPIC_API_KEY and CLAUDE_MODEL come from this environment's secrets; never print or commit them.
+1. Run the existing Claude SDK smoke script and record the model ID that works in the Preflight table.
+2. Run G5 TEST exactly as written in §20 against fixture tools. G3 isn't live and G0 is due around 03:45, so use the §17 types and don't invent fields. Then stop.
+Record the phase in work/validation/G5.md, set the exact next step in work/status/inference.md, commit with prefix [ws/inference][G5][TEST], push ws/inference, and report in 8 lines or fewer. At every phase start, run `python scripts/questions.py list` and answer open questions addressed to inference.
+```
+
+### C3 replacement · laya lane (Cursor on C4) · D-008
+
+From the folder that contains your main clone:
+
+```bash
+git -C calhacks26 fetch origin
+git -C calhacks26 worktree add ../calhacks26-inference-laya ws/inference-laya
+```
+
+```text
+You are lane laya of workstream ws/inference on calhacks26, replacing the C3 Laya agent (D-008). You run on C4, the command post, where the Laya worker runs for the demo. In this worktree (branch ws/inference-laya), run `git merge origin/main`, then read AGENTS.md, docs/WORKSTREAMS.md (the C3 section and "Several agents on one workstream"), services/local-laya/README.md, docs/GROUND_TRUTH.md (§4, §5, §12, §17, §20 G4), work/status/inference.md, and work/inbox/inference.md. Treat the §20 common context as pasted here.
+You own ONLY services/local-laya/**.
+1. Preflight: clone https://github.com/monishramj/flyby OUTSIDE this repo. Port only its Laya setup and smoke tooling. Download the weights outside git (LAYA_MODEL_PATH), load them once on CPU, and record load time, warm p50/p95 on this machine, and exactly what the outputs are.
+2. Run G4 TEST as written in §20 against the §17 types, with your own development cases in services/local-laya/tests. Never open fixtures/private/heldout/. Then stop.
+Record the phase in work/validation/G4.md and work/status/inference-laya.md, commit with prefix [ws/inference][G4][TEST][laya], push ws/inference-laya, and report in 8 lines or fewer. At every phase start, run `python scripts/questions.py list`.
+```
+
 ---
 
 ## Manager prompts (reuse on any computer or lane; replace NAME)
