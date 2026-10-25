@@ -9,19 +9,15 @@ Help LoRa-equipped disaster teams send detailed reports and keep the most import
 | If you are... | Read |
 |---|---|
 | Anyone, first | [`docs/GROUND_TRUTH.md`](docs/GROUND_TRUTH.md): the spec and the only planning authority |
-| Starting a computer, or managing everyone | [`docs/KICKOFF.md`](docs/KICKOFF.md): the 8-hour schedule, checkpoints, and paste-ready prompts |
-| A coding agent or a person at a computer | [`AGENTS.md`](AGENTS.md), then your section of [`docs/WORKSTREAMS.md`](docs/WORKSTREAMS.md) |
-| The orchestrator | [`docs/ORCHESTRATOR.md`](docs/ORCHESTRATOR.md) |
-| Checking progress | [`work/BOARD.md`](work/BOARD.md) |
 
 ## Computers and branches
 
-| Computer | Workstream | Branch |
+| Laptop | Workstream | Branch |
 |---|---|---|
-| C1 | Codec + radio | `ws/codec-radio` |
-| C2 | Contracts + state (G0 first) | `ws/state` |
-| C3 | Inference (Laya + Claude) | `ws/inference` |
-| C4 | Dashboard + replay | `ws/web` |
+| The codec/radio laptop | Codec + radio | `ws/codec-radio` |
+| The state laptop | Contracts + state (shared contracts first) | `ws/state` |
+| The inference laptop | Inference (Laya + Claude) | `ws/inference` |
+| The Windows laptop | Dashboard + replay | `ws/web` |
 
 ```bash
 git clone https://github.com/monishramj/calhacks26.git
@@ -29,4 +25,3 @@ cd calhacks26
 git checkout ws/<your-workstream>
 ```
 
-Then paste your computer's start prompt from `docs/KICKOFF.md` into Claude Code.

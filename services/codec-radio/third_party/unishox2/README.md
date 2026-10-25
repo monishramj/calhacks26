@@ -3,7 +3,7 @@
 `unishox2.c` / `unishox2.h` are Unishox2 by Siara Logics, exactly as shipped in `unishox2-py3` 1.0.0 (Apache-2.0, `LICENSE`).
 `usx_bounded.c` is ours: two exported wrappers that call the library's own `unishox2_compress` /
 `unishox2_decompress` with the default preset **and an output-length bound**. The `unishox2-py3` wrapper calls the
-unbounded `_simple` API with a guessed buffer, which overflows on compressible text (G1).
+unbounded `_simple` API with a guessed buffer, which overflows on compressible text (codec quality).
 
 Built into `../../runtime/<platform>/` (`unishox2.dll`, `libunishox2.so`) and loaded by `codec/unishox2.py`:
 

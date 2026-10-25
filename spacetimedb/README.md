@@ -1,6 +1,6 @@
 # spacetimedb
 
-**Owner:** ws/state (C2) · **Gates:** G3, G8 backend · **Spec:** §9, §17 "Commands and adapter", §20 G3
+**Owner:** ws/state (state laptop) · **Areas:** Incident state, resilience backend · **Spec:** §9, §17 "Commands and adapter", §20 incident state
 
 The one authoritative local backend: reports, incidents, relations, proposals, jobs, review events, scenario state. It provides reducers and subscriptions.
 
@@ -40,4 +40,4 @@ Tested with SpacetimeDB CLI and server **2.13.0** on macOS arm64, Node 22. The `
    spacetime logs incident-desk
    ```
 
-`src/index.ts` is the G3 module: tables, reducers, roles and freshness rules. Surface, publish steps (native and Docker), and the smoke run are in `work/status/state-spacetimedb.md`; evidence in `work/validation/G3.md`. `smoke.py` replays the G3 checks against a freshly published database.
+`src/index.ts` is the incident state module: tables, reducers, roles and freshness rules. `smoke.py` replays the incident state checks against a freshly published database.

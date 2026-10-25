@@ -1,6 +1,6 @@
 # apps/web
 
-**Owner:** ws/web (C4) · **Gates:** G7, G6 UI, G8 replay, e2e · **Spec:** §5, §7, §10, §20 G6/G7/G8
+**Owner:** ws/web (Windows laptop) · **Areas:** 3D scene and heatmap, queue and history UI, resilience replay, e2e · **Spec:** §5, §7, §10, §20 queue and history, 3D scene and heatmap, resilience
 
 The React/Three.js dashboard and the isolated browser replay.
 
@@ -10,4 +10,4 @@ The React/Three.js dashboard and the isolated browser replay.
 - Written labels with every color, keyboard support, and a 2D fallback if WebGL fails.
 - **No client-side truth mutation.** All changes go through the adapter. No secrets, no external tiles or fonts, no chat or voice.
 
-Replay uses the same adapter interface as live (`packages/domain`), labels every output `fixture` or `recording`, and can never write into live state after a reconnect (G8).
+Replay uses the same adapter interface as live (`packages/domain`), labels every output `fixture` or `recording`, and can never write into live state after a reconnect (resilience).

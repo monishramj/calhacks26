@@ -1,6 +1,6 @@
 # Scene pipeline: BLOSM bake → glTF → Three.js
 
-**Owner:** ws/web (C4) · **Status:** proposal D-004 in `work/DECISIONS.md` (not approved yet) · **Spec:** §7, §18, G7
+**Owner:** ws/web (Windows laptop) · **Status:** proposal D-004 (not approved yet) · **Spec:** §7, §18, 3D scene and heatmap
 
 Goal: a better-looking but still lightweight left-hand scene. Blender + BLOSM bake the geometry **once, offline** into a static `.glb` that's bundled with the app. Nothing loads from the network at runtime, so replay stays fully offline (§7, §10).
 
@@ -10,11 +10,11 @@ Goal: a better-looking but still lightweight left-hand scene. Blender + BLOSM ba
 - **§18 coordinates stay true.** `school (0,0)`, `residence (80,20)`, `shelter (-120,40)` in scene units. Use 1 unit = 1 m, with §18 `(a, b)` mapping to Three.js `(x=a, y=0, z=b)`.
 - **Heatmap height isn't terrain.** Height = confirmed open located incident concentration with a fixed scale (§7). Real terrain relief next to a heatmap is easy to misread. Keep the crop mostly flat, render the heatmap as a separate translucent surface floating above the highest terrain point, and dim the buildings in heatmap mode. Keep the legend.
 - **"Fictional exercise" stays honest.** §7 says "fictional river-valley scene." Real geometry is fine only if the place is **not** associated with Helene (no western NC or east TN towns). Strip real names and label the scene "Fictional Helene-inspired exercise · incidents are synthetic." Otherwise a fictional "person may be upstairs" lands on a real school in a real disaster town, which is exactly what §8 forbids. This is why D-004 needs sign-off.
-- **2D fallback** when WebGL fails (G7).
+- **2D fallback** when WebGL fails (3D scene and heatmap).
 
-## Build order (don't let Blender block G7)
+## Build order (don't let Blender block 3D scene and heatmap)
 
-1. G7 TEST and IMPLEMENT against a **procedural placeholder:** ground plane, three box clusters at the §18 coordinates, a flat blue river strip. Markers and heatmap read place positions from one lookup.
+1. 3D scene and heatmap TEST and IMPLEMENT against a **procedural placeholder:** ground plane, three box clusters at the §18 coordinates, a flat blue river strip. Markers and heatmap read place positions from one lookup.
 2. Bake the BLOSM scene in parallel. **Timebox: 90 minutes.**
 3. Swap `PlaceholderScene` for `BakedScene`. Markers and heatmap don't change because they use the same lookup.
 4. If the bake isn't ready by M1, ship the placeholder. Camera and scene polish are the first cuts (§23).

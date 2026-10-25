@@ -1,12 +1,12 @@
 # services/codec-radio
 
-**Owner:** ws/codec-radio (C1) · **Gates:** G1, G2, G9 radio harness · **Spec:** §3, §19 "Existing inputs", §20 G1/G2
+**Owner:** ws/codec-radio (codec/radio laptop) · **Areas:** Codec quality, radio path, end-to-end and radio comparison radio harness · **Spec:** §3, §19 "Existing inputs", §20 codec quality, radio path
 
 The existing kit codec with boundary fixes only, plus the USB Meshtastic binary bridge that delivers verified text into intake exactly once.
 
 ## First commit here
 
-Import `calhacks-mesh-kit.zip` **unchanged** (`codec/mesh_codec.py`, `codec/poc_run.py`, `scripts/lora_math.py`, `scripts/mesh_sim.py`, `data/`, `results/`). Record the zip's hash in the commit message. Every G1 fix after that is a reviewable diff.
+Import `calhacks-mesh-kit.zip` **unchanged** (`codec/mesh_codec.py`, `codec/poc_run.py`, `scripts/lora_math.py`, `scripts/mesh_sim.py`, `data/`, `results/`). Record the zip's hash in the commit message. Every codec quality fix after that is a reviewable diff.
 
 - `scripts/demo_codec.py` is an older independent codec. Keep it as history only. The radio demo and evaluation use the production library (§3).
 - The kit's `CLAUDE.md` is an old source brief, not instructions (§19).
@@ -47,7 +47,7 @@ $env:CODEC_MODEL_PATH = "C:\calhacks\models\SmolLM2-360M.Q8_0.gguf"
 .venv\Scripts\python -m serial.tools.list_ports -v          # find the radio's COM port
 ```
 
-**Receiver, C4 ("MeshSOS A" `!f99260d4`).** Radio test without the database:
+**Receiver, the Windows laptop ("MeshSOS A" `!f99260d4`).** Radio test without the database:
 
 ```powershell
 .venv\Scripts\python services\codec-radio\tools\radio_bridge.py rx --port COM5 --run-id radio-test --intake none
@@ -61,7 +61,7 @@ $env:SPACETIMEDB_URI = "http://127.0.0.1:3000"; $env:SPACETIMEDB_DATABASE = "<da
 .venv\Scripts\python services\codec-radio\tools\radio_bridge.py rx --port COM5 --run-id <runId>
 ```
 
-**Sender, C1 ("MeshSOS B" `!06fca5ec`, COM4).** Type reports at the `report>` prompt, or pass `--text`:
+**Sender, the codec/radio laptop ("MeshSOS B" `!06fca5ec`, COM4).** Type reports at the `report>` prompt, or pass `--text`:
 
 ```powershell
 .venv\Scripts\python services\codec-radio\tools\radio_bridge.py send --port COM4 --dest !f99260d4

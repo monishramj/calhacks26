@@ -100,4 +100,3 @@ On the owner's Mac, `npm run dev:live`, two browser windows:
 - Inside `apps/web`, install with `npm install --workspaces=false --package-lock=false` if you're not installing from the root. A plain install there breaks Playwright.
 - The Laya SDK silently cuts input past 512 tokens. The worker detects and flags this; keep that behavior.
 - Laya's "choice" scores with 11+ options are uncalibrated. Keep the option lists short.
-- Old docs (`AGENTS.md`, `docs/KICKOFF.md`, `docs/ORCHESTRATOR.md`, `work/*`) describe a four-laptop process that's been dropped. Use them only for detail.

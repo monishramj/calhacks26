@@ -1,6 +1,6 @@
 # apps/coordinator
 
-**Owner:** ws/state (C2), except `src/inference/` (ws/inference, C3) · **Spec:** §6, §9, §17, §19
+**Owner:** ws/state (state laptop), except `src/inference/` (ws/inference, the inference laptop) · **Spec:** §6, §9, §17, §19
 
 The server-side process on the command post. It holds the only secrets (`.env`).
 
