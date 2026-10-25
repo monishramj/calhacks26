@@ -12,11 +12,11 @@
 | **5:30–7:00** | Bridge → coordinator, G8 radio failure, G9 radio harness | `dev:live`, G8 backend, merge integration | G5 REVIEW, `npm run evaluate`, G8 inference | G8 replay isolation, e2e story, optional baked scene |
 | **7:00–8:00** | G9 radio measurements | G9 integration run | G9 eval numbers | Rehearsal ×2, labeled backup recording |
 
-## Checkpoints (decide; don't drift)
+## Checkpoints (apply the ground truth's fallbacks; don't drift)
 
 | When | Pass condition | If it fails |
 |---|---|---|
-| **CP1 · T+1:30** contracts + preflight | `[contract] v1` merged to `main`; every row of `work/PREFLIGHT.md` filled with a real result | Pick the command post (D-003). No radios or codec weights: G2 is "unverified" and the demo uses **labeled** scenario input (§8). Laya won't load: report it as a limited prototype with manual review (§14), and C3 moves to G5 early. Never fake either. |
+| **CP1 · T+1:30** contracts + preflight | `[contract] v1` merged to `main`; every row of `work/PREFLIGHT.md` filled with a real result | Apply the CP1 check on `work/BOARD.md`. No radios or codec weights: G2 is unverified and the demo uses **labeled** scenario input (§8, §19). Laya won't load: manual review and an explicitly limited prototype (§10, §14), and C3 moves to G5 early. Never fake either. |
 | **CP2 · T+3:00** M1 | `npm run dev:replay` plays R01–R12 with queue movement, labeled LOCAL REPLAY | Freeze the scene at the placeholder (no Blender). C2 pairs on rules if those are the blocker. |
 | **CP3 · T+5:30** M2 | Report → SpacetimeDB → Laya suggestion → operator approval → both browsers agree; a Claude proposal if connected | Whoever is ahead takes a ready G3 or integration task from `work/BOARD.md`. Cut per §23: camera polish, extra scenarios, comparison views, recordings. |
 | **CP4 · T+7:00** feature freeze | No new features | Only fixes, G9 evidence, and the pitch-claim check (§21–22). Remove any claim without evidence. |
@@ -98,7 +98,7 @@ Read AGENTS.md, docs/ORCHESTRATOR.md, docs/KICKOFF.md, docs/WORKSTREAMS.md, and 
 Hour-0 tasks:
 1. Draft ≥24 held-out cases (§13: paraphrase, hearsay, negation, rescue questions, partial all-clear, delayed old reports, nearby separate incidents) in fixtures/private/heldout/, using the format ws/state defines in G0 (until then, a plain JSON draft). Don't commit them until I've reviewed them; the reviewer must not be on ws/inference.
 2. Run one loop pass from docs/ORCHESTRATOR.md and update work/BOARD.md and work/PREFLIGHT.md.
-3. Prepare the CP1 decision list: command post (D-003), radio go/no-go, Laya go/no-go.
+3. At CP1, compare the preflight results with the CP1 check on work/BOARD.md and apply the ground-truth fallback for anything not ready. Don't turn those rules into questions.
 Write only to your owned paths. Report in 10 lines or fewer.
 ```
 

@@ -13,9 +13,9 @@ Follows §11's suggested structure, plus:
 - `work/status/`, `work/inbox/`, `work/BOARD.md`, `work/PREFLIGHT.md` for cross-computer coordination (`docs/ORCHESTRATOR.md`).
 - `apps/coordinator/src/inference/` is owned by `ws/inference` inside a `ws/state` app.
 
-## D-003 · proposed · command-post machine
+## D-003 · approved · command-post machine
 
-The machine that runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio. Default: C2. Confirm after preflight.
+C2's computer runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio. This is logistics, not scope. It changes only if C2's machine can't run that stack.
 
 ## D-004 · proposed · scene geometry source
 

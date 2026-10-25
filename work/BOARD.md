@@ -31,16 +31,19 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | CP4 feature freeze; G9 evidence and pitch-claim check | T+7:00 | not started |
 | M3 radio-connected demo with failure tests and a baseline | by T+8:00 | not started |
 
-## Decisions due at CP1 (T+1:30)
+## CP1 check (T+1:30)
 
-| # | Decision | Input it needs | Default if nobody decides |
+The ground truth already says what happens for every outcome. The orchestrator applies these rules; nobody has to decide anything.
+
+| Check | Comes from | Ready | Not ready (rule that applies) |
 |---|---|---|---|
-| 1 | **Command post** (D-003): which machine runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio | C2 SpacetimeDB preflight, C3 Laya RAM/latency (flyby saw ~1.7 GB fp32), which machine stays at the demo table | C2's computer |
-| 2 | **Radio go/no-go** | C1 preflight: two radios, matching firmware/preset, codec weights + context hashes equal on both endpoints | No-go: G2 is marked "unverified", and the demo uses **labeled** scenario input (§8) |
-| 3 | **Laya go/no-go** | C3 preflight: loads, warm latency, output semantics | No-go: limited prototype with manual review, stated openly (§14), and C3 moves to G5 |
-| 4 | **Claude model pinned** | C3 smoke call | Leave `CLAUDE_MODEL` unset until a call succeeds; G5 stays unverified |
-| 5 | **Held-out reviewer**: someone not on ws/inference reviews the 30-case draft | Orchestrator draft (local, uncommitted until reviewed) | The orchestrator doesn't commit unreviewed labels |
-| 6 | **Scene geometry** (D-004 BLOSM) | A location not associated with Helene | Procedural placeholder scene |
+| Two radios + identical codec weights, context, and runtime on both endpoints | C1 preflight | G2 continues on real hardware | G2 stays unverified. Others keep building against fixtures. The demo's radio step uses labeled scenario input (§8, §18, §19). |
+| Laya loads locally | C3 preflight | G4 continues | Reports stay visible and manually reviewable. G4 is unverified, and the demo is presented as an explicitly limited prototype (§10, §14). C3 moves to G5. |
+| Claude reachable with an account-accessible model | C3 smoke call | Pin it in `CLAUDE_MODEL` (§6, §19) | G5 unverified. The local path is unaffected (§10). |
+| Local SpacetimeDB server/client pair | C2 preflight | Pin versions; G3 continues | G3 blocked. The UI continues on the fixture adapter, labeled, never as a silent substitute (§16). |
+| Scope | all of the above | No change | Re-estimate and cut in §23 order, keeping the §14 core (§19). |
+
+**Command post:** C2's computer runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio (D-003).
 
 ## Preflight
 

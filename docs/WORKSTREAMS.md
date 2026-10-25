@@ -30,7 +30,7 @@ These are the only places workstreams touch. Each is defined by `packages/domain
 | Claude | C3 `apps/coordinator/src/inference` | C2 adapter | Tool loop over the four §6 tools, producing an `IncidentProposal` that goes to review. |
 | Derived views | C2 `packages/domain/src/rules` | C4 web, C2 backend tests | Pure functions: confirmed queue order, review band, timeline, change flags. Replay and live use the same code. |
 
-**Command post:** the machine that runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio for the demo. Default is C2's computer; the orchestrator records the final choice in `work/DECISIONS.md` after preflight. The sending radio and second codec endpoint sit on C1's computer.
+**Command post:** the machine that runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio for the demo. That's C2's computer (D-003). The sending radio and second codec endpoint sit on C1's computer.
 
 ---
 
