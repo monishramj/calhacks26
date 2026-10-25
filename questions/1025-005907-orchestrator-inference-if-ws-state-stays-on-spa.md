@@ -2,7 +2,7 @@
 id: 1025-005907-orchestrator-inference
 from: orchestrator
 to: inference
-status: answered
+status: closed
 asked: 2026-10-25T00:59-07:00
 ---
 
