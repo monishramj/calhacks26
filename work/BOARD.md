@@ -31,7 +31,7 @@ _Snapshot 02:30 PDT, written by the C4 orchestrator session as it hands off._
 | G4 local Laya | P0 | ws/inference (laya lane) | TEST red (37074d8: 81 red on stubs, against v1) | `G4.md` on ws/inference-laya | Laya loads on C4 CPU: warm p50 1,064 ms / p95 1,322 ms for 3 questions. Next: IMPLEMENT. |
 | G5 Claude enrichment | P1 | ws/inference (lead lane) | IMPL in progress (C3 session, ship mode) | `work/validation/G5.md` | Fixture tools until G3. |
 | G6 queue and history | P0 | ws/state + ws/web (panels lane) | rules: REVIEW passed on ws/state (51a9238, 40 reordered replays, stale second window, 24/24 mutations caught), no PR yet; panels: IMPL green on replay, v1 move in progress (web-lead session) | `G6-state.md`, `G6-panels.md` | C2 should open the PR so web can import the rules from main. |
-| G7 scene and heatmap | P0 | ws/web (scene lane) | REVIEW passed, slice (30adf68: v1 types, CC0 textures, 70/70 + 5 scene e2e) | `G7-scene.md` on ws/web-scene | Not merged into ws/web yet. Lead adapter/panels v1 migration still open (question 1025-022132). |
+| G7 scene and heatmap | P0 | ws/web (scene lane) | REVIEW passed, **merged to main (PR #4)** | `G7-scene.md`, `G6-web.md` | Replay R01–R12 runs on v1 (fixture). Live adapter, two browsers and FPS not exercised. |
 | G8 resilience | P0 | all | not started | `G8-state.md`, `G8-inference.md`, `G8-web.md` | After the G3–G7 real paths. |
 | G9 end-to-end | P0 | all | not started | `G9-radio.md`, `G9-integration.md` | Every pitched feature. |
 
@@ -40,7 +40,7 @@ _Snapshot 02:30 PDT, written by the C4 orchestrator session as it hands off._
 | Checkpoint | Target | Status |
 |---|---|---|
 | CP1 contracts merged + preflight filled | T+1:00 | not started |
-| CP2 / M1 core built: labeled replay with basic 3D, evidence, queue movement | T+2:30 | not started |
+| CP2 / M1 core built: labeled replay with basic 3D, evidence, queue movement | T+2:30 | **met on main (PR #4, 03:15)**: labeled LOCAL REPLAY plays R01–R12 with queue movement; fixture data |
 | CP3 integrated: radio report → SpacetimeDB → Laya → approval, two browsers agree (+ Claude) | T+4:00 | not started |
 | CP4 feature freeze; G9 evidence and pitch-claim check | T+7:00 | not started |
 | Final | T+8:00 | not started |
