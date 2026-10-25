@@ -15,6 +15,8 @@
     "dev:replay": "npm run dev:replay -w @calhacks26/web",
     "build": "npm run build -w @calhacks26/web",
     "test:e2e": "npm run test:e2e -w @calhacks26/web",
-    "dev:live": "sh scripts/dev-live.sh"
+    "dev:live": "sh scripts/dev-live.sh",
+    "preflight": "sh scripts/preflight.sh",
+    "evaluate": "${LAYA_PY:-../laya-env/bin/python} scripts/evaluate.py"
   }
 }

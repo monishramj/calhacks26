@@ -14,3 +14,7 @@ Read [`docs/GROUND_TRUTH.md`](docs/GROUND_TRUTH.md) first. It is the spec and th
 git clone https://github.com/monishramj/calhacks26.git
 cd calhacks26
 ```
+
+## Run
+
+`npm run preflight` reports ready or not ready for `npm run dev:live` (add `-- --smoke` for one tiny real Claude call). `npm run evaluate` runs the held-out Laya cases against a running worker (`EVAL_LAYA_URL`, default `LOCAL_LAYA_URL`) and the codec size comparison, and writes `evaluation/report-<date>.md` and `.json`.
