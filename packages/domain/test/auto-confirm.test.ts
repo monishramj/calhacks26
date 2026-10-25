@@ -1,4 +1,4 @@
-// Claude checks Laya: a change confirms without a person only when both models agree on a safe change.
+// Claude checks Laya: a change confirms without a person only when both models agree on attention and it is safe.
 import { describe, expect, it } from 'vitest';
 import { autoConfirmDecision, layaView, nearestOpenIncidents, type ClaudeCheck, type IncidentView, type LocalSuggestion } from '../src/index.ts';
 
@@ -24,7 +24,7 @@ const decide = (s: LocalSuggestion, c: ClaudeCheck, incidents = [school], placeI
 
 describe('layaView', () => {
   it('reads a REQUEST_REVIEW answer from its top-scored labels', () => {
-    expect(layaView(laya())).toEqual({ action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school', attention: 'INFORMATION', possibleHarm: false });
+    expect(layaView(laya())).toEqual({ action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school', attention: 'INFORMATION', harm: 0.05, possibleHarm: false });
   });
   it('picks the top-scored candidate when there are several', () => {
     const s = laya({ baseIncidentVersions: { a: 1, b: 1 }, scores: [...laya().scores, p('a', 0.3), p('b', 0.7)] });
@@ -38,7 +38,7 @@ describe('layaView', () => {
 describe('autoConfirmDecision', () => {
   it('agreeing information report attaches without lowering attention', () => {
     expect(decide(laya(), claude())).toEqual({
-      confirm: true, incidentId: 'inc-school', change: { addReportIds: ['live-1:r9'] }, reason: 'Laya and Claude agree: add to inc-school, information.',
+      confirm: true, incidentId: 'inc-school', change: { addReportIds: ['live-1:r9'] }, reason: 'Laya and Claude agree on information; Claude adds it to inc-school.',
     });
   });
   it('an agreed higher attention is applied', () => {
@@ -51,7 +51,7 @@ describe('autoConfirmDecision', () => {
     const s = laya({ baseIncidentVersions: {}, scores: [p('NEW_INCIDENT', 0.8), p('ACTIVE_NEED', 0.9)] });
     const d = decide(s, claude({ action: 'NEW_INCIDENT', candidateIncidentId: null, attention: 'ACTIVE_NEED', baseIncidentVersions: {} }), [], 'shelter');
     expect(d).toEqual({
-      confirm: true, incidentId: null, reason: 'Laya and Claude agree: a new incident at shelter, active need.',
+      confirm: true, incidentId: null, reason: 'Laya and Claude agree on active need; Claude opens a new incident at shelter.',
       change: { status: 'OPEN', attention: 'ACTIVE_NEED', addReportIds: ['live-1:r9'], confirmedPlaceId: 'shelter' },
     });
     expect(decide(s, claude({ action: 'NEW_INCIDENT', candidateIncidentId: null, attention: 'ACTIVE_NEED', baseIncidentVersions: {} }), [], null)).toMatchObject({ confirm: false });
@@ -59,9 +59,21 @@ describe('autoConfirmDecision', () => {
   it('possible life safety from either model goes to a person', () => {
     // The first reason is the one the review band shows.
     const d = decide(laya(), claude({ attention: 'POSSIBLE_LIFE_SAFETY' }));
-    expect(d.confirm === false && d.reasons[0]).toBe('Possible life safety, so a person decides.');
-    expect(decide(laya({ attention: 'POSSIBLE_LIFE_SAFETY' }), claude())).toMatchObject({ confirm: false });
-    expect(decide(laya({ scores: [...laya().scores.slice(0, 5), p('POSSIBLE_LIFE_SAFETY', 0.2)] }), claude())).toMatchObject({ confirm: false });
+    expect(d.confirm === false && d.reasons[0]).toBe('Claude reads possible life safety, so a person decides.');
+    const l = decide(laya({ attention: 'POSSIBLE_LIFE_SAFETY' }), claude({ attention: 'POSSIBLE_LIFE_SAFETY' }));
+    expect(l).toMatchObject({ confirm: false, reasons: ['Claude reads possible life safety, so a person decides.', 'Laya reads possible life safety, so a person decides.'] });
+    // Laya's floor mass alone: said as a share, not as "possible life safety".
+    expect(decide(laya({ scores: [...laya().scores.slice(0, 5), p('POSSIBLE_LIFE_SAFETY', 0.2)] }), claude())).toEqual({
+      confirm: false, reasons: ['Laya puts 20% on life safety, so a person decides.'],
+    });
+  });
+  it('when Laya passes the floor and the models also disagree, the disagreement leads', () => {
+    // The shelter report: Laya reads information with 20% on life safety, Claude reads active need.
+    const d = decide(laya({ scores: [...laya().scores.slice(0, 5), p('POSSIBLE_LIFE_SAFETY', 0.2)] }), claude({ attention: 'ACTIVE_NEED' }));
+    expect(d).toEqual({ confirm: false, reasons: [
+      'Laya and Claude disagree on attention: Laya says information, Claude says active need.',
+      'Laya puts 20% on life safety, so a person decides.',
+    ] });
   });
   it('corrections, conflicts and review requests always go to a person, even when both agree', () => {
     for (const action of ['FLAG_CORRECTION', 'FLAG_CONFLICT'] as const) {
@@ -69,12 +81,22 @@ describe('autoConfirmDecision', () => {
     }
     expect(decide(laya({ scores: [p('REQUEST_REVIEW', 0.9), p('INFORMATION', 0.9)] }), claude({ action: 'REQUEST_REVIEW', candidateIncidentId: null }))).toMatchObject({ confirm: false });
   });
-  it('disagreement on action, incident or attention goes to a person', () => {
-    expect(decide(laya(), claude({ action: 'NEW_INCIDENT', candidateIncidentId: null }))).toMatchObject({ confirm: false, reasons: expect.arrayContaining(['Laya and Claude disagree: Laya says add to an incident, Claude says a new incident.']) });
-    expect(decide(laya(), claude({ attention: 'ACTIVE_NEED' }))).toMatchObject({ confirm: false });
+  it('disagreement on attention goes to a person', () => {
+    expect(decide(laya(), claude({ attention: 'ACTIVE_NEED' }))).toEqual({
+      confirm: false, reasons: ['Laya and Claude disagree on attention: Laya says information, Claude says active need.'],
+    });
+  });
+  it("when attention agrees, Claude's action and incident decide where the report goes", () => {
+    // Laya leans attach; Claude says new incident at the stated place.
+    expect(decide(laya(), claude({ action: 'NEW_INCIDENT', candidateIncidentId: null }))).toMatchObject({
+      confirm: true, incidentId: null, change: { confirmedPlaceId: 'school' },
+    });
+    // Laya leans inc-school; Claude says inc-house.
     const two = [school, inc('inc-house', 'residence')];
     const s = laya({ baseIncidentVersions: { 'inc-school': 1, 'inc-house': 1 }, scores: [...laya().scores, p('inc-school', 0.8), p('inc-house', 0.2)] });
-    expect(decide(s, claude({ candidateIncidentId: 'inc-house', baseIncidentVersions: { 'inc-school': 1, 'inc-house': 1 } }), two)).toMatchObject({ confirm: false });
+    expect(decide(s, claude({ candidateIncidentId: 'inc-house', baseIncidentVersions: { 'inc-school': 1, 'inc-house': 1 } }), two)).toMatchObject({
+      confirm: true, incidentId: 'inc-house',
+    });
   });
   it('a report on a possible-life-safety incident goes to a person, even an agreed all-clear', () => {
     // "Gas is shut off" / "driver is out and safe" on a life-safety incident: lowering it needs a person.

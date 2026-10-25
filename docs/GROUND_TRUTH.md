@@ -149,7 +149,7 @@ Show Laya's label scores as model scores over explicit options. They do not expl
 Verified report arrives -> store original -> show immediately
                                       -> local Laya suggestions
                                       -> Claude checks each suggestion
-                                      -> both agree on a safe change: confirm, labeled "Claude check"
+                                      -> both agree on attention, safe change: confirm, labeled "Claude check"
                                       -> otherwise: review band, Laya and Claude side by side
                                       -> human confirms material changes
                                       -> incident timeline and queue update

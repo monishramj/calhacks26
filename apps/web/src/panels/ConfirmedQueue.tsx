@@ -92,7 +92,7 @@ function QueueCard({
         </span>
         {summary && <p className="queue-summary" title={summary}>{!incident.summary && <span className="muted">Unconfirmed · </span>}{summary}</p>}
         {flagged && <span className="change-flag">New report · review needed</span>}
-        {autoConfirmed && <span className="tag auto-confirmed">Auto-confirmed · Laya + Claude agree</span>}
+        {autoConfirmed && <span className="tag auto-confirmed">Auto-confirmed · Laya + Claude agree on urgency</span>}
       </button>
       {selected && <details className="item-details">
         <summary>Details</summary>

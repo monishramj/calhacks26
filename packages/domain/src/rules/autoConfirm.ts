@@ -37,7 +37,7 @@ export function nearestOpenIncidents(
     .map((x) => x.i);
 }
 
-export type LayaView = { action: LocalAction; candidateIncidentId: string | null; attention: Attention | null; possibleHarm: boolean };
+export type LayaView = { action: LocalAction; candidateIncidentId: string | null; attention: Attention | null; harm: number; possibleHarm: boolean };
 
 const top = (s: LocalSuggestion, labels: readonly string[]) =>
   s.scores.filter((x) => labels.includes(x.label)).sort((a, b) => b.value - a.value)[0]?.label ?? null;
@@ -54,6 +54,7 @@ export function layaView(s: LocalSuggestion): LayaView {
     action: s.action !== 'REQUEST_REVIEW' ? s.action : ((top(s, LOCAL_ACTIONS) as LocalAction | null) ?? 'REQUEST_REVIEW'),
     candidateIncidentId: s.candidateIncidentId ?? top(s, candidates) ?? (candidates.length === 1 ? candidates[0] : null),
     attention,
+    harm,
     possibleHarm: attention === 'POSSIBLE_LIFE_SAFETY' || harm >= HARM_FLOOR,
   };
 }
@@ -83,9 +84,10 @@ const att = (a: Attention | null) => (a ? ATTENTION_LABEL[a].toLowerCase() : 'un
 const RANK: Record<Attention, number> = { INFORMATION: 0, ACTIVE_NEED: 1, POSSIBLE_LIFE_SAFETY: 2 };
 
 /**
- * May this report confirm without a person? Only when Laya and Claude agree on the incident (or both say
- * a new incident at the report's stated place) and on attention, neither says possible life safety,
- * Claude's action is a plain attach or new incident, and every incident either saw is unchanged.
+ * May this report confirm without a person? Only when Laya and Claude agree on attention, neither says
+ * possible life safety (Laya also puts under HARM_FLOOR on it), Claude's action is a plain attach or a new
+ * incident at the report's stated place, and every incident either saw is unchanged. Laya's action and
+ * incident are not compared: its action read is weak, so Claude decides where the report goes.
  * Corrections, conflicts and review requests always go to a person, and so does any report on an incident that is
  * currently possible life safety (it may be an all-clear: lowering life safety needs a person). An attach never lowers attention.
  * `incidentId` is null for a new incident (the backend names it). Reasons are plain sentences, most
@@ -96,13 +98,14 @@ export function autoConfirmDecision({ suggestion, check, placeId, incidents }: A
   const reasons: string[] = [];
   const target = check.candidateIncidentId === null ? undefined : incidents.find((i) => i.incidentId === check.candidateIncidentId);
   if (suggestion.reportId !== check.reportId || suggestion.runId !== check.runId) reasons.push('Laya and Claude looked at different reports.');
-  if (laya.possibleHarm || check.attention === 'POSSIBLE_LIFE_SAFETY') reasons.push('Possible life safety, so a person decides.');
+  // Say which model raised life safety, and how: Laya's floor mass alone is not "Laya says life safety".
+  if (check.attention === 'POSSIBLE_LIFE_SAFETY') reasons.push('Claude reads possible life safety, so a person decides.');
+  if (laya.attention === 'POSSIBLE_LIFE_SAFETY') reasons.push('Laya reads possible life safety, so a person decides.');
   if (check.action === 'ATTACH_REPORT' && target?.attention === 'POSSIBLE_LIFE_SAFETY') reasons.push('The incident is possible life safety; only a person may lower it.');
   if (check.action !== 'NEW_INCIDENT' && check.action !== 'ATTACH_REPORT') reasons.push(`Claude reads ${ACTION_WORDS[check.action]}, so a person decides.`);
-  if (laya.action !== check.action) reasons.push(`Laya and Claude disagree: Laya says ${ACTION_WORDS[laya.action]}, Claude says ${ACTION_WORDS[check.action]}.`);
   if (check.attention === null || laya.attention !== check.attention) reasons.push(`Laya and Claude disagree on attention: Laya says ${att(laya.attention)}, Claude says ${att(check.attention)}.`);
-  if (check.action === 'ATTACH_REPORT' && laya.candidateIncidentId !== check.candidateIncidentId) {
-    reasons.push(`Laya and Claude disagree on the incident: Laya says ${laya.candidateIncidentId ?? 'none'}, Claude says ${check.candidateIncidentId}.`);
+  if (laya.possibleHarm && laya.attention !== 'POSSIBLE_LIFE_SAFETY') {
+    reasons.push(`Laya puts ${Math.round(laya.harm * 100)}% on life safety, so a person decides.`);
   }
 
   const byId = new Map(incidents.map((i) => [i.incidentId, i]));
@@ -117,7 +120,7 @@ export function autoConfirmDecision({ suggestion, check, placeId, incidents }: A
   if (reasons.length) return { confirm: false, reasons: [...new Set(reasons)] };
 
   const attention = check.attention!;
-  const why = `Laya and Claude agree: ${check.action === 'NEW_INCIDENT' ? `a new incident at ${placeId}` : `add to ${target!.incidentId}`}, ${att(attention)}.`;
+  const why = `Laya and Claude agree on ${att(attention)}; Claude ${check.action === 'NEW_INCIDENT' ? `opens a new incident at ${placeId}` : `adds it to ${target!.incidentId}`}.`;
   if (check.action === 'NEW_INCIDENT') {
     return { confirm: true, incidentId: null, change: { status: 'OPEN', attention, addReportIds: [check.reportId], confirmedPlaceId: placeId }, reason: why };
   }

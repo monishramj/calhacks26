@@ -128,10 +128,10 @@ it('uses only the latest confirming actor for the auto-confirmed label', async (
   const event = { runId: state.runId, sequence: 1, commandId: 'check', actorRole: 'claude_check', actorIdentity: 'claude', incidentId: 'INC-school', proposalId: null, priorRevision: 0, newRevision: 1, acceptedChanges: ['attention'], reason: null, sourceReportIds: [] };
   const view = { ...adapter, subscribeState: (listener: (s: DeskState) => void) => { listener({ ...state, reviewEvents: [event] } as DeskState); return () => {}; } };
   const { rerender } = render(<DeskProvider adapter={view}><Panels /></DeskProvider>);
-  expect(await screen.findByText('Auto-confirmed · Laya + Claude agree')).toBeInTheDocument();
+  expect(await screen.findByText('Auto-confirmed · Laya + Claude agree on urgency')).toBeInTheDocument();
   const edited = { ...view, subscribeState: (listener: (s: DeskState) => void) => { listener({ ...state, reviewEvents: [event, { ...event, sequence: 2, actorRole: 'operator' }] } as DeskState); return () => {}; } };
   rerender(<DeskProvider adapter={edited}><Panels /></DeskProvider>);
-  expect(screen.queryByText('Auto-confirmed · Laya + Claude agree')).not.toBeInTheDocument();
+  expect(screen.queryByText('Auto-confirmed · Laya + Claude agree on urgency')).not.toBeInTheDocument();
 });
 
 it('shows only the selected picture, at most three claims, uncertainty, and stale status', async () => {

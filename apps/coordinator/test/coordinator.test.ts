@@ -124,13 +124,13 @@ describe('Claude checks Laya (fixture backend)', () => {
     expect(b.checks.map((c) => c.check.reportId)).toEqual(['rep-2', 'rep-3', 'rep-5']);
     // What the web reads: state.checks[n].check.summary, .outcome and .reason.
     expect(b.checks.map((c) => [c.outcome, c.reason])).toEqual([
-      ['SENT_TO_PERSON', 'Possible life safety, so a person decides.'],
+      ['SENT_TO_PERSON', 'Claude reads possible life safety, so a person decides.'],
       ['SENT_TO_PERSON', 'Laya and Claude disagree on attention: Laya says information, Claude says active need.'],
-      ['AUTO_CONFIRMED', 'Laya and Claude agree: add to inc-school-gym, information.'],
+      ['AUTO_CONFIRMED', 'Laya and Claude agree on information; Claude adds it to inc-school-gym.'],
     ]);
     expect(b.checks[2].check.summary).toBe('The north road by the school gym is passable again.');
     expect(b.reviewEvents).toHaveLength(1);
-    expect(b.reviewEvents[0]).toMatchObject({ actorRole: 'claude_check', sourceReportIds: ['rep-5'], reason: 'Laya and Claude agree: add to inc-school-gym, information.' });
+    expect(b.reviewEvents[0]).toMatchObject({ actorRole: 'claude_check', sourceReportIds: ['rep-5'], reason: 'Laya and Claude agree on information; Claude adds it to inc-school-gym.' });
     // Confirmed without lowering the open concern; the other two are not confirmed.
     expect(b.incident()).toMatchObject({ revision: 2, attention: 'ACTIVE_NEED', confirmedReportIds: ['rep-1', 'rep-5'] });
     // The disagreement keeps Claude's own view for side-by-side review.
