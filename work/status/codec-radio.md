@@ -4,11 +4,12 @@ _Updated: 2026-10-25 02:30 PDT by the C1 agent (Claude, new session after the 01
 
 ## Now
 
+- **Process change (02:30, Sud, C1 human):** the separate TEST/IMPLEMENT/REVIEW stops for the rest of C1's work are cut to avoid re-verifying what is already proven (G1 suite, 400/400 decode, C1's 40/40 Windows decode). The work is now three blocks: **1** the C4 endpoint check, **2** the radio bridge with its tests, **3** one real C1→C4 radio run. The hard rules and honest labels are unchanged. Not yet in `work/DECISIONS.md`: **the orchestrator needs to log it.**
+
 - **Gate / phase:** G1 / **IMPLEMENT green and complete**: 104 passed, 0 skipped (real model), and the 400-packet regression is **400/400** (`work/validation/G1.md`). Next is G1 REVIEW, which waits for the human's go-ahead.
 - **Last commits:** this commit (400/400 regression recorded); `9ad02f3` merge of `origin/main`; `6b8cbed` G1 IMPL, then a chore commit adding `tools/runtime-build/` (the repo's `.gitignore` ignores `build/`, so the recipe had been left out). Earlier: `11d8df2` G1 TEST, `3d99370` kit import.
 - **Exact next steps, in order:**
-  1. **G1 REVIEW**, as its own request (§20 G1 REVIEW).
-     - First pin the extra pure-Python dependencies of the vendored bindings (see How to run).
+  1. **Block 1, C4 endpoint check (in progress).** `services/codec-radio/requirements.txt` pins the deps. `tools/endpoint_check.py` prints the hashes and the fingerprint, decodes 20 C1-encoded kit packets and checks 8 probe encodings byte for byte against `tools/endpoint_ref.json`. It passes on Linux. Waiting on the C4 run.
      - On **C1 (native Windows)**: run the suite with `runtime/win-x64`.
      - On **C4 (command post, i7-11800H)**: copy the model, pull this branch, check the fingerprint is `422ac23fca10`, then cross-decode both ways (C1-encoded packets on C4, C4-encoded on C1).
      - Try the failure cases; record real versus unavailable; open a `[G1 REVIEW]` PR to `main`.
@@ -19,7 +20,8 @@ _Updated: 2026-10-25 02:30 PDT by the C1 agent (Claude, new session after the 01
 ## How to run what exists
 
 ```bash
-pip install numpy pytest diskcache jinja2 typing_extensions   # the last three are imported by the vendored third_party/llama_cpp; Unishox2 and llama.cpp themselves are pinned in runtime/<platform>/
+pip install -r services/codec-radio/requirements.txt   # numpy + the pure-Python deps of the vendored third_party/llama_cpp; Unishox2 and llama.cpp are pinned in runtime/<platform>/
+CODEC_MODEL_PATH=/path/to/SmolLM2-360M.Q8_0.gguf python services/codec-radio/tools/endpoint_check.py   # endpoint proof, exit 0 = PASS
 CODEC_MODEL_PATH=/path/to/SmolLM2-360M.Q8_0.gguf python -m pytest services/codec-radio/tests -q -rs
 ```
 
