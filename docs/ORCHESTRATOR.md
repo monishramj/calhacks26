@@ -25,6 +25,7 @@ for ws in codec-radio state inference web; do
   git diff --stat origin/main...origin/ws/$ws
 done
 git branch -r --list 'origin/ws/*-*'   # lanes: check their status files and paths too
+python scripts/health.py               # merge conflicts, stray edits, contract drift, secrets, big files, stale branches
 gh pr list --state open
 ```
 

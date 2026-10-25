@@ -113,6 +113,8 @@ def ensure_worktree():
 def pull(q, timeout=30):
     if git("fetch", "--quiet", "origin", BRANCH, check=False, timeout=timeout).returncode != 0:
         return False
+    if git("merge", "--ff-only", "--quiet", f"origin/{BRANCH}", cwd=q, check=False).returncode == 0:
+        return True
     if git("rebase", "--quiet", f"origin/{BRANCH}", cwd=q, check=False).returncode != 0:
         git("rebase", "--abort", cwd=q, check=False)
         return False
