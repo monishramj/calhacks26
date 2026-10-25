@@ -10,7 +10,7 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 
 | Gate | Pri | Workstream | Status | Evidence | Notes |
 |---|---|---|---|---|---|
-| G0 contracts | P0 | ws/state | not started | `work/validation/G0.md` | Blocks everyone. First. |
+| G0 contracts | P0 | ws/state | TEST red (87bfcc8) | `work/validation/G0.md` | Blocks everyone. First. |
 | G1 codec quality | P0 | ws/codec-radio | IMPL green (104 passed, real model) | `work/validation/G1.md` | Can start beside G0. |
 | G2 radio path | P0 | ws/codec-radio | not started | `work/validation/G2.md` | After G1 + frozen intake contract. |
 | G3 incident state | P0 | ws/state | not started | `work/validation/G3.md` | Real local SpacetimeDB. |
