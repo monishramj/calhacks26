@@ -20,6 +20,8 @@ WORKER_IDENTITY=$WORKER_IDENTITY sh scripts/stdb-setup.sh
 trap 'kill 0' INT TERM EXIT
 if [ -x "$LAYA_PY" ] && [ -n "${LAYA_MODEL_PATH:-}" ]; then
   PYTHONPATH=services/local-laya "$LAYA_PY" -m laya_worker.server --port 8091 &
+  # Model load takes a while; give it up to 2 min so the coordinator starts with Laya on.
+  i=0; until curl -sf "$LOCAL_LAYA_URL/health" >/dev/null || [ $i -ge 120 ]; do sleep 1; i=$((i+1)); done
 else
   echo "unavailable: Laya worker (set LAYA_MODEL_PATH in .env and create ../laya-env); reports stay in manual review"
 fi
