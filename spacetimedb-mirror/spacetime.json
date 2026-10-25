@@ -1,0 +1,5 @@
+{
+  "server": "local",
+  "module-path": ".",
+  "database": "incident-desk-mirror"
+}

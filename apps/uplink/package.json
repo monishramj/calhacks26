@@ -1,0 +1,12 @@
+{
+  "name": "@calhacks26/uplink",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "One-way upload of the command post's confirmed picture to a cloud mirror, whenever the mirror is reachable.",
+  "scripts": {
+    "start": "node --env-file-if-exists=../../.env src/uplink.mjs",
+    "once": "node --env-file-if-exists=../../.env src/uplink.mjs once",
+    "identity": "node --env-file-if-exists=../../.env src/uplink.mjs identity"
+  }
+}
