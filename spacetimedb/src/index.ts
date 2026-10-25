@@ -25,7 +25,7 @@ import {
   validateWire,
   type ApproveProposalCommand,
   type ChangeField,
-  type ClaudeCheck,
+  type ClaudeCheckRecord,
   type ClaimJobCommand,
   type DeskState,
   type IncidentChange,
@@ -101,7 +101,7 @@ const spacetimedb = schema({
   incident_signature: table({ public: true }, { incidentId: t.string().primaryKey(), runId: t.string(), signature: t.string() }),
   // Idempotency ledger: repeated commandIds return the recorded result.
   command: table({ public: true }, { commandId: t.string().primaryKey(), fingerprint: t.string(), resultJson: t.string() }),
-  // Claude's check (ClaudeCheck JSON) per report Laya suggested on, for side-by-side review. Never the queue.
+  // Claude's check per report Laya suggested on (ClaudeCheckRecord JSON: check, outcome, reason). Never the queue.
   claude_check: table({ public: true }, { reportId: t.string().primaryKey(), runId: t.string().index('btree'), json: t.string() }),
   // positionJson: {x, z} in exercise map units, or null. Used only to pick the nearest candidate incidents.
   place: table({ public: true }, { placeId: t.string().primaryKey(), aliasesJson: t.string(), positionJson: t.string() }),
@@ -540,9 +540,13 @@ export const submit_local_suggestion = spacetimedb.reducer({ commandJson: t.stri
   refreshSignatures(ctx);
 });
 
-function putCheck(ctx: Ctx, check: ClaudeCheck) {
-  const row = { reportId: check.reportId, runId: check.runId, json: JSON.stringify(check) };
-  if (ctx.db.claude_check.reportId.find(check.reportId)) ctx.db.claude_check.reportId.update(row);
+/** One sentence for the review band; the rule's reasons are short, this only guards long incident IDs. */
+const line = (s: string) => (s.length > 140 ? `${s.slice(0, 139)}…` : s);
+
+function putCheck(ctx: Ctx, rec: ClaudeCheckRecord) {
+  must(validateWire('ClaudeCheckRecord', rec));
+  const row = { reportId: rec.check.reportId, runId: rec.check.runId, json: JSON.stringify(rec) };
+  if (ctx.db.claude_check.reportId.find(row.reportId)) ctx.db.claude_check.reportId.update(row);
   else ctx.db.claude_check.insert(row);
 }
 
@@ -569,14 +573,16 @@ export const auto_confirm = spacetimedb.reducer({ commandJson: t.string() }, (ct
     ctx.db.job.jobId.update({ ...row, state: again.state, json: JSON.stringify(again) });
     return;
   }
-  putCheck(ctx, c);
   finishJob(ctx, row, job);
 
   const sRow = scope.suggestionId ? ctx.db.suggestion.suggestionId.find(scope.suggestionId) : undefined;
   const rec = sRow ? (JSON.parse(sRow.json) as SuggestionRecord) : null;
-  if (!sRow || !rec || rec.reviewState !== 'PENDING') return;
+  if (!sRow || !rec || rec.reviewState !== 'PENDING') {
+    return putCheck(ctx, { check: c, outcome: 'SENT_TO_PERSON', reason: 'A person had already reviewed this report.' });
+  }
   const loc = state.reports.find((r) => r.reportId === c.reportId)!.input.reportedLocation;
   const d = autoConfirmDecision({ suggestion: rec.suggestion, check: c, placeId: loc?.source === 'sender_explicit' ? loc.placeId : null, incidents: state.incidents });
+  putCheck(ctx, { check: c, outcome: d.confirm ? 'AUTO_CONFIRMED' : 'SENT_TO_PERSON', reason: line(d.confirm ? d.reason : d.reasons[0]) });
   if (!d.confirm) return;
 
   let incidentId = d.incidentId;

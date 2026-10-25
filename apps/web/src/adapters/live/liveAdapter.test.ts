@@ -7,7 +7,7 @@ const h = vi.hoisted(() => ({ cb: {} as Record<string, (...a: any[]) => void>, r
 vi.mock('./module_bindings', () => {
   const table = (rows: () => any[]) => ({ iter: () => rows(), onInsert() {}, onUpdate() {}, onDelete() {} });
   const empty = table(() => []);
-  const db = { desk: table(() => h.rows), report: empty, incident: empty, relation: empty, suggestion: empty, proposal: empty, reviewEvent: empty, incidentSignature: empty, incidentPicture: empty, job: empty };
+  const db = { desk: table(() => h.rows), report: empty, incident: empty, relation: empty, suggestion: empty, proposal: empty, reviewEvent: empty, incidentSignature: empty, incidentPicture: empty, claudeCheck: empty, job: empty };
   const conn = { db, subscriptionBuilder: () => ({ onApplied: (f: () => void) => ((h.applied = f), { subscribeToAllTables() {} }) }) };
   h.conn = conn;
   const builder: any = new Proxy({}, { get: (_t, k: string) => (f: any) => (k === 'build' ? conn : (f && (h.cb[k] = f), builder)) });

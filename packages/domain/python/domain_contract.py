@@ -97,7 +97,7 @@ def _cross_field(type_name: str, v: dict) -> list[str]:
         return [] if v["newRevision"] > v["priorRevision"] else ["newRevision must be greater than priorRevision"]
     if type_name in ("SuggestionRecord", "SubmitLocalSuggestionCommand"):
         return _cross_field("LocalSuggestion", v["suggestion"])
-    if type_name == "SubmitClaudeCheckCommand":
+    if type_name in ("SubmitClaudeCheckCommand", "ClaudeCheckRecord"):
         return _cross_field("ClaudeCheck", v["check"])
     if type_name in ("ProposalRecord", "SubmitIncidentProposalCommand"):
         return _cross_field("IncidentProposal", v["proposal"])

@@ -99,6 +99,7 @@ function crossField(type: string, v: any): string | null {
     case 'SubmitLocalSuggestionCommand':
       return crossField('LocalSuggestion', v.suggestion);
     case 'SubmitClaudeCheckCommand':
+    case 'ClaudeCheckRecord':
       return crossField('ClaudeCheck', v.check);
     case 'SubmitIncidentProposalCommand':
       return crossField('IncidentProposal', v.proposal);

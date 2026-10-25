@@ -22,9 +22,10 @@ export const TOOL: Anthropic.Tool = {
       candidateIncidentId: { type: ['string', 'null'], description: 'The candidate incident the report concerns. Null for NEW_INCIDENT or REQUEST_REVIEW.' },
       attention: { enum: ['POSSIBLE_LIFE_SAFETY', 'ACTIVE_NEED', 'INFORMATION', null] },
       evidenceReportIds: { ...ids, description: 'Report IDs your answer rests on, including the target report.' },
+      summary: { type: 'string', description: 'One plain sentence, under 140 characters: what the target report says happened.' },
       reason: { type: 'string', description: 'Under 20 words.' },
     },
-    required: ['action', 'candidateIncidentId', 'attention', 'evidenceReportIds', 'reason'],
+    required: ['action', 'candidateIncidentId', 'attention', 'evidenceReportIds', 'summary', 'reason'],
     additionalProperties: false,
   },
 };
@@ -45,6 +46,7 @@ Rules:
 - Use only what the reports say. Hearsay, partial all-clears and silence never prove an area is clear.
 - Sender time and receive order differ; a late, older report never overrides a newer concern.
 - Cite the report IDs your answer rests on, always including the target report.
+- summary: one plain sentence under 140 characters on what the target report says happened. Facts from the report only.
 - You cannot approve, dispatch or change confirmed state. Call submitCheck once.`;
 
 /** Turns submitCheck arguments into a validated ClaudeCheck, or says what is wrong (the model hears it). */
@@ -63,6 +65,8 @@ export function toCheck(args: unknown, input: JobInput, job: Job, model: string)
     candidateIncidentId: a.candidateIncidentId,
     attention: a.attention,
     evidenceReportIds: cited.includes(input.targetReportId) ? cited : [input.targetReportId, ...cited],
+    // A long sentence is cut, not rejected: the check matters more than the wording.
+    summary: typeof a.summary === 'string' && a.summary.trim() ? (a.summary.trim().length > 140 ? `${a.summary.trim().slice(0, 139)}…` : a.summary.trim()) : undefined,
     reason: typeof a.reason === 'string' && a.reason.trim() ? a.reason.trim().slice(0, 500) : null,
     baseIncidentVersions: job.baseIncidentVersions,
     inputSignature: input.inputSignature,

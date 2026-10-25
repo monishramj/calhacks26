@@ -16,9 +16,9 @@ vi.mock('../src/inference/claude/enrich', async (orig) => ({
 vi.mock('../src/inference/claude/check', async (orig) => {
   const real = await orig<typeof import('../src/inference/claude/check')>();
   const answers: Record<string, object> = {
-    'rep-2': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'POSSIBLE_LIFE_SAFETY', evidenceReportIds: ['rep-2', 'rep-1'], reason: 'Oxygen generator out.' },
-    'rep-3': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'ACTIVE_NEED', evidenceReportIds: ['rep-3'], reason: 'Hearsay; rescue unconfirmed.' },
-    'rep-5': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'INFORMATION', evidenceReportIds: ['rep-5'], reason: 'Road status only.' },
+    'rep-2': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'POSSIBLE_LIFE_SAFETY', evidenceReportIds: ['rep-2', 'rep-1'], summary: 'Gym water still rising; the oxygen generator is out.', reason: 'Oxygen generator out.' },
+    'rep-3': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'ACTIVE_NEED', evidenceReportIds: ['rep-3'], summary: 'A neighbor heard the gym people may have got out.', reason: 'Hearsay; rescue unconfirmed.' },
+    'rep-5': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'INFORMATION', evidenceReportIds: ['rep-5'], summary: 'The north road by the school gym is passable again.', reason: 'Road status only.' },
   };
   return {
     ...real,
@@ -121,19 +121,27 @@ describe('Claude checks Laya (fixture backend)', () => {
 
   it('agreeing information confirms with the claude_check label; life safety and disagreement stay in review', async () => {
     const b = await run('ACTIVE_NEED');
-    expect(b.checks.map((c) => c.reportId)).toEqual(['rep-2', 'rep-3', 'rep-5']);
+    expect(b.checks.map((c) => c.check.reportId)).toEqual(['rep-2', 'rep-3', 'rep-5']);
+    // What the web reads: state.checks[n].check.summary, .outcome and .reason.
+    expect(b.checks.map((c) => [c.outcome, c.reason])).toEqual([
+      ['SENT_TO_PERSON', 'Possible life safety, so a person decides.'],
+      ['SENT_TO_PERSON', 'Laya and Claude disagree on attention: Laya says information, Claude says active need.'],
+      ['AUTO_CONFIRMED', 'Laya and Claude agree: add to inc-school-gym, information.'],
+    ]);
+    expect(b.checks[2].check.summary).toBe('The north road by the school gym is passable again.');
     expect(b.reviewEvents).toHaveLength(1);
-    expect(b.reviewEvents[0]).toMatchObject({ actorRole: 'claude_check', sourceReportIds: ['rep-5'], reason: 'Laya and Claude agree: attach to inc-school-gym, INFORMATION' });
+    expect(b.reviewEvents[0]).toMatchObject({ actorRole: 'claude_check', sourceReportIds: ['rep-5'], reason: 'Laya and Claude agree: add to inc-school-gym, information.' });
     // Confirmed without lowering the open concern; the other two are not confirmed.
     expect(b.incident()).toMatchObject({ revision: 2, attention: 'ACTIVE_NEED', confirmedReportIds: ['rep-1', 'rep-5'] });
     // The disagreement keeps Claude's own view for side-by-side review.
-    expect(b.checks.find((c) => c.reportId === 'rep-3')).toMatchObject({ action: 'ATTACH_REPORT', attention: 'ACTIVE_NEED', reason: 'Hearsay; rescue unconfirmed.', provider: 'claude' });
+    expect(b.checks.find((c) => c.check.reportId === 'rep-3')!.check).toMatchObject({ action: 'ATTACH_REPORT', attention: 'ACTIVE_NEED', reason: 'Hearsay; rescue unconfirmed.', provider: 'claude' });
   });
 
   it('on a possible-life-safety incident even the agreed information report waits for a person', async () => {
     const b = await run('POSSIBLE_LIFE_SAFETY');
     expect(b.checks).toHaveLength(3);
     expect(b.reviewEvents).toHaveLength(0);
+    expect(b.checks[2]).toMatchObject({ outcome: 'SENT_TO_PERSON', reason: 'The incident is possible life safety; only a person may lower it.' });
     expect(b.incident()).toMatchObject({ revision: 1, attention: 'POSSIBLE_LIFE_SAFETY', confirmedReportIds: ['rep-1'] });
   });
 
@@ -141,10 +149,12 @@ describe('Claude checks Laya (fixture backend)', () => {
     const b = createFixtureBackend();
     b.addJob('job-check-rep-4', 'LOCAL_CHECK', 'rep-4', null);
     const { job, input } = b.jobs.at(-1)!;
-    const base = { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'ACTIVE_NEED', evidenceReportIds: ['rep-1'], reason: 'x' };
+    const base = { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'ACTIVE_NEED', evidenceReportIds: ['rep-1'], summary: 'People are still in the gym.', reason: 'x' };
     expect(toCheck(base, input, job, 'm')).toMatchObject({ ok: true, check: { evidenceReportIds: ['rep-4', 'rep-1'], provider: 'claude' } });
     expect(toCheck({ ...base, candidateIncidentId: 'inc-other' }, input, job, 'm')).toMatchObject({ ok: false });
     expect(toCheck({ ...base, evidenceReportIds: ['rep-99'] }, input, job, 'm')).toMatchObject({ ok: false });
     expect(toCheck({ ...base, action: 'APPROVE' }, input, job, 'm')).toMatchObject({ ok: false });
+    expect(toCheck({ ...base, summary: '' }, input, job, 'm')).toMatchObject({ ok: false });
+    expect(toCheck({ ...base, summary: 'y'.repeat(200) }, input, job, 'm')).toMatchObject({ ok: true, check: { summary: 'y'.repeat(139) + '…' } });
   });
 });

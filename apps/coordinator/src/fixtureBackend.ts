@@ -9,6 +9,7 @@ import {
   checkFreshness,
   validateWire,
   type ClaudeCheck,
+  type ClaudeCheckRecord,
   type DeskAdapter,
   type IncidentProposal,
   type IncidentView,
@@ -69,7 +70,7 @@ export function createFixtureBackend({ attention = 'POSSIBLE_LIFE_SAFETY' }: { a
   jobs: Entry[];
   suggestions: LocalSuggestion[];
   proposals: IncidentProposal[];
-  checks: ClaudeCheck[];
+  checks: ClaudeCheckRecord[];
   reviewEvents: ReviewEvent[];
   incident(): IncidentView;
   /** Queue another job (tests). */
@@ -107,7 +108,7 @@ export function createFixtureBackend({ attention = 'POSSIBLE_LIFE_SAFETY' }: { a
 
   const suggestions: LocalSuggestion[] = [];
   const proposals: IncidentProposal[] = [];
-  const checks: ClaudeCheck[] = [];
+  const checks: ClaudeCheckRecord[] = [];
   const reviewEvents: ReviewEvent[] = [];
 
   const finish = (jobId: string | null, sub: { runId: string; baseIncidentVersions: Record<string, number>; inputSignature: string }): Result<Entry> => {
@@ -152,10 +153,10 @@ export function createFixtureBackend({ attention = 'POSSIBLE_LIFE_SAFETY' }: { a
       if (!v.ok) return v;
       const done = finish(jobId, check);
       if (!done.ok) return done;
-      checks.push(v.value);
       const s = suggestions.find((x) => x.reportId === check.reportId && x.provider === 'local_laya');
       const placeId = reports.find((r) => r.reportId === check.reportId)?.input.reportedLocation?.placeId ?? null;
       const d = s ? autoConfirmDecision({ suggestion: s, check, placeId, incidents: [incident] }) : null;
+      checks.push({ check: v.value, outcome: d?.confirm ? 'AUTO_CONFIRMED' : 'SENT_TO_PERSON', reason: !d ? 'No Laya suggestion to compare.' : d.confirm ? d.reason : d.reasons[0] });
       // The fixture holds one incident, so only an attach to it is applied here.
       if (d?.confirm && d.incidentId === incident.incidentId) {
         const prior = incident;

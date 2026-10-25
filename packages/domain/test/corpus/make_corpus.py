@@ -303,6 +303,7 @@ CC = {
     "candidateIncidentId": "inc-school",
     "attention": "INFORMATION",
     "evidenceReportIds": ["rep-000007", "rep-000001"],
+    "summary": "The school gym is clear; status only.",
     "reason": "Same school gym; status only.",
     "baseIncidentVersions": {"inc-school": 2},
     "inputSignature": SIG,
@@ -324,6 +325,20 @@ claude_check = {
         ("provider local_laya", with_(CC, provider="local_laya")),
         ("an approve field", with_(CC, approve=True)),
         ("scores on a Claude check", with_(CC, scores=[])),
+        ("no summary", without(CC, "summary")),
+        ("summary over 140 characters", with_(CC, summary="x" * 141)),
+    ],
+}
+CCR = {"check": CC, "outcome": "AUTO_CONFIRMED", "reason": "Laya and Claude agree: add to inc-school, information."}
+claude_check_record = {
+    "valid": [
+        ("confirmed without a person", CCR),
+        ("sent to a person", with_(CCR, outcome="SENT_TO_PERSON", reason="Possible life safety, so a person decides.")),
+    ],
+    "invalid": [
+        ("unknown outcome", with_(CCR, outcome="APPROVED")),
+        ("empty reason", with_(CCR, reason="")),
+        ("reason over 140 characters", with_(CCR, reason="x" * 141)),
     ],
 }
 
@@ -744,6 +759,7 @@ ALL = {
     "LabelScore": label_score,
     "LocalSuggestion": local_suggestion,
     "ClaudeCheck": claude_check,
+    "ClaudeCheckRecord": claude_check_record,
     "IncidentProposal": incident_proposal,
     "ReportRelation": report_relation,
     "SuggestionRecord": suggestion_record,

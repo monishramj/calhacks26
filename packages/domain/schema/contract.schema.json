@@ -972,7 +972,8 @@
         "provider",
         "reason",
         "reportId",
-        "runId"
+        "runId",
+        "summary"
       ],
       "properties": {
         "runId": {
@@ -1036,6 +1037,12 @@
           "uniqueItems": true,
           "maxItems": 256,
           "minItems": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140,
+          "description": "One sentence: what the report says happened."
         },
         "reason": {
           "anyOf": [
@@ -1127,6 +1134,33 @@
           }
         }
       ]
+    },
+    "ClaudeCheckRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check",
+        "outcome",
+        "reason"
+      ],
+      "properties": {
+        "check": {
+          "$ref": "#/$defs/ClaudeCheck"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "AUTO_CONFIRMED",
+            "SENT_TO_PERSON"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140,
+          "description": "Why it confirmed, or why a person decides. Written by the backend rule, not by a model."
+        }
+      }
     },
     "SuggestionRecord": {
       "type": "object",

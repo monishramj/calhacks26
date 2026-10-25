@@ -65,11 +65,21 @@ export type ClaudeCheck = {
   candidateIncidentId: string | null;
   attention: Attention | null;
   evidenceReportIds: string[];
+  /** One sentence (max 140 characters): what the report says happened. */
+  summary: string;
+  /** Claude's own short reason for its reading. */
   reason: string | null;
   baseIncidentVersions: Record<string, number>;
   inputSignature: string;
   model: string;
   provider: 'claude';
+};
+
+/** A stored check: the decision, and one sentence (max 140 characters) from the backend rule on why. */
+export type ClaudeCheckRecord = {
+  check: ClaudeCheck;
+  outcome: 'AUTO_CONFIRMED' | 'SENT_TO_PERSON';
+  reason: string;
 };
 
 export type RelationKind = 'REPEAT' | 'UPDATE' | 'CORRECTION' | 'CONFLICT';
@@ -323,8 +333,8 @@ export type DeskState = {
   queuedJobs?: Partial<Record<JobKind, number>>;
   /** Latest Claude working picture per incident (live only; unconfirmed). */
   pictures?: IncidentPicture[];
-  /** Claude's check per report Laya suggested on (live only). */
-  checks?: ClaudeCheck[];
+  /** Claude's check per report Laya suggested on, with the decision (live only). */
+  checks?: ClaudeCheckRecord[];
 };
 
 export interface DeskAdapter {

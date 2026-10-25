@@ -38,6 +38,8 @@ TIMESTAMP = {"type": "string", "maxLength": 40,
 TEXT = {"type": "string", "minLength": 1, "maxLength": MAX_REPORT_TEXT_BYTES}
 SHORT_TEXT = {"type": "string", "minLength": 1, "maxLength": MAX_SHORT_TEXT}
 SUMMARY = {"type": "string", "minLength": 1, "maxLength": MAX_SUMMARY}
+# One sentence for a small screen (Claude check summary and decision reason).
+LINE = {"type": "string", "minLength": 1, "maxLength": 140}
 COUNT = {"type": "integer", "minimum": 0, "maximum": INT32_MAX}
 POSITIVE = {"type": "integer", "minimum": 1, "maximum": INT32_MAX}
 NULL = {"type": "null"}
@@ -225,6 +227,7 @@ defs["ClaudeCheck"] = closed(
         "candidateIncidentId": nullable(ID),
         "attention": nullable(enum(ATTENTION)),
         "evidenceReportIds": ids(minItems=1),
+        "summary": described(LINE, "One sentence: what the report says happened."),
         "reason": nullable(SHORT_TEXT),
         "baseIncidentVersions": VERSIONS,
         "inputSignature": ID,
@@ -234,6 +237,13 @@ defs["ClaudeCheck"] = closed(
     when({"action": {"const": "NEW_INCIDENT"}}, {"candidateIncidentId": NULL}),
     when({"action": enum(["ATTACH_REPORT", "FLAG_CORRECTION", "FLAG_CONFLICT"])}, {"candidateIncidentId": ID}),
 )
+
+# What the backend stored for a check: the decision and one plain sentence on why (agreed, or why a person decides).
+defs["ClaudeCheckRecord"] = closed({
+    "check": ref("ClaudeCheck"),
+    "outcome": enum(["AUTO_CONFIRMED", "SENT_TO_PERSON"]),
+    "reason": described(LINE, "Why it confirmed, or why a person decides. Written by the backend rule, not by a model."),
+})
 
 defs["SuggestionRecord"] = closed({
     "suggestionId": ID,

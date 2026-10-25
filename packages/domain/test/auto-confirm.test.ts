@@ -17,7 +17,7 @@ const laya = (extra: Partial<LocalSuggestion> = {}): LocalSuggestion => ({
 });
 const claude = (extra: Partial<ClaudeCheck> = {}): ClaudeCheck => ({
   runId: RUN, reportId: 'live-1:r9', action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school', attention: 'INFORMATION',
-  evidenceReportIds: ['live-1:r9'], reason: null, baseIncidentVersions: { 'inc-school': 1 }, inputSignature: 'sig1:a', model: 'm', provider: 'claude', ...extra,
+  evidenceReportIds: ['live-1:r9'], summary: 'Road by the school is open.', reason: null, baseIncidentVersions: { 'inc-school': 1 }, inputSignature: 'sig1:a', model: 'm', provider: 'claude', ...extra,
 });
 const decide = (s: LocalSuggestion, c: ClaudeCheck, incidents = [school], placeId: string | null = 'school') =>
   autoConfirmDecision({ suggestion: s, check: c, placeId, incidents });
@@ -38,7 +38,7 @@ describe('layaView', () => {
 describe('autoConfirmDecision', () => {
   it('agreeing information report attaches without lowering attention', () => {
     expect(decide(laya(), claude())).toEqual({
-      confirm: true, incidentId: 'inc-school', change: { addReportIds: ['live-1:r9'] }, reason: 'Laya and Claude agree: attach to inc-school, INFORMATION',
+      confirm: true, incidentId: 'inc-school', change: { addReportIds: ['live-1:r9'] }, reason: 'Laya and Claude agree: add to inc-school, information.',
     });
   });
   it('an agreed higher attention is applied', () => {
@@ -51,13 +51,15 @@ describe('autoConfirmDecision', () => {
     const s = laya({ baseIncidentVersions: {}, scores: [p('NEW_INCIDENT', 0.8), p('ACTIVE_NEED', 0.9)] });
     const d = decide(s, claude({ action: 'NEW_INCIDENT', candidateIncidentId: null, attention: 'ACTIVE_NEED', baseIncidentVersions: {} }), [], 'shelter');
     expect(d).toEqual({
-      confirm: true, incidentId: null, reason: 'Laya and Claude agree: new incident at shelter, ACTIVE_NEED',
+      confirm: true, incidentId: null, reason: 'Laya and Claude agree: a new incident at shelter, active need.',
       change: { status: 'OPEN', attention: 'ACTIVE_NEED', addReportIds: ['live-1:r9'], confirmedPlaceId: 'shelter' },
     });
     expect(decide(s, claude({ action: 'NEW_INCIDENT', candidateIncidentId: null, attention: 'ACTIVE_NEED', baseIncidentVersions: {} }), [], null)).toMatchObject({ confirm: false });
   });
   it('possible life safety from either model goes to a person', () => {
-    expect(decide(laya(), claude({ attention: 'POSSIBLE_LIFE_SAFETY' }))).toMatchObject({ confirm: false, reasons: expect.arrayContaining(['possible life safety: a person decides']) });
+    // The first reason is the one the review band shows.
+    const d = decide(laya(), claude({ attention: 'POSSIBLE_LIFE_SAFETY' }));
+    expect(d.confirm === false && d.reasons[0]).toBe('Possible life safety, so a person decides.');
     expect(decide(laya({ attention: 'POSSIBLE_LIFE_SAFETY' }), claude())).toMatchObject({ confirm: false });
     expect(decide(laya({ scores: [...laya().scores.slice(0, 5), p('POSSIBLE_LIFE_SAFETY', 0.2)] }), claude())).toMatchObject({ confirm: false });
   });
@@ -68,7 +70,7 @@ describe('autoConfirmDecision', () => {
     expect(decide(laya({ scores: [p('REQUEST_REVIEW', 0.9), p('INFORMATION', 0.9)] }), claude({ action: 'REQUEST_REVIEW', candidateIncidentId: null }))).toMatchObject({ confirm: false });
   });
   it('disagreement on action, incident or attention goes to a person', () => {
-    expect(decide(laya(), claude({ action: 'NEW_INCIDENT', candidateIncidentId: null }))).toMatchObject({ confirm: false, reasons: expect.arrayContaining(['Laya says ATTACH_REPORT, Claude says NEW_INCIDENT']) });
+    expect(decide(laya(), claude({ action: 'NEW_INCIDENT', candidateIncidentId: null }))).toMatchObject({ confirm: false, reasons: expect.arrayContaining(['Laya and Claude disagree: Laya says add to an incident, Claude says a new incident.']) });
     expect(decide(laya(), claude({ attention: 'ACTIVE_NEED' }))).toMatchObject({ confirm: false });
     const two = [school, inc('inc-house', 'residence')];
     const s = laya({ baseIncidentVersions: { 'inc-school': 1, 'inc-house': 1 }, scores: [...laya().scores, p('inc-school', 0.8), p('inc-house', 0.2)] });
@@ -77,14 +79,14 @@ describe('autoConfirmDecision', () => {
   it('a report on a possible-life-safety incident goes to a person, even an agreed all-clear', () => {
     // "Gas is shut off" / "driver is out and safe" on a life-safety incident: lowering it needs a person.
     expect(decide(laya(), claude(), [inc('inc-school', 'school', { attention: 'POSSIBLE_LIFE_SAFETY' })])).toMatchObject({
-      confirm: false, reasons: ['the incident is possible life safety: only a person may lower it'],
+      confirm: false, reasons: ['The incident is possible life safety; only a person may lower it.'],
     });
   });
   it('a laya answer with no scores never confirms', () => {
     expect(decide(laya({ scores: [] }), claude())).toMatchObject({ confirm: false });
   });
   it('a moved incident, a closed incident or an already confirmed report goes to a person', () => {
-    expect(decide(laya(), claude(), [inc('inc-school', 'school', { revision: 2 })])).toMatchObject({ confirm: false, reasons: expect.arrayContaining(['inc-school changed since the models looked']) });
+    expect(decide(laya(), claude(), [inc('inc-school', 'school', { revision: 2 })])).toMatchObject({ confirm: false, reasons: ['inc-school changed since the models looked.'] });
     expect(decide(laya(), claude(), [inc('inc-school', 'school', { status: 'RESOLVED' })])).toMatchObject({ confirm: false });
     expect(decide(laya(), claude(), [inc('inc-school', 'school', { confirmedReportIds: ['live-1:r9'] })])).toMatchObject({ confirm: false });
   });

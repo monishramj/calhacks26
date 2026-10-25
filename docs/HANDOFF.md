@@ -62,7 +62,7 @@ Put keys in the root `.env` (see `.env.example`):
 - The operator approves a suggestion: new incident or attach to an existing one, attention level, and location (taken from the place the sender stated).
 - The confirmed queue syncs across browser windows.
 - R07 moves the school to #1 once approved. R11 (a late, older all-clear) does not lower it.
-- Claude checks each Laya suggestion (`apps/coordinator/src/inference/claude/check.ts`). When both agree on a safe change, the report confirms at once and the history shows "Claude check" with the reason. Otherwise Claude's answer is stored in the `claude_check` table for side-by-side review. The rule is `packages/domain/src/rules/autoConfirm.ts`.
+- Claude checks each Laya suggestion (`apps/coordinator/src/inference/claude/check.ts`). When both agree on a safe change, the report confirms at once and the history shows "Claude check" with the reason. Every check is stored in the `claude_check` table, and the live adapter puts it in `state.checks`: Claude's one-sentence summary of the report, the outcome (confirmed automatically or sent to a person), and one plain sentence on why. The rule is `packages/domain/src/rules/autoConfirm.ts`.
 - Each report's Laya and check jobs see only the open incidents at or nearest its stated place (at most ten, by exercise place position) and those incidents' confirmed reports.
 - When an incident gains a confirmed report, Claude builds a hierarchy of site, subarea, and claims, with chronology, late flags, severity, uncertainty, and cited report IDs. The dashboard shows it as "Claude's working picture (unconfirmed)", plus queue proposals the operator approves.
 - Failure handling:
@@ -74,7 +74,7 @@ Put keys in the root `.env` (see `.env.example`):
 
 1. Laya alone never confirms anything. Its action bar (top score ≥ 0.6, lead ≥ 0.2) was re-chosen on the fine-tune's 40-example validation split only (`services/local-laya/finetune/threshold.py`, results in `threshold.json`). No lower bar keeps at least 90% of accepted actions correct, so it stays at 0.6. On the 26 held-out cases neither stock Laya nor the fine-tuned head clears it (`evaluation/report-2026-10-25.*`, `report-2026-10-25-scorer-head.json`). Better training data is the next lever, not a lower bar.
 2. Laya and Claude jobs run in separate coordinator loops, so a Claude picture (about 10 s) does not delay Laya. Up to three Claude jobs run at once.
-   - The review band does not show Claude's stored answer yet. The web needs to read the `claude_check` table (`DeskState.checks`) and show it next to Laya's.
+   - The review band does not show Claude's check yet; it is in `state.checks` for the panels to use.
    - Laya's input is still too long once incidents exist. In the R01-R12 live run (operator approved R01-R06, then R07-R12 sent), all six later reports passed Laya's 512-token limit with only three candidates. Laya then gives no scores, so nothing can confirm automatically and every report goes to review. Shortening Laya's prompt (fewer candidate reports, or summaries instead of full text) is the next step for real-time volume.
 3. `operator_edit` does not check the input signature.
 4. The Laya and Claude notices are inferred from waiting jobs, not from a heartbeat.
