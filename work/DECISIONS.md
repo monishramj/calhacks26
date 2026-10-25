@@ -23,9 +23,9 @@ _History: originally C2 was the command post; at 01:50 the second radio and code
 
 ws/codec-radio may commit the pinned codec runtime (about 8 MB: the llama.cpp MinGW cross-build with glibc float math, Unishox2, and the Linux .so files) under `services/codec-radio/runtime/` with SHA-256 sums, because every endpoint must run the identical binary. Model weights and context files still stay outside git.
 
-## D-004 · proposed · scene geometry source
+## D-004 · superseded · scene geometry source (proposal)
 
-§7 calls for "one simple fictional river-valley scene." Proposal from ws/web: bake a static scene once in Blender (BLOSM, OpenStreetMap buildings + terrain) and bundle it as a local glTF. Incident data stays fictional and labeled. Needs a decision on whether real-world geometry is acceptable, and which location (not a Helene-affected place). Details: `apps/web/SCENE_PIPELINE.md`. Until approved, the procedural placeholder scene is the default.
+See the approved D-004 entry below.
 
 ## D-006 · approved (2026-10-25 by the C4 human, proposed by C2) · Docker as dev tooling
 
@@ -48,3 +48,13 @@ The C3 human is asleep and their computer is locked. Replacement agents take ove
 - **Lead lane (`ws/inference`):** a Claude cloud session runs G5 (Claude tool loop) and the coordinator (D-007), against fixture tools until G3 is live. `ANTHROPIC_API_KEY` is set as a cloud environment secret, never committed.
 - **Laya lane (`ws/inference-laya`):** Cursor on C4 runs the flyby port, weights, preflight, and G4. **The Laya worker runs natively on C4** (the command post), which amends D-003's "Laya on a Mac" default. Measurements happen on C4, the demo machine.
 - When the C3 human wakes up, they rejoin through the status files and these lanes; they don't restart anything.
+
+## D-004 · approved (2026-10-25 by the C4 human) · SF Embarcadero BLOSM scene
+
+The scene lane (ws/web-scene) bakes a georeferenced BLOSM scene of a compact Ferry Building / Embarcadero crop in San Francisco (about 700 × 500 m, mostly flat, inside public BayMesh coverage). It may start now; the procedural scene (305272a) stays the fallback, and the Blender work stops at T+5:00. This amends §7's "fictional river-valley scene"; the incidents stay fictional. Conditions:
+- **Contract unchanged:** placeId only. The georeference lives only in the scene lane's `scene-meta.json`. §18 positions stay in scene units (school at the origin, residence (80,20), shelter (-120,40), 1 unit = 1 m).
+- **Markers on generic, unlabeled buildings**, never the Ferry Building or another named landmark. A fictional concern must not attach to an identifiable real place (§8).
+- **No third-party Meshtastic node positions, names, or IDs.** Public coverage may only pick the area. Any coverage layer is coarse, labeled third-party reference data, and never our measured reach (§3).
+- **Labels:** "Fictional Helene-inspired exercise · incidents are synthetic", plus "Map data © OpenStreetMap contributors (ODbL)" and the terrain source.
+- **Offline and light:** OSM buildings and terrain only (no Google 3D Tiles), meshopt (no CDN Draco), about 3 MB, everything bundled locally.
+- The heatmap floats above the terrain with a fixed scale.
