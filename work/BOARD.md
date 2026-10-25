@@ -2,7 +2,7 @@
 
 _Maintained by the orchestrator on `main`. Status comes from validation files, never from claims alone._
 
-**Last orchestrator pass:** 2026-10-25 02:45 PDT, by the C3 human's Claude Code session (orchestration handed to C3 at 02:30). No open PRs. Health: every branch except ws/state still needs to merge main (contract v1.0.0); inboxes already say so.
+**Last orchestrator pass:** 2026-10-25 03:05 PDT. **ALL STOP**: the C3 human asked every agent to reach a stopping point; inboxes say so. Orchestrator watcher stopped. Open human decisions: which G4 version to keep (question 1025-025738), and the API key for G5.
 
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
