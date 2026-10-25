@@ -82,7 +82,7 @@ def job(prior, target, category, index):
                            summary=None, openCycleStartSequence=1)]
     reports.append(report('rep-target', target, 2))
     return dict(runId='run-synthetic', jobId=f'job-{index}', kind='LOCAL_SUGGESTION', inputSignature=f'synthetic-{index}',
-                targetReportId='rep-target', incidentId=None, reports=reports, candidateIncidents=candidates, places=[])
+                targetReportId='rep-target', incidentId=None, reports=reports, candidateIncidents=candidates, candidatePictures=[], places=[])
 
 
 def main():

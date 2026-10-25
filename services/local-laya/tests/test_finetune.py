@@ -133,7 +133,8 @@ def test_saved_head_real_inference_and_data_provenance(real_runtime, monkeypatch
     assert not {r['group'] for r in rows if r['split'] == 'train'} & {
         r['group'] for r in rows if r['split'] == 'val'}
     monkeypatch.setenv('LAYA_SCORER_PATH', str(path))
-    out = validate(suggest(rows[0]['job'], real_runtime))
+    # train.jsonl predates the required candidatePictures field; keep its recorded hash and upgrade the row here.
+    out = validate(suggest({'candidatePictures': [], **rows[0]['job']}, real_runtime))
     assert len(out['scores']) == 8 and all(s['kind'] == 'score' for s in out['scores'])
     assert out['attention'] in ('POSSIBLE_LIFE_SAFETY', None)
     provenance = scorer.load_scorer(real_runtime, str(path))[2]
