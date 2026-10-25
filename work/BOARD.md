@@ -25,7 +25,7 @@ _Snapshot 02:30 PDT, written by the C4 orchestrator session as it hands off._
 | Gate | Pri | Workstream | Status | Evidence | Notes |
 |---|---|---|---|---|---|
 | G0 contracts | P0 | ws/state | REVIEW passed, merged as v1.0.0 (PR #2, #3) | `work/validation/G0.md` | Every other branch must merge main. |
-| G1 codec quality | P0 | ws/codec-radio | IMPL green (104 passed, real model) | `work/validation/G1.md` | Can start beside G0. |
+| G1 codec quality | P0 | ws/codec-radio | REVIEW in progress (3320e3e): 400/400 kit packets decode; `tools/endpoint_check.py` PASS on Linux | `work/validation/G1.md` | Waiting on C4 endpoint check + native Windows suite on C1. |
 | G2 radio path | P0 | ws/codec-radio | not started | `work/validation/G2.md` | After G1 + frozen intake contract. |
 | G3 incident state | P0 | ws/state | not started | `work/validation/G3.md` | Real local SpacetimeDB. |
 | G4 local Laya | P0 | ws/inference (laya lane) | TEST red (37074d8: 81 red on stubs, against v1) | `G4.md` on ws/inference-laya | Laya loads on C4 CPU: warm p50 1,064 ms / p95 1,322 ms for 3 questions. Next: IMPLEMENT. |
