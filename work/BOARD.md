@@ -8,12 +8,16 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 
 ## Open items at handoff (keep current)
 
-- **G0:** TEST red on ws/state (87bfcc8). Review the `[contract] v1` PR when it opens (C2 targets ~03:30), then post "merge main, contract v1" to every inbox.
-- **C1:** G1 IMPLEMENT green. G1 REVIEW needs a 15–20 min slot on C4 for the cross-machine decode (model copied, fingerprint `422ac23fca10`).
-- **C3:** replacement agents (D-008) not started yet. Their prompts are in KICKOFF ("C3 replacement"). The Laya worker runs on C4.
-- **Web:** scene lane baked the SF map (D-004 guardrails: markers off landmarks, no third-party node data). Panels G6 IMPL and scene G7 IMPL are on lanes. Check that the lead merges the lanes and opens gate PRs.
-- **PRs:** #1 merged (d66d711). Review every new PR per docs/ORCHESTRATOR.md "Loop".
+_Snapshot 02:30 PDT, written by the C4 orchestrator session as it hands off._
+
+- **G0:** merged to main as contract v1.0.0, and the Windows test fix too (verified on C4: TS 777/777, Py 486/486). Every branch except ws/state needs to merge main; each inbox says so.
+- **C2 (ws/state):** told to do G6 rules first (about 45 min), then G3 right away. **G3 (the database) is the biggest remaining risk.** Review its gate PRs fast.
+- **C1:** G1 IMPLEMENT green. G1 REVIEW needs a 15–20 min slot on C4 for the cross-machine decode. G2 (radio bridge) can start: G0 froze the intake transport (bridge calls the `receive_report` reducer directly; see packages/domain/README.md).
+- **C3:** replacement agents (D-008) never started; the C3 computer is back. If the C3 human resumes ws/inference, D-008's lanes go to them. The Laya worker stays on C4 unless they record otherwise.
+- **Web:** viz automation paused by the C4 human to save usage. Scene lane finished G7 REVIEW (SF map, D-004 guardrails checked). Panels G6 IMPL is on its lane. Lanes not yet merged into ws/web, and there's no web PR to main yet.
+- **PRs:** #1 merged. Merge [contract] and gate PRs per "Loop" in docs/ORCHESTRATOR.md, running tests on a fresh checkout first.
 - **Docker:** installed on C4, engine not running. C2 owns `docker-compose.yml` (D-006).
+- **Health noise:** `apps/coordinator/package.json` on ws/state predates D-007, so ignore it.
 
 ## Gates
 

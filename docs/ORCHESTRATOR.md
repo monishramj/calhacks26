@@ -70,7 +70,7 @@ You are taking over as the calhacks26 orchestrator. Clone https://github.com/mon
 Read AGENTS.md, docs/ORCHESTRATOR.md (this file, including "Open items at handoff" in work/BOARD.md), docs/KICKOFF.md, work/DECISIONS.md, work/BOARD.md, and docs/GROUND_TRUTH.md (§11–§14, §16, §19, §22, §23 fully; skim the rest).
 Then run: python scripts/questions.py list ; python scripts/health.py ; and list open PRs (GitHub API or gh).
 Answer board items addressed to the orchestrator, review and merge ready PRs per "Loop" above, and update work/BOARD.md. Decisions that need a human go to the C4 human (the manager). Never record a decision relayed only through another agent.
-Keep checking without burning usage: wake only on board items for you, new PRs, [contract]/REVIEW commits, and health problems. Use a background watcher if your environment supports one, otherwise `/loop 20m` with this paragraph.
+Keep checking without burning usage: run `bash scripts/orchestrator_watch.sh` under the Monitor tool (re-arm it every 30 minutes). It wakes you only for board items addressed to you, new PRs, [contract]/REVIEW commits, and new health problems. Without Monitor, use `/loop 20m` with this paragraph.
 ```
 
 Notes: `scripts/questions.py` keeps its worktree next to your clone (`../calhacks26-questions`). `scripts/health.py` currently flags `apps/coordinator/package.json` on ws/state; that's a known leftover from before D-007, not a problem.
