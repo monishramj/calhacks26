@@ -27,7 +27,7 @@ _Snapshot 02:30 PDT, written by the C4 orchestrator session as it hands off._
 | G0 contracts | P0 | ws/state | REVIEW passed, merged as v1.0.0 (PR #2, #3) | `work/validation/G0.md` | Every other branch must merge main. |
 | G1 codec quality | P0 | ws/codec-radio | REVIEW in progress (3320e3e): 400/400 kit packets decode; `tools/endpoint_check.py` PASS on Linux | `work/validation/G1.md` | Waiting on C4 endpoint check + native Windows suite on C1. |
 | G2 radio path | P0 | ws/codec-radio | not started | `work/validation/G2.md` | After G1 + frozen intake contract. |
-| G3 incident state | P0 | ws/state (spacetimedb lane) | IMPL in progress (C3 session, `ws/state-spacetimedb`) | `work/validation/G3.md` | Critical path. |
+| G3 incident state | P0 | ws/state (spacetimedb lane) | IMPL green (a5198d8 on ws/state-spacetimedb: 21/21 checks against real local SpacetimeDB 2.13 in Docker on C3) | `G3.md` on ws/state-spacetimedb | Not merged into ws/state. Missing: TS bindings, live adapter, scenario injector, compose volume fix. |
 | G4 local Laya | P0 | ws/inference (laya lane) | TEST red (37074d8: 81 red on stubs, against v1) | `G4.md` on ws/inference-laya | Laya loads on C4 CPU: warm p50 1,064 ms / p95 1,322 ms for 3 questions. Next: IMPLEMENT. |
 | G5 Claude enrichment | P1 | ws/inference (lead lane) | IMPL in progress (C3 session, ship mode) | `work/validation/G5.md` | Fixture tools until G3. |
 | G6 queue and history | P0 | ws/state + ws/web (panels lane) | rules: REVIEW passed on ws/state (51a9238, 40 reordered replays, stale second window, 24/24 mutations caught), no PR yet; panels: IMPL green on replay, v1 move in progress (web-lead session) | `G6-state.md`, `G6-panels.md` | C2 should open the PR so web can import the rules from main. |
