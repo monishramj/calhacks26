@@ -64,19 +64,19 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
           <Scene {...selection} />
         </section>
         <aside className="side-pane" aria-label="Reports and incidents">
-          <Section id="review" title="Review band" pinned count={state ? reviewBand(state).length : 0}>
+          <Section id="review" title="Needs review" pinned count={state ? reviewBand(state).length : 0}>
             <ReviewBand {...selection} />
           </Section>
-          <Section id="queue" title="Confirmed queue" count={state ? confirmedQueue(state).length : 0}>
+          <Section id="queue" title="Confirmed" count={state ? confirmedQueue(state).length : 0}>
             <ConfirmedQueue {...selection} />
           </Section>
-          <Section id="picture" title="Claude's working picture (unconfirmed)">
+          <Section id="picture" title="What Claude thinks">
             <PicturePanel {...selection} />
           </Section>
           <Section id="incoming" title="Incoming reports" defaultOpen={false}>
             <IncomingFeed {...selection} />
           </Section>
-          <Section id="history" title="Selected incident history">
+          <Section id="history" title="Report history">
             <IncidentHistory {...selection} />
           </Section>
         </aside>

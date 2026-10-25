@@ -1,12 +1,11 @@
-// Confirmed queue (§5): only operator-confirmed state, in derived.ts order.
+// Confirmed queue: backend-confirmed state, in derived.ts order.
 // Provisional hints never reorder this list.
 import { useState, type FormEvent, type KeyboardEvent } from 'react';
-import { PLACES } from '../scene/model';
 import type { Attention, IncidentView } from '../adapters/contract';
 import { ATTENTION_LABEL, confirmedQueue, needsReassessment } from '../adapters/derived';
 import { useDesk } from '../adapters/DeskContext';
 import type { PanelProps } from './index';
-import { AttentionTag, useCommand } from './shared';
+import { AttentionTag, RelativeAge, pictureClaims, placeName, useCommand } from './shared';
 
 const FILTERS: { id: Attention | 'ALL'; label: string }[] = [
   { id: 'ALL', label: 'All' },
@@ -14,7 +13,6 @@ const FILTERS: { id: Attention | 'ALL'; label: string }[] = [
   { id: 'ACTIVE_NEED', label: 'Need' },
   { id: 'INFORMATION', label: 'Info' },
 ];
-const placeName = (id: string | null) => PLACES.find((p) => p.id === id)?.name ?? id ?? 'location unknown';
 
 export function ConfirmedQueue({ selectedIncidentId, onSelectIncident }: PanelProps) {
   const { state } = useDesk();
@@ -26,6 +24,7 @@ export function ConfirmedQueue({ selectedIncidentId, onSelectIncident }: PanelPr
   const shown = queue.map((incident, i) => ({ incident, rank: i + 1 })).filter(({ incident }) => filter === 'ALL' || incident.attention === filter);
   // Up/Down move the selection through the visible rows (the scene follows the selection).
   function onKeyDown(e: KeyboardEvent) {
+    if ((e.target as HTMLElement).closest('input, select, textarea')) return;
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     e.preventDefault();
     const at = shown.findIndex((row) => row.incident.incidentId === selectedIncidentId);
@@ -70,6 +69,12 @@ function QueueCard({
   selected: boolean;
   onSelectIncident: PanelProps['onSelectIncident'];
 }) {
+  const { state } = useDesk();
+  const reports = state?.reports.filter((r) => incident.confirmedReportIds.includes(r.reportId)).sort((a, b) => a.receiveSequence - b.receiveSequence) ?? [];
+  const picture = state?.pictures?.find((p) => p.incidentId === incident.incidentId);
+  const summary = incident.summary ?? pictureClaims(picture)[0];
+  const lastReview = state?.reviewEvents.filter((e) => e.incidentId === incident.incidentId && e.acceptedChanges.length > 0).sort((a, b) => b.sequence - a.sequence)[0];
+  const autoConfirmed = (lastReview?.actorRole as string | undefined) === 'claude_check';
   return (
     <li className={`panel-card queue-row${selected ? ' selected' : ''}`} data-testid={`queue-${incident.incidentId}`}>
       <button
@@ -81,14 +86,19 @@ function QueueCard({
         <span className="queue-line">
           <strong data-testid="rank">{rank}.</strong> <AttentionTag attention={incident.attention} />{' '}
           <strong className="queue-place">{placeName(incident.confirmedPlaceId)}</strong>
-          {flagged && <span className="change-flag">New evidence · needs reassessment</span>}
+          <RelativeAge since={reports[0]?.receivedAt} />
         </span>
-        {(selected || incident.summary) && <p className="original-text">{incident.summary ?? <em>No summary</em>}</p>}
-        <span className="muted">
-          {incident.incidentId} · rev {incident.revision} · {incident.confirmedReportIds.length} confirmed report
-          {incident.confirmedReportIds.length === 1 ? '' : 's'} · open since #{incident.openCycleStartSequence}
-        </span>
+        {summary && <p className="queue-summary" title={summary}>{!incident.summary && <span className="muted">Unconfirmed · </span>}{summary}</p>}
+        {flagged && <span className="change-flag">New report · review needed</span>}
+        {autoConfirmed && <span className="tag auto-confirmed">Auto-confirmed · Laya + Claude agree</span>}
       </button>
+      {selected && <details className="item-details">
+        <summary>Details</summary>
+        <p>Incident: {incident.incidentId} · Revision {incident.revision}</p>
+        <p>{reports.length} confirmed reports · {Array.from(new Set(reports.map((r) => r.provenance))).join(', ')}</p>
+        {state?.relations.filter((r) => r.incidentId === incident.incidentId).map((r) =>
+          <p key={r.relationId}>{r.reportId} {r.kind.toLowerCase()} of {r.targetReportId} · {r.state.toLowerCase()}</p>)}
+      </details>}
       {selected && <OverrideControl incident={incident} />}
     </li>
   );

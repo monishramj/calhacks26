@@ -25,7 +25,7 @@ export function FailureNotices({ state, onStartReplay, onExitReplay }: { state: 
     <>
       {state.mode === 'LOCAL DEGRADED' && (
         <span role="status">
-          Database connection lost. Showing the last confirmed view; writes are stopped until it reconnects.
+          Offline · showing saved state. Changes paused.
           {onStartReplay && (
             <button type="button" onClick={onStartReplay}>
               Start local replay
@@ -35,11 +35,11 @@ export function FailureNotices({ state, onStartReplay, onExitReplay }: { state: 
       )}
       {state.mode === 'LOCAL REPLAY' && onExitReplay && (
         <button type="button" onClick={onExitReplay}>
-          Exit replay, back to live
+          Exit replay
         </button>
       )}
-      {laya && <span role="status">Local model unavailable, manual review</span>}
-      {claude && <span role="status">Claude summary unavailable (offline or no key)</span>}
+      {laya && <span role="status">Laya unavailable · review manually</span>}
+      {claude && <span role="status">Claude summary unavailable</span>}
     </>
   );
 }

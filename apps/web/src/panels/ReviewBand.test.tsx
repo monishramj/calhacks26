@@ -56,12 +56,12 @@ describe('ReviewBand', () => {
         'Correction: the school gym is clear, but someone may still be upstairs in the main building.',
       ),
     ).toHaveClass('original-text');
-    expect(within(card).getByText(/unconfirmed/)).toHaveClass('tag-life-safety');
-    expect(within(card).getByText(/R07 · #7/)).toBeInTheDocument();
-    expect(within(card).getByText('Candidate incident: INC-school')).toBeInTheDocument();
+    expect(within(card).getByText('Unconfirmed')).toBeInTheDocument();
+    expect(within(card).getByText('Life safety')).toHaveClass('tag-life-safety');
+    expect(card).not.toHaveTextContent(/R07|#7|Candidate incident/);
     expect(within(card).queryByText(/model score/)).not.toBeInTheDocument();
     expect(queueOrder()).toEqual(['INC-residence', 'INC-shelter', 'INC-school']);
-    expect(screen.getByText('New evidence · needs reassessment')).toBeInTheDocument();
+    expect(screen.getByText('New report · review needed')).toBeInTheDocument();
     await userEvent.click(within(card).getAllByRole('button')[0]);
     expect(onSelect).toHaveBeenCalledWith('INC-school');
   });

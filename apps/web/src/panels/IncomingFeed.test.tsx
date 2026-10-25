@@ -43,7 +43,7 @@ describe('IncomingFeed', () => {
     expect(screen.getByText('No source connected.')).toBeInTheDocument();
   });
 
-  it('shows all six originals verbatim, newest first, labeled Fixture provenance', async () => {
+  it('shows all six originals verbatim, newest first, without metadata', async () => {
     setup();
     const list = await screen.findByRole('list', { name: 'Incoming reports, newest first' });
     const items = Array.from(list.children) as HTMLElement[];
@@ -51,14 +51,14 @@ describe('IncomingFeed', () => {
     const ids = ['R06', 'R05', 'R04', 'R03', 'R02', 'R01'];
     items.forEach((item, i) => {
       const id = ids[i];
-      expect(item).toHaveTextContent(new RegExp(`^${id} · `));
+      expect(item).not.toHaveTextContent(id);
       expect(item).not.toHaveTextContent('#');
       expect(within(item).getByText(exerciseFixture.reports[id].text)).toHaveClass('original-text');
       expect(item).not.toHaveTextContent(/Fixture \(authored\)|Source:|Origin:/);
-      expect(item).toHaveTextContent(/sent (\d\d:\d\d|not given)/);
+      expect(item).not.toHaveTextContent(/sent (\d\d:\d\d|not given)/);
       expect(item).not.toHaveTextContent(/Event:|Received|Receive #|sender stated/);
     });
-    expect(items[0]).toHaveTextContent('Confirmed · INC-residence');
+    expect(items[0]).toHaveTextContent('Confirmed');
   });
 
   it('selects the incident by keyboard', async () => {
@@ -73,17 +73,21 @@ describe('IncomingFeed', () => {
     const { adapter, runId } = setup();
     await advanceTo(adapter, runId(), 4); // R07..R10
     const r10 = (await screen.findByText(exerciseFixture.reports.R10.text)).closest('li')!;
-    expect(r10).toHaveTextContent('sent not given');
-    expect(r10).toHaveTextContent('Unconfirmed · INC-school');
+    await userEvent.click(within(r10).getByRole('button'));
+    await userEvent.click(within(r10).getByText('Details'));
+    expect(r10).toHaveTextContent('Sent: not given');
+    expect(r10).toHaveTextContent('Unconfirmed');
   });
 
   it('flags R11 as sent earlier but arrived late', async () => {
     const { adapter, runId } = setup();
     await advanceTo(adapter, runId(), 5); // R07..R11
     const r11 = (await screen.findByText(exerciseFixture.reports.R11.text)).closest('li')!;
-    expect(within(r11).getByText('Sent earlier than a report already received · arrived late')).toHaveClass(
+    await userEvent.click(within(r11).getByRole('button'));
+    await userEvent.click(within(r11).getByText('Details'));
+    expect(within(r11).getByText('Arrived late · sent before a report already received')).toHaveClass(
       'change-flag',
     );
-    expect(screen.getAllByText(/arrived late/)).toHaveLength(1);
+    expect(screen.getAllByText(/Arrived late/)).toHaveLength(1);
   });
 });

@@ -35,11 +35,14 @@ describe('ConfirmedQueue', () => {
     const { onSelect } = setup('INC-shelter');
     await screen.findByTestId('queue-INC-residence');
     expect(queueOrder()).toEqual(['INC-residence', 'INC-shelter', 'INC-school']);
-    expect(within(screen.getByTestId('queue-INC-residence')).getByText('Possible life safety')).toBeInTheDocument();
-    expect(within(screen.getByTestId('queue-INC-shelter')).getByText('Active need')).toBeInTheDocument();
-    expect(within(screen.getByTestId('queue-INC-school')).getByText('Information')).toBeInTheDocument();
+    expect(within(screen.getByTestId('queue-INC-residence')).getByText('Life safety')).toBeInTheDocument();
+    expect(within(screen.getByTestId('queue-INC-shelter')).getByText('Needs help')).toBeInTheDocument();
+    expect(within(screen.getByTestId('queue-INC-school')).getByText('Info')).toBeInTheDocument();
     const school = screen.getByTestId('queue-INC-school');
-    expect(within(school).getByText(/rev 1 · 2 confirmed reports · open since #1/)).toBeInTheDocument();
+    expect(school).not.toHaveTextContent(/rev 1|open since|INC-school/);
+    expect(within(school).getByText('Just now')).toBeInTheDocument();
+    expect(within(school).queryByText('Details')).not.toBeInTheDocument();
+    expect(within(screen.getByTestId('queue-INC-shelter')).getByText('Details')).toBeInTheDocument();
     expect(within(screen.getByTestId('queue-INC-shelter')).getAllByRole('button')[0]).toHaveAttribute(
       'aria-current',
       'true',

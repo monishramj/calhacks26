@@ -82,11 +82,11 @@ export function ScenarioControls() {
           onChange={(e) => void jump(Number(e.target.value))} aria-valuetext={`${mmss(t)} of ${mmss(SCENARIO.durationSeconds)}`} />
       </label>
       <span className="clock" aria-label="Exercise time">{mmss(t)} / {mmss(SCENARIO.durationSeconds)}</span>
-      <button type="button" onClick={() => next && void jump(next.deliveredAt)} disabled={down || !next}>
-        {next ? `Next report (#${delivered + 1})` : 'All reports sent'}
+      <button type="button" aria-label={next ? `Next report (#${delivered + 1})` : 'All reports sent'} title="Next report" onClick={() => next && void jump(next.deliveredAt)} disabled={down || !next}>
+        <span aria-hidden="true">→</span>
       </button>
-      <span aria-live="polite">{delivered} / {total} delivered</span>
-      <button type="button" onClick={() => { setPlaying(false); seek(0); void resetRun(); }} disabled={down}>Reset run</button>
+      <span aria-live="polite">{delivered}/{total} delivered</span>
+      <button type="button" onClick={() => { setPlaying(false); seek(0); void resetRun(); }} disabled={down} aria-label="Reset run" title="Reset run"><span aria-hidden="true">↺</span></button>
       {error && <span role="alert">{error}</span>}
     </span>
   );

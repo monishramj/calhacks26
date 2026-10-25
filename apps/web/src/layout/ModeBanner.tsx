@@ -21,12 +21,10 @@ export function ModeBanner({ mode, sourceProvenance, inferenceProvenance, childr
   return (
     <header className={`mode-banner ${MODE_CLASS[mode]}`}>
       <strong className="mode-label" data-testid="run-mode">
-        {mode}
+        {mode === 'LIVE' ? 'Live' : mode === 'LOCAL REPLAY' ? 'Replay' : 'Offline'}
       </strong>
-      <span>Source: {sourceProvenance}</span>
-      <span>Inference: {inferenceProvenance}</span>
       {children}
-      <span className="exercise-label">Fictional Helene-inspired exercise · all reports are synthetic</span>
+      <span className="exercise-label" title={`Source: ${sourceProvenance} · Inference: ${inferenceProvenance}`}>Fictional exercise · synthetic reports</span>
     </header>
   );
 }
