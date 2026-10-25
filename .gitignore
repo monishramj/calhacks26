@@ -53,3 +53,5 @@ Thumbs.db
 
 # Coordinator worker identity token
 apps/coordinator/.worker-token
+# Cloud uplink identity token (mirror server)
+apps/uplink/.uplink-token

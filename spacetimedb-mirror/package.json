@@ -1,0 +1,16 @@
+{
+  "name": "incident-desk-mirror",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Read-only cloud mirror of a command post's confirmed incident picture (one-way upload).",
+  "scripts": {
+    "build": "spacetime build",
+    "publish": "spacetime publish"
+  },
+  "dependencies": {
+    "spacetimedb": "2.13.*"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.2"
+  }
+}
