@@ -11,7 +11,7 @@
   "scripts": {
     "test": "vitest run",
     "test:py": "node test/run-pytest.mjs",
-    "setup:py": "python3 -m venv .venv && .venv/bin/python -m pip install -q -r requirements-test.txt"
+    "setup:py": "node test/setup-py.mjs"
   },
   "dependencies": {
     "ajv": "8.17.1"
