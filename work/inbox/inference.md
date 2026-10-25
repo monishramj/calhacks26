@@ -12,3 +12,4 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/infere
 8. **Contract v1.0.0 (G0) is on main.** Merge origin/main (MERGE MAIN prompt in KICKOFF) and switch to `packages/domain` imports. Its 'Ready work packages' section in `work/validation/G0.md` lists what's ready for you.
 9. **D-009 ship mode (02:50).** No more separate TEST phases or new test suites. Each gate is one request: implement, run the real path once, a few lines in work/validation, push. Keep existing tests passing; don't add new ones. Honest labels stay. Priority is the demo path in D-009.
    Laya lane: G4 IMPLEMENT now (worker + server reading v1 JobInput). Lead lane: G5 + coordinator job runner is unowned; whoever is on C3 takes it, fixture tools until G3 is live.
+   **D-010 (03:10): the Laya worker runs on C4 for the demo.** Set `LOCAL_LAYA_URL` to C4's worker; a Laya on C3 is for development only.

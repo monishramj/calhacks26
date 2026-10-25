@@ -67,3 +67,7 @@ We're behind CP2, and test work is using up the usage budget. From now until CP4
 - **Unchanged:** honest labels (live / fixture / simulated / unavailable), no secrets in git, ownership by path, and no scope additions (§4, §23). A feature that only ran against a stub is pitched as a stub.
 - **Priority is the demo path:** G6 rules → G3 SpacetimeDB → live adapter in the web app → Laya suggestion → operator approval in two browsers → radio report in. Polish (textures, camera, extra scenarios) stops.
 - The C4 human (manager) can overrule this.
+
+## D-010 · approved (2026-10-25 03:10 by the C3 human) · Laya runs on C4 for the demo
+
+The Laya worker runs natively on C4 (the command post), as in D-008, including after the C3 human returned. C3 may load Laya for development, but the demo measurements and the `LOCAL_LAYA_URL` the coordinator uses point to C4. This replaces D-003's "Laya on a Mac (C3 by default)".
