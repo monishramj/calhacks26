@@ -15,8 +15,6 @@ const topScore = (scores: LabelScore[], labels: Record<string, string>) =>
   scores.filter((s) => Object.hasOwn(labels, s.label) && Number.isFinite(s.value)).sort((a, b) => b.value - a.value)[0];
 const scoreText = (score: LabelScore) => score.kind === 'probability' ? `${Math.round(score.value * 100)}%` : `${score.value} score`;
 
-// shortcut: optional check fields until the domain contract exposes Claude checks; replace with its type then.
-type ClaudeCheck = { reportId: string; summary?: string | null; reason?: string | null };
 
 export function ReviewBand({ selectedIncidentId, onSelectIncident }: PanelProps) {
   const { state } = useDesk();
@@ -59,7 +57,10 @@ function ReviewCard({
   if (!report) return null; // incident-level unknown (no report) is not shown as a card yet
   const suggestion: LocalSuggestion | undefined = state.suggestions.find((s) => s.suggestion.reportId === item.reportId)?.suggestion;
   const proposal = state.proposals.find((p) => p.reviewState === 'PENDING' && p.proposal.addReportIds.includes(item.reportId!))?.proposal ?? null;
-  const check = (state as DeskState & { claudeChecks?: ClaudeCheck[] }).claudeChecks?.find((c) => c.reportId === report.reportId);
+  const record = state.checks?.find((c) => c.check.reportId === report.reportId);
+  const check = record?.check;
+  // Why it is here: the backend's reason for sending it to a person, else Claude's own reading.
+  const why = record?.outcome === 'SENT_TO_PERSON' ? record.reason : check?.reason;
   const attentionScore = topScore(suggestion?.scores ?? [], URGENCY_LABEL);
   const actionScore = topScore(suggestion?.scores ?? [], ACTION_LABEL);
 
@@ -108,7 +109,7 @@ function ReviewCard({
           <span className="muted">Unconfirmed</span>
         </span>
       </button>
-      {(suggestion || check?.summary || check?.reason || proposal?.suggestedSummary) && <div className="ai-block">
+      {(suggestion || check?.summary || why || proposal?.suggestedSummary) && <div className="ai-block">
         <span className="ai-label">AI</span>
         <div>
           {suggestion && <p>Laya · {attentionScore && <>{URGENCY_LABEL[attentionScore.label as Attention]} {scoreText(attentionScore)} · </>}
@@ -116,7 +117,7 @@ function ReviewCard({
             {actionScore && ` · ${scoreText(actionScore)}`}
           </p>}
           {(check?.summary || proposal?.suggestedSummary) && <p className="ai-summary" title={check?.summary || proposal?.suggestedSummary || undefined}>Claude · {check?.summary || proposal?.suggestedSummary}</p>}
-          {check?.reason && <p className="muted ai-reason" title={check.reason}>{check.reason}</p>}
+          {why && <p className="muted ai-reason" title={why}>Why you: {why}</p>}
         </div>
       </div>}
       {suggestion && !proposal && <SuggestionApprove report={report} suggestion={suggestion} state={state} selected={selected} />}

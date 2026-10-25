@@ -72,9 +72,11 @@ function QueueCard({
   const { state } = useDesk();
   const reports = state?.reports.filter((r) => incident.confirmedReportIds.includes(r.reportId)).sort((a, b) => a.receiveSequence - b.receiveSequence) ?? [];
   const picture = state?.pictures?.find((p) => p.incidentId === incident.incidentId);
-  const summary = incident.summary ?? pictureClaims(picture)[0];
+  // Newest Claude one-line summary among this incident's reports, when there is no confirmed summary.
+  const checked = state?.checks?.filter((c) => incident.confirmedReportIds.includes(c.check.reportId)).at(-1)?.check.summary;
+  const summary = incident.summary ?? checked ?? pictureClaims(picture)[0];
   const lastReview = state?.reviewEvents.filter((e) => e.incidentId === incident.incidentId && e.acceptedChanges.length > 0).sort((a, b) => b.sequence - a.sequence)[0];
-  const autoConfirmed = (lastReview?.actorRole as string | undefined) === 'claude_check';
+  const autoConfirmed = lastReview?.actorRole === 'claude_check';
   return (
     <li className={`panel-card queue-row${selected ? ' selected' : ''}`} data-testid={`queue-${incident.incidentId}`}>
       <button

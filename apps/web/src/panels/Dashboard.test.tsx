@@ -64,7 +64,10 @@ it('shows optional Claude summary and reason without changing confirmation', asy
   const { state } = await pendingState();
   const reportId = state.suggestions[0].suggestion.reportId;
   const { card } = await renderPending([], {
-    claudeChecks: [{ reportId, summary: 'Someone may be upstairs.', reason: 'The correction leaves a possible life-safety concern.' }],
+    checks: [{
+      check: { reportId, summary: 'Someone may be upstairs.', reason: 'Claude reads it as a correction.' },
+      outcome: 'SENT_TO_PERSON', reason: 'The correction leaves a possible life-safety concern.',
+    }] as unknown as DeskState['checks'],
   });
   expect(card).toHaveTextContent('Claude · Someone may be upstairs.');
   expect(card).toHaveTextContent('The correction leaves a possible life-safety concern.');
