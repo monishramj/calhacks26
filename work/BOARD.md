@@ -65,4 +65,6 @@ See `work/PREFLIGHT.md`. Re-estimate scope here after the first preflight pass (
 
 ## Ready, unowned tasks
 
-_None yet._
+1. **G5 + coordinator job runner** (`apps/coordinator/**`, ws/inference lead lane): Claude tool loop with the four §6 tools against fixture tools, then live after G3. Nobody owns it right now.
+2. **ws/web lead:** merge `origin/ws/web-scene`, migrate the adapter/replay to v1, PR to main (web inbox 10).
+3. **C4 endpoint check for G1** (web inbox 11).
