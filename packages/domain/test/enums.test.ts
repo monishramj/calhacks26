@@ -38,11 +38,12 @@ describe('§17 enums', () => {
 });
 
 describe('adapter surface', () => {
-  it('has the ten §17 methods plus the Claude picture submission', () => {
+  it('has the ten §17 methods plus the Claude picture submission and auto-confirm', () => {
     expect([...ADAPTER_METHODS].sort()).toEqual(
       [
         'advanceScenario',
         'approveProposal',
+        'autoConfirm',
         'claimJob',
         'operatorEdit',
         'receiveReport',

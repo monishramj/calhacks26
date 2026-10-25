@@ -53,6 +53,35 @@ export type LocalSuggestion = {
   provider: Provider;
 };
 
+/**
+ * Claude's own read of a report Laya suggested on (v1.4.0). Built without seeing Laya's answer.
+ * When both agree on a safe change it confirms with actor `claude_check`; otherwise it is stored
+ * so the review band can show Laya and Claude side by side.
+ */
+export type ClaudeCheck = {
+  runId: string;
+  reportId: string;
+  action: LocalAction;
+  candidateIncidentId: string | null;
+  attention: Attention | null;
+  evidenceReportIds: string[];
+  /** One sentence (max 140 characters): what the report says happened. */
+  summary: string;
+  /** Claude's own short reason for its reading. */
+  reason: string | null;
+  baseIncidentVersions: Record<string, number>;
+  inputSignature: string;
+  model: string;
+  provider: 'claude';
+};
+
+/** A stored check: the decision, and one sentence (max 140 characters) from the backend rule on why. */
+export type ClaudeCheckRecord = {
+  check: ClaudeCheck;
+  outcome: 'AUTO_CONFIRMED' | 'SENT_TO_PERSON';
+  reason: string;
+};
+
 export type RelationKind = 'REPEAT' | 'UPDATE' | 'CORRECTION' | 'CONFLICT';
 
 export type IncidentProposal = {
@@ -121,6 +150,7 @@ export type AdapterMethod =
   | 'submitLocalSuggestion'
   | 'submitIncidentProposal'
   | 'submitIncidentPicture'
+  | 'autoConfirm'
   | 'approveProposal'
   | 'rejectProposal'
   | 'operatorEdit'
@@ -178,7 +208,7 @@ export type ProposalRecord = {
   proposal: IncidentProposal;
 };
 
-export type JobKind = 'LOCAL_SUGGESTION' | 'INCIDENT_PROPOSAL';
+export type JobKind = 'LOCAL_SUGGESTION' | 'INCIDENT_PROPOSAL' | 'LOCAL_CHECK';
 export type Job = {
   runId: string;
   jobId: string;
@@ -220,8 +250,8 @@ export type ReviewEvent = {
   runId: string;
   sequence: number;
   commandId: string;
-  /** Only operators change confirmed state. */
-  actorRole: 'operator';
+  /** Operators change confirmed state; `claude_check` = Laya and Claude agreed on a safe change (v1.4.0). */
+  actorRole: 'operator' | 'claude_check';
   actorIdentity: string;
   incidentId: string;
   proposalId: string | null;
@@ -274,6 +304,7 @@ export type OperatorEditCommand = {
 export type ClaimJobCommand = { runId: string; kinds: JobKind[] };
 export type SubmitLocalSuggestionCommand = { jobId: string; suggestion: LocalSuggestion };
 export type SubmitIncidentProposalCommand = { jobId: string | null; proposal: IncidentProposal };
+export type SubmitClaudeCheckCommand = { jobId: string; check: ClaudeCheck };
 export type SubmitIncidentPictureCommand = { jobId: string; picture: IncidentPictureDraft };
 export type AdvanceScenarioCommand = { commandId: string; runId: string; expectedDeliveredCount: number };
 export type ResetRunCommand = { commandId: string; runId: string };
@@ -302,6 +333,8 @@ export type DeskState = {
   queuedJobs?: Partial<Record<JobKind, number>>;
   /** Latest Claude working picture per incident (live only; unconfirmed). */
   pictures?: IncidentPicture[];
+  /** Claude's check per report Laya suggested on, with the decision (live only). */
+  checks?: ClaudeCheckRecord[];
 };
 
 export interface DeskAdapter {

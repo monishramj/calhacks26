@@ -10,6 +10,13 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
+export const ClaudeCheck = __t.object("ClaudeCheck", {
+  reportId: __t.string(),
+  runId: __t.string(),
+  json: __t.string(),
+});
+export type ClaudeCheck = __Infer<typeof ClaudeCheck>;
+
 export const Command = __t.object("Command", {
   commandId: __t.string(),
   fingerprint: __t.string(),
@@ -66,6 +73,7 @@ export type Job = __Infer<typeof Job>;
 export const Place = __t.object("Place", {
   placeId: __t.string(),
   aliasesJson: __t.string(),
+  positionJson: __t.string(),
 });
 export type Place = __Infer<typeof Place>;
 

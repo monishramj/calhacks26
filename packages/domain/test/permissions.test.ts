@@ -20,6 +20,7 @@ const MATRIX: [string, Record<string, string> | undefined, Role[]][] = [
   ['rejectProposal', undefined, ['operator']],
   ['operatorEdit', undefined, ['operator']],
   ['claimJob', undefined, ['worker']],
+  ['autoConfirm', undefined, ['worker']],
   ['advanceScenario', undefined, ['operator']],
   ['resetRun', undefined, ['operator']],
 ];

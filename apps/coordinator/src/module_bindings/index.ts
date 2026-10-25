@@ -35,6 +35,7 @@ import {
 
 // Import all reducer arg schemas
 import ApproveProposalReducer from "./approve_proposal_reducer";
+import AutoConfirmReducer from "./auto_confirm_reducer";
 import ClaimJobReducer from "./claim_job_reducer";
 import GrantRoleReducer from "./grant_role_reducer";
 import IssueIncidentJobReducer from "./issue_incident_job_reducer";
@@ -50,6 +51,7 @@ import SubmitLocalSuggestionReducer from "./submit_local_suggestion_reducer";
 // Import all procedure arg schemas
 
 // Import all table schema definitions
+import ClaudeCheckRow from "./claude_check_table";
 import CommandRow from "./command_table";
 import DeskRow from "./desk_table";
 import IncidentRow from "./incident_table";
@@ -67,6 +69,20 @@ import SuggestionRow from "./suggestion_table";
 
 /** The schema information for all tables in this module. This is defined the same was as the tables would have been defined in the server. */
 const tablesSchema = __schema({
+  claudeCheck: __table({
+    name: 'claude_check',
+    indexes: [
+      { accessor: 'reportId', name: 'claude_check_report_id_idx_btree', algorithm: 'btree', columns: [
+        'reportId',
+      ] },
+      { accessor: 'runId', name: 'claude_check_run_id_idx_btree', algorithm: 'btree', columns: [
+        'runId',
+      ] },
+    ],
+    constraints: [
+      { name: 'claude_check_report_id_key', constraint: 'unique', columns: ['reportId'] },
+    ],
+  }, ClaudeCheckRow),
   command: __table({
     name: 'command',
     indexes: [
@@ -228,6 +244,7 @@ const tablesSchema = __schema({
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
   __reducerSchema("approve_proposal", ApproveProposalReducer),
+  __reducerSchema("auto_confirm", AutoConfirmReducer),
   __reducerSchema("claim_job", ClaimJobReducer),
   __reducerSchema("grant_role", GrantRoleReducer),
   __reducerSchema("issue_incident_job", IssueIncidentJobReducer),
@@ -247,6 +264,8 @@ const proceduresSchema = __procedures(
 
 type __SchemaWithTableAccessorAliases = Omit<typeof tablesSchema.schemaType, "tables"> & {
   tables: typeof tablesSchema.schemaType.tables & {
+    /** @deprecated Use `claudeCheck` instead. This alias will be removed in the next major version. */
+    readonly "claude_check": Omit<typeof tablesSchema.schemaType.tables["claudeCheck"], "accessorName"> & { readonly accessorName: "claude_check" };
     /** @deprecated Use `incidentPicture` instead. This alias will be removed in the next major version. */
     readonly "incident_picture": Omit<typeof tablesSchema.schemaType.tables["incidentPicture"], "accessorName"> & { readonly accessorName: "incident_picture" };
     /** @deprecated Use `incidentSignature` instead. This alias will be removed in the next major version. */
@@ -271,6 +290,7 @@ const REMOTE_MODULE = {
 >;
 
 const tableAccessorAliases = {
+  "claude_check": "claudeCheck",
   "incident_picture": "incidentPicture",
   "incident_signature": "incidentSignature",
   "review_event": "reviewEvent",
@@ -294,6 +314,8 @@ function __withTableAccessorAliases<T extends object>(target: T, freeze = false)
 
 type __DbViewBase = __DbConnectionImpl<typeof REMOTE_MODULE>["db"];
 export type DbView = __DbViewBase & {
+  /** @deprecated Use `claudeCheck` instead. This alias will be removed in the next major version. */
+  readonly "claude_check": __DbViewBase["claudeCheck"];
   /** @deprecated Use `incidentPicture` instead. This alias will be removed in the next major version. */
   readonly "incident_picture": __DbViewBase["incidentPicture"];
   /** @deprecated Use `incidentSignature` instead. This alias will be removed in the next major version. */
@@ -304,6 +326,8 @@ export type DbView = __DbViewBase & {
 
 type __TablesBase = __QueryBuilder<typeof tablesSchema.schemaType>;
 export type Tables = __TablesBase & {
+  /** @deprecated Use `claudeCheck` instead. This alias will be removed in the next major version. */
+  readonly "claude_check": __TablesBase["claudeCheck"];
   /** @deprecated Use `incidentPicture` instead. This alias will be removed in the next major version. */
   readonly "incident_picture": __TablesBase["incidentPicture"];
   /** @deprecated Use `incidentSignature` instead. This alias will be removed in the next major version. */

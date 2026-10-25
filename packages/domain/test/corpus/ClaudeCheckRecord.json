@@ -1,0 +1,138 @@
+{
+  "type": "ClaudeCheckRecord",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "confirmed without a person",
+      "payload": {
+        "check": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "ATTACH_REPORT",
+          "candidateIncidentId": "inc-school",
+          "attention": "INFORMATION",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "summary": "The school gym is clear; status only.",
+          "reason": "Same school gym; status only.",
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "model": "claude-test",
+          "provider": "claude"
+        },
+        "outcome": "AUTO_CONFIRMED",
+        "reason": "Laya and Claude agree: add to inc-school, information."
+      }
+    },
+    {
+      "name": "sent to a person",
+      "payload": {
+        "check": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "ATTACH_REPORT",
+          "candidateIncidentId": "inc-school",
+          "attention": "INFORMATION",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "summary": "The school gym is clear; status only.",
+          "reason": "Same school gym; status only.",
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "model": "claude-test",
+          "provider": "claude"
+        },
+        "outcome": "SENT_TO_PERSON",
+        "reason": "Possible life safety, so a person decides."
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "unknown outcome",
+      "payload": {
+        "check": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "ATTACH_REPORT",
+          "candidateIncidentId": "inc-school",
+          "attention": "INFORMATION",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "summary": "The school gym is clear; status only.",
+          "reason": "Same school gym; status only.",
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "model": "claude-test",
+          "provider": "claude"
+        },
+        "outcome": "APPROVED",
+        "reason": "Laya and Claude agree: add to inc-school, information."
+      }
+    },
+    {
+      "name": "empty reason",
+      "payload": {
+        "check": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "ATTACH_REPORT",
+          "candidateIncidentId": "inc-school",
+          "attention": "INFORMATION",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "summary": "The school gym is clear; status only.",
+          "reason": "Same school gym; status only.",
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "model": "claude-test",
+          "provider": "claude"
+        },
+        "outcome": "AUTO_CONFIRMED",
+        "reason": ""
+      }
+    },
+    {
+      "name": "reason over 140 characters",
+      "payload": {
+        "check": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "ATTACH_REPORT",
+          "candidateIncidentId": "inc-school",
+          "attention": "INFORMATION",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "summary": "The school gym is clear; status only.",
+          "reason": "Same school gym; status only.",
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "model": "claude-test",
+          "provider": "claude"
+        },
+        "outcome": "AUTO_CONFIRMED",
+        "reason": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    }
+  ]
+}

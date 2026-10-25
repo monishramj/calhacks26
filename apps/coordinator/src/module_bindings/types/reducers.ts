@@ -7,6 +7,7 @@ import { type Infer as __Infer } from "spacetimedb";
 
 // Import all reducer arg schemas
 import ApproveProposalReducer from "../approve_proposal_reducer";
+import AutoConfirmReducer from "../auto_confirm_reducer";
 import ClaimJobReducer from "../claim_job_reducer";
 import GrantRoleReducer from "../grant_role_reducer";
 import IssueIncidentJobReducer from "../issue_incident_job_reducer";
@@ -20,6 +21,7 @@ import SubmitIncidentProposalReducer from "../submit_incident_proposal_reducer";
 import SubmitLocalSuggestionReducer from "../submit_local_suggestion_reducer";
 
 export type ApproveProposalParams = __Infer<typeof ApproveProposalReducer>;
+export type AutoConfirmParams = __Infer<typeof AutoConfirmReducer>;
 export type ClaimJobParams = __Infer<typeof ClaimJobReducer>;
 export type GrantRoleParams = __Infer<typeof GrantRoleReducer>;
 export type IssueIncidentJobParams = __Infer<typeof IssueIncidentJobReducer>;
