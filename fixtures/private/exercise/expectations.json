@@ -1,58 +1,587 @@
 {
-  "private": true,
-  "neverModelInput": true,
-  "provenance": "authored",
-  "about": "Human-authored §18 acceptance expectations. Test assertions only; never Laya or Claude input, never bundled into the web app or a client-visible table.",
-  "interpretations": {
-    "R01": "School incident with limited source claim; does not prove every school building is clear.",
-    "R02": "Separate active supply need.",
-    "R03": "Separate possible life-safety concern at the residence.",
-    "R04": "New evidence of unresolved need, not another incident or extra heatmap weight.",
-    "R05": "School update/paraphrase about the gym subarea; preserve source scope.",
-    "R06": "Update residence, not school.",
-    "R07": "School correction/uncertainty; highlight possible unresolved harm without claiming a confirmed person.",
-    "R08": "Possible repeat with unresolved concern; do not delete it or add headcounts.",
-    "R09": "School location/subarea clarification, not a new place inferred from sender GPS.",
-    "R10": "Question, not confirmation of a person or a completed rescue.",
-    "R11": "Delayed older gym report; does not override R07.",
-    "R12": "Unresolved school update; do not mark resolved."
+ "private": true,
+ "neverModelInput": true,
+ "provenance": "authored",
+ "about": "Authored labels for the Outer Sunset exercise. Test assertions only; never Laya or Claude input.",
+ "labels": {
+  "S01": {
+   "key": "gym-clear",
+   "incidentId": "INC-school",
+   "attention": "INFORMATION",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Limited source claim: does not prove every school building is clear."
   },
-  "afterR07Confirmed": {
-    "attention": {
-      "inc-school": "POSSIBLE_LIFE_SAFETY",
-      "inc-residence": "POSSIBLE_LIFE_SAFETY",
-      "inc-shelter": "ACTIVE_NEED"
-    },
-    "confirmedQueue": [
-      "inc-school",
-      "inc-residence",
-      "inc-shelter"
-    ]
+  "S02": {
+   "key": "n-shelter-open",
+   "incidentId": "INC-north-shelter",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Active supply need."
   },
-  "invariants": [
-    {
-      "messageId": "R04",
-      "mustNot": "create an incident or add heatmap weight"
-    },
-    {
-      "messageId": "R08",
-      "mustNot": "raise severity or add headcount"
-    },
-    {
-      "messageId": "R09",
-      "mustNot": "create a new place"
-    },
-    {
-      "messageId": "R10",
-      "mustNot": "confirm a person or a completed rescue"
-    },
-    {
-      "messageId": "R11",
-      "mustNot": "override R07 concern"
-    },
-    {
-      "messageId": "R12",
-      "mustNot": "resolve inc-school"
-    }
-  ]
+  "S03": {
+   "key": "h47-water",
+   "incidentId": "INC-house-47-judah",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Possible life-safety concern."
+  },
+  "S04": {
+   "key": "h44-wire",
+   "incidentId": "INC-house-44-judah",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Possible life-safety hazard."
+  },
+  "S05": {
+   "key": "apt-power",
+   "incidentId": "INC-apartments",
+   "attention": "INFORMATION",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Status only; nobody in the elevator."
+  },
+  "S06": {
+   "key": "h43-cold",
+   "incidentId": "INC-house-43-lawton",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Active need."
+  },
+  "S07": {
+   "key": "gym-searched",
+   "incidentId": "INC-school",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S01"
+   },
+   "interpretation": "Same gym subarea; keep source scope."
+  },
+  "S08": {
+   "key": "h41-gas",
+   "incidentId": "INC-house-41-moraga",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Possible life-safety hazard."
+  },
+  "S09": {
+   "key": "n-shelter-repeat",
+   "incidentId": "INC-north-shelter",
+   "attention": "ACTIVE_NEED",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S02"
+   },
+   "interpretation": "Repeat: no new incident, no extra heat."
+  },
+  "S10": {
+   "key": "grocery-water",
+   "incidentId": "INC-grocery",
+   "attention": "INFORMATION",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Resource information."
+  },
+  "S11": {
+   "key": "h46l-basement",
+   "incidentId": "INC-house-46-lawton",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Active need."
+  },
+  "S12": {
+   "key": "h47-help",
+   "incidentId": "INC-house-47-judah",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S03"
+   },
+   "interpretation": "Update to the same house."
+  },
+  "S13": {
+   "key": "h48-dog",
+   "incidentId": "INC-house-48-kirkham",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Animal rescue need; owner safe."
+  },
+  "S14": {
+   "key": "hw-sandbags",
+   "incidentId": "INC-hardware-store",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Resource with a transport need."
+  },
+  "S15": {
+   "key": "apt-oxygen",
+   "incidentId": "INC-apartments",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S05"
+   },
+   "interpretation": "Raises attention to possible life safety: needs a human."
+  },
+  "S16": {
+   "key": "cafe-food",
+   "incidentId": "INC-cafe",
+   "attention": "INFORMATION",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Resource information."
+  },
+  "S17": {
+   "key": "school-upstairs",
+   "incidentId": "INC-school",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "FLAG_CORRECTION",
+   "relation": {
+    "kind": "CORRECTION",
+    "target": "S01"
+   },
+   "interpretation": "\"May\" is not a confirmed person; possible life safety."
+  },
+  "S18": {
+   "key": "h44-repeat",
+   "incidentId": "INC-house-44-judah",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S04"
+   },
+   "interpretation": "Repeat: no extra heat."
+  },
+  "S19": {
+   "key": "dunes-shout",
+   "incidentId": "INC-dunes",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "No known place: stays unplaced."
+  },
+  "S20": {
+   "key": "s-shelter-open",
+   "incidentId": "INC-south-shelter",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Active need."
+  },
+  "S21": {
+   "key": "school-repeat",
+   "incidentId": "INC-school",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S17"
+   },
+   "interpretation": "Repeat of the concern; no headcount added."
+  },
+  "S22": {
+   "key": "h42-door",
+   "incidentId": "INC-house-42-judah",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Uncertain possible harm."
+  },
+  "S23": {
+   "key": "h45-tree",
+   "incidentId": "INC-house-45-kirkham",
+   "attention": "ACTIVE_NEED",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Need; family safe."
+  },
+  "S24": {
+   "key": "n-shelter-water",
+   "incidentId": "INC-north-shelter",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S02"
+   },
+   "interpretation": "Delivery; blankets still open."
+  },
+  "S25": {
+   "key": "h40-car",
+   "incidentId": "INC-house-40-moraga",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Possible life safety."
+  },
+  "S26": {
+   "key": "apt-medic",
+   "incidentId": "INC-apartments",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S15"
+   },
+   "interpretation": "Stable for now is not resolved; keep attention."
+  },
+  "S27": {
+   "key": "school-main",
+   "incidentId": "INC-school",
+   "attention": null,
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S17"
+   },
+   "interpretation": "Subarea clarification only."
+  },
+  "S28": {
+   "key": "h46l-bags",
+   "incidentId": "INC-house-46-lawton",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S11"
+   },
+   "interpretation": "Need met for now."
+  },
+  "S29": {
+   "key": "hw-left",
+   "incidentId": "INC-hardware-store",
+   "attention": "ACTIVE_NEED",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S14"
+   },
+   "interpretation": "Resource update."
+  },
+  "S30": {
+   "key": "motel-ok",
+   "incidentId": "INC-motel",
+   "attention": "INFORMATION",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Source claim of all accounted for."
+  },
+  "S31": {
+   "key": "dunes-repeat",
+   "incidentId": "INC-dunes",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S19"
+   },
+   "interpretation": "Still no known place."
+  },
+  "S32": {
+   "key": "s-shelter-more",
+   "incidentId": "INC-south-shelter",
+   "attention": "ACTIVE_NEED",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S20"
+   },
+   "interpretation": "Need grows; one incident."
+  },
+  "S33": {
+   "key": "school-question",
+   "incidentId": "INC-school",
+   "attention": null,
+   "action": "REQUEST_REVIEW",
+   "relation": null,
+   "interpretation": "A question, not a confirmation of a person or a rescue."
+  },
+  "S34": {
+   "key": "h41-off",
+   "incidentId": "INC-house-41-moraga",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S08"
+   },
+   "interpretation": "Lowers a life-safety incident: needs a human."
+  },
+  "S35": {
+   "key": "gym-late",
+   "incidentId": "INC-school",
+   "attention": null,
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S01"
+   },
+   "interpretation": "Late older report: must not lower the newer upstairs concern."
+  },
+  "S36": {
+   "key": "h46m-fine",
+   "incidentId": "INC-house-46-moraga",
+   "attention": "INFORMATION",
+   "action": "NEW_INCIDENT",
+   "relation": null,
+   "interpretation": "Status only."
+  },
+  "S37": {
+   "key": "h40-out",
+   "incidentId": "INC-house-40-moraga",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S25"
+   },
+   "interpretation": "Lowers a life-safety incident: needs a human."
+  },
+  "S38": {
+   "key": "h42-fine",
+   "incidentId": "INC-house-42-judah",
+   "attention": "INFORMATION",
+   "action": "FLAG_CORRECTION",
+   "relation": {
+    "kind": "CORRECTION",
+    "target": "S22"
+   },
+   "interpretation": "Correction: needs a human."
+  },
+  "S39": {
+   "key": "h47-out",
+   "incidentId": "INC-house-47-judah",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S12"
+   },
+   "interpretation": "Lowers a life-safety incident: needs a human."
+  },
+  "S40": {
+   "key": "cafe-soup",
+   "incidentId": "INC-cafe",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S16"
+   },
+   "interpretation": "Resource update."
+  },
+  "S41": {
+   "key": "motel-missing",
+   "incidentId": "INC-motel",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "FLAG_CORRECTION",
+   "relation": {
+    "kind": "CORRECTION",
+    "target": "S30"
+   },
+   "interpretation": "Correction raising possible life safety."
+  },
+  "S42": {
+   "key": "h48-dog-out",
+   "incidentId": "INC-house-48-kirkham",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S13"
+   },
+   "interpretation": "Need met."
+  },
+  "S43": {
+   "key": "grocery-low",
+   "incidentId": "INC-grocery",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S10"
+   },
+   "interpretation": "Resource update."
+  },
+  "S44": {
+   "key": "h46l-repeat",
+   "incidentId": "INC-house-46-lawton",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S28"
+   },
+   "interpretation": "Repeat: no extra heat."
+  },
+  "S45": {
+   "key": "school-not-done",
+   "incidentId": "INC-school",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S17"
+   },
+   "interpretation": "Unresolved: do not mark resolved."
+  },
+  "S46": {
+   "key": "h43-moved",
+   "incidentId": "INC-house-43-lawton",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S06"
+   },
+   "interpretation": "Need met."
+  },
+  "S47": {
+   "key": "h44-safe",
+   "incidentId": "INC-house-44-judah",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S04"
+   },
+   "interpretation": "Lowers a life-safety incident: needs a human."
+  },
+  "S48": {
+   "key": "s-shelter-cots",
+   "incidentId": "INC-south-shelter",
+   "attention": "ACTIVE_NEED",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S32"
+   },
+   "interpretation": "Need continues."
+  },
+  "S49": {
+   "key": "dunes-found",
+   "incidentId": "INC-dunes",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S19"
+   },
+   "interpretation": "Injury: keep for a human."
+  },
+  "S50": {
+   "key": "apt-batteries",
+   "incidentId": "INC-apartments",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S26"
+   },
+   "interpretation": "Lowers a life-safety incident: needs a human."
+  },
+  "S51": {
+   "key": "h45-tarp",
+   "incidentId": "INC-house-45-kirkham",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S23"
+   },
+   "interpretation": "Need met."
+  },
+  "S52": {
+   "key": "motel-repeat",
+   "incidentId": "INC-motel",
+   "attention": "POSSIBLE_LIFE_SAFETY",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S41"
+   },
+   "interpretation": "Repeat: no extra heat."
+  },
+  "S53": {
+   "key": "grocery-repeat",
+   "incidentId": "INC-grocery",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "REPEAT",
+    "target": "S43"
+   },
+   "interpretation": "Repeat."
+  },
+  "S54": {
+   "key": "h41-clear",
+   "incidentId": "INC-house-41-moraga",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S34"
+   },
+   "interpretation": "Status update."
+  },
+  "S55": {
+   "key": "hw-out",
+   "incidentId": "INC-hardware-store",
+   "attention": "INFORMATION",
+   "action": "ATTACH_REPORT",
+   "relation": {
+    "kind": "UPDATE",
+    "target": "S29"
+   },
+   "interpretation": "Resource update."
+  }
+ },
+ "invariants": {
+  "lateOlderReport": {
+   "report": "S35",
+   "mustNotLower": "INC-school",
+   "newerConcern": "S17"
+  },
+  "question": "S33",
+  "unplaced": [
+   "S19",
+   "S31",
+   "S49"
+  ],
+  "finalAttention": {
+   "INC-school": "POSSIBLE_LIFE_SAFETY",
+   "INC-north-shelter": "INFORMATION",
+   "INC-house-47-judah": "INFORMATION",
+   "INC-house-44-judah": "INFORMATION",
+   "INC-apartments": "INFORMATION",
+   "INC-house-43-lawton": "INFORMATION",
+   "INC-house-41-moraga": "INFORMATION",
+   "INC-grocery": "INFORMATION",
+   "INC-house-46-lawton": "INFORMATION",
+   "INC-house-48-kirkham": "INFORMATION",
+   "INC-hardware-store": "INFORMATION",
+   "INC-cafe": "INFORMATION",
+   "INC-dunes": "POSSIBLE_LIFE_SAFETY",
+   "INC-south-shelter": "ACTIVE_NEED",
+   "INC-house-42-judah": "INFORMATION",
+   "INC-house-45-kirkham": "INFORMATION",
+   "INC-house-40-moraga": "INFORMATION",
+   "INC-motel": "POSSIBLE_LIFE_SAFETY",
+   "INC-house-46-moraga": "INFORMATION"
+  }
+ }
 }

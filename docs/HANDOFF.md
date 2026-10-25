@@ -80,6 +80,7 @@ Put keys in the root `.env` (see `.env.example`):
 4. The Laya and Claude notices are inferred from waiting jobs, not from a heartbeat.
 5. The radio and codec bridge (`services/codec-radio`) is being done separately and is not wired into `dev:live`.
 6. Not measured: frame rate and update latency.
+   The scene is a 3D Outer Sunset map from bundled OSM data with a ground heatmap and replay playback (Play, speed, timeline). See `apps/web/src/scene/README.md`.
 7. Possible additions, none started:
    - Claude ask-back questions over the radio
    - "What changed" notes
@@ -87,7 +88,6 @@ Put keys in the root `.env` (see `.env.example`):
    - SpacetimeDB time scrubber
    - Two named operators
    - Job timeouts via scheduled reducers
-   - Better Three.js heatmap
    - Network-only view
 
 ## Branch rule

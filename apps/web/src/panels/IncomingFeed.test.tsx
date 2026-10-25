@@ -2,7 +2,7 @@ import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { DeskAdapter, DeskState } from '../adapters/contract';
 import { DeskProvider } from '../adapters/DeskContext';
-import { createExerciseReplay, exerciseFixture } from '../adapters/replay';
+import { createLegacyReplay as createExerciseReplay, legacyFixture as exerciseFixture } from '../test/legacyExercise';
 import { IncomingFeed } from './IncomingFeed';
 
 function setup(onSelectIncident = vi.fn()) {

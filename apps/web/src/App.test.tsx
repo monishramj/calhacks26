@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from './App';
-import { createExerciseReplay } from './adapters/replay';
+import { createLegacyReplay as createExerciseReplay } from './test/legacyExercise';
+import { createExerciseReplay as createSunsetReplay } from './adapters/replay';
 
 // Shell smoke test: layout regions exist, sections collapse by keyboard, mode is labeled.
 describe('App shell', () => {
@@ -19,15 +20,16 @@ describe('App shell', () => {
     }
   });
 
-  it('labels the replay run and delivers the next report only on request', async () => {
-    render(<App adapter={createExerciseReplay()} />);
+  it('labels the replay run and jumps the exercise clock to the next delivered report', async () => {
+    render(<App adapter={createSunsetReplay()} />);
     expect(screen.getByTestId('run-mode')).toHaveTextContent('LOCAL REPLAY');
     expect(screen.getByText(/Inference: fixture/)).toBeInTheDocument();
-    expect(screen.getByText('6 / 12 delivered')).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Send next report (#7)' }));
-    expect(await screen.findByText('7 / 12 delivered')).toBeInTheDocument();
+    expect(screen.getByText('0 / 55 delivered')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Next report (#1)' }));
+    expect(await screen.findByText('1 / 55 delivered')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Next report (#2)' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Reset run' }));
-    expect(await screen.findByText('6 / 12 delivered')).toBeInTheDocument();
+    expect(await screen.findByText('0 / 55 delivered')).toBeInTheDocument();
   });
 
   it('on database loss disables writes, then starts an isolated replay on request', async () => {

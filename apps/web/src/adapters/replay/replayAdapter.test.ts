@@ -1,6 +1,6 @@
 import type { DeskAdapter, DeskState } from '../contract';
 import { confirmedQueue, needsReassessment, reviewBand, timeline } from '../derived';
-import { createExerciseReplay } from '.';
+import { createLegacyReplay as createExerciseReplay } from '../../test/legacyExercise';
 
 function setup() {
   const adapter = createExerciseReplay();

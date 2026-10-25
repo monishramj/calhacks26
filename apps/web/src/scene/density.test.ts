@@ -3,11 +3,11 @@ import { incident } from './fixtures.test-support';
 
 const school = { x: 0, z: 0 };
 
-describe('exercise placement (§18)', () => {
+describe('exercise placement', () => {
   it.each([
     ['school', { x: 0, z: 0 }],
-    ['residence', { x: 80, z: 20 }],
-    ['shelter', { x: -120, z: 40 }],
+    ['house-43-lawton', { x: -32.6, z: 127.2 }],
+    ['south-shelter', { x: -262.7, z: 295.8 }],
   ])('maps %s to the exact ground-plane position', (place, point) => {
     expect(placePosition(place)).toEqual(point);
   });
@@ -65,7 +65,7 @@ describe('confirmed unresolved incident density (§7)', () => {
     const value = densityAt(offCenter, [incident()]);
     expect(value).toBeGreaterThan(0);
     expect(value).toBeLessThan(1);
-    const farAway = incident({ incidentId: 'far', confirmedPlaceId: 'shelter' });
+    const farAway = incident({ incidentId: 'far', confirmedPlaceId: 'south-shelter' });
     // Shelter must not affect the school center: prevents dataset-wide normalization.
     expect(densityAt(school, [incident(), farAway])).toBe(1);
     expect(densityAt(offCenter, [incident(), farAway])).toBeCloseTo(value);

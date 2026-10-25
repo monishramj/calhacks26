@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { DeskState } from '../adapters/contract';
 import { DeskProvider } from '../adapters/DeskContext';
-import { createExerciseReplay } from '../adapters/replay';
+import { createLegacyReplay as createExerciseReplay } from '../test/legacyExercise';
 import { ConfirmedQueue } from './ConfirmedQueue';
 
 function setup(selected: string | null = null) {
@@ -49,7 +49,7 @@ describe('ConfirmedQueue', () => {
   });
 
   it('an override needs a reason and goes through the adapter', async () => {
-    const { get } = setup();
+    const { get } = setup('INC-shelter');
     const shelter = await screen.findByTestId('queue-INC-shelter');
     await userEvent.click(within(shelter).getByRole('button', { name: 'Override INC-shelter' }));
     const apply = within(shelter).getByRole('button', { name: 'Apply override' });
