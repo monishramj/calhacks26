@@ -23,12 +23,12 @@ HERE = Path(__file__).resolve().parent.parent
 # Owned paths per workstream (AGENTS.md). Every branch may also touch its status and validation files.
 OWNED = {
     "codec-radio": ["services/codec-radio/"],
-    "state": ["packages/domain/", "spacetimedb/", "apps/coordinator/", "fixtures/private/exercise/",
+    "state": ["packages/domain/", "packages/live-adapter/", "spacetimedb/", "fixtures/private/exercise/",
               "package.json", "package-lock.json", "docker-compose.yml", "tsconfig"],
-    "inference": ["services/local-laya/", "apps/coordinator/src/inference/", "work/eval/"],
+    "inference": ["services/local-laya/", "apps/coordinator/", "work/eval/"],
     "web": ["apps/web/", "fixtures/replay/", "tests/e2e/"],
 }
-NOT_OWNED = {"state": ["apps/coordinator/src/inference/"]}
+NOT_OWNED = {}
 SHARED = ["work/status/", "work/validation/"]
 SECRET = re.compile(r"sk-ant-[A-Za-z0-9_-]{10,}|ANTHROPIC_API_KEY\s*=\s*\S+|-----BEGIN [A-Z ]*PRIVATE KEY-----")
 BIG_BYTES = 5_000_000

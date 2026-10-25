@@ -50,6 +50,8 @@ These are the only places workstreams touch. Each is defined by `packages/domain
 
 ## C2 · `ws/state` · shared foundation + B-state
 
+> **D-007:** the coordinator process moved to ws/inference. ws/state keeps contracts, the database, G6 rules, the live adapter, and job issuing, `inputSignature`, and the scenario injector as reducers.
+
 **Owns:** `packages/domain/**`, `spacetimedb/**`, `apps/coordinator/**` except `src/inference/`, `fixtures/private/exercise/`, root `package.json` and lockfile. Integration owner for generated bindings.
 
 **Hour 0:** G0 TEST → IMPLEMENT → REVIEW. **G0 unblocks everyone, so it comes first.** In parallel, install local SpacetimeDB and pin the server/client pair. Pick the module language from what actually installs and runs. A TypeScript module can import `packages/domain` rules directly; Rust or C# means the rules are duplicated and checked against shared fixtures.
@@ -61,6 +63,8 @@ These are the only places workstreams touch. Each is defined by `packages/domain
 4. G8 backend: DB loss stops writes, reset invalidates jobs.
 
 ## C3 · `ws/inference` · B-inference
+
+> **D-007/D-008:** ws/inference also owns `apps/coordinator/**`. While the C3 human is away, a Claude cloud session runs the lead lane (G5 + coordinator) and Cursor on C4 runs the laya lane. The Laya worker runs on C4.
 
 **Owns:** `services/local-laya/**`, `apps/coordinator/src/inference/**`, `work/eval/**`. **Gates:** G4, G5, `npm run evaluate`, G8 inference.
 
