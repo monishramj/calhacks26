@@ -136,6 +136,7 @@ Claude checks every Laya suggestion. Claude reads the report and gives its own a
 - Laya and Claude give the same attention category.
 - Neither model says possible life safety, and Laya gives it less than 0.15 of its score.
 - Claude's answer is a plain "attach" or "new incident". A possible correction, conflict, or review request always goes to a person.
+- The incident it attaches to is not currently possible life safety. A report there may be an all-clear ("gas is shut off", "the driver is out and safe"), and only a person may lower life safety.
 - No incident either model looked at has changed since, and the report is not already confirmed.
 
 An automatic attach never lowers an incident's attention. The history records each one as "Claude check" (not an operator) with the reason. In every other case the report stays in the review band, and Claude's answer is kept so the operator can compare Laya and Claude side by side.

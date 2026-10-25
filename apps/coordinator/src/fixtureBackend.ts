@@ -64,7 +64,7 @@ function report(i: number): Report {
 
 type Entry = { job: Job; input: JobInput };
 
-export function createFixtureBackend(): WorkerBackend & {
+export function createFixtureBackend({ attention = 'POSSIBLE_LIFE_SAFETY' }: { attention?: IncidentView['attention'] } = {}): WorkerBackend & {
   runId: string;
   jobs: Entry[];
   suggestions: LocalSuggestion[];
@@ -81,7 +81,7 @@ export function createFixtureBackend(): WorkerBackend & {
     incidentId: 'inc-school-gym',
     revision: 1,
     status: 'OPEN',
-    attention: 'POSSIBLE_LIFE_SAFETY',
+    attention,
     confirmedPlaceId: 'school',
     confirmedReportIds: ['rep-1'],
     summary: 'People sheltering in the flooded school gym; one needs oxygen.',

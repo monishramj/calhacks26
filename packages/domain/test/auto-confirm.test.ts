@@ -74,6 +74,12 @@ describe('autoConfirmDecision', () => {
     const s = laya({ baseIncidentVersions: { 'inc-school': 1, 'inc-house': 1 }, scores: [...laya().scores, p('inc-school', 0.8), p('inc-house', 0.2)] });
     expect(decide(s, claude({ candidateIncidentId: 'inc-house', baseIncidentVersions: { 'inc-school': 1, 'inc-house': 1 } }), two)).toMatchObject({ confirm: false });
   });
+  it('a report on a possible-life-safety incident goes to a person, even an agreed all-clear', () => {
+    // "Gas is shut off" / "driver is out and safe" on a life-safety incident: lowering it needs a person.
+    expect(decide(laya(), claude(), [inc('inc-school', 'school', { attention: 'POSSIBLE_LIFE_SAFETY' })])).toMatchObject({
+      confirm: false, reasons: ['the incident is possible life safety: only a person may lower it'],
+    });
+  });
   it('a laya answer with no scores never confirms', () => {
     expect(decide(laya({ scores: [] }), claude())).toMatchObject({ confirm: false });
   });

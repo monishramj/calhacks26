@@ -100,8 +100,8 @@ describe('Claude checks Laya (fixture backend)', () => {
     'rep-5': [p('ATTACH_REPORT', 0.55), p('REQUEST_REVIEW', 0.45), p('INFORMATION', 0.9), p('ACTIVE_NEED', 0.05), p('POSSIBLE_LIFE_SAFETY', 0.05)],
   };
 
-  it('agreeing information confirms with the claude_check label; life safety and disagreement stay in review', async () => {
-    const b = createFixtureBackend();
+  async function run(attention: 'POSSIBLE_LIFE_SAFETY' | 'ACTIVE_NEED') {
+    const b = createFixtureBackend({ attention });
     b.jobs.length = 0;
     for (const reportId of Object.keys(layaScores)) {
       b.addJob(`job-local-${reportId}`, 'LOCAL_SUGGESTION', reportId, null);
@@ -116,14 +116,25 @@ describe('Claude checks Laya (fixture backend)', () => {
     expect(b.jobs.filter((j) => j.job.kind === 'LOCAL_CHECK')).toHaveLength(3);
 
     await runOnce(b, b.runId, { laya: { kind: 'off' }, claude: true, log: quiet });
+    return b;
+  }
 
+  it('agreeing information confirms with the claude_check label; life safety and disagreement stay in review', async () => {
+    const b = await run('ACTIVE_NEED');
     expect(b.checks.map((c) => c.reportId)).toEqual(['rep-2', 'rep-3', 'rep-5']);
     expect(b.reviewEvents).toHaveLength(1);
     expect(b.reviewEvents[0]).toMatchObject({ actorRole: 'claude_check', sourceReportIds: ['rep-5'], reason: 'Laya and Claude agree: attach to inc-school-gym, INFORMATION' });
     // Confirmed without lowering the open concern; the other two are not confirmed.
-    expect(b.incident()).toMatchObject({ revision: 2, attention: 'POSSIBLE_LIFE_SAFETY', confirmedReportIds: ['rep-1', 'rep-5'] });
+    expect(b.incident()).toMatchObject({ revision: 2, attention: 'ACTIVE_NEED', confirmedReportIds: ['rep-1', 'rep-5'] });
     // The disagreement keeps Claude's own view for side-by-side review.
     expect(b.checks.find((c) => c.reportId === 'rep-3')).toMatchObject({ action: 'ATTACH_REPORT', attention: 'ACTIVE_NEED', reason: 'Hearsay; rescue unconfirmed.', provider: 'claude' });
+  });
+
+  it('on a possible-life-safety incident even the agreed information report waits for a person', async () => {
+    const b = await run('POSSIBLE_LIFE_SAFETY');
+    expect(b.checks).toHaveLength(3);
+    expect(b.reviewEvents).toHaveLength(0);
+    expect(b.incident()).toMatchObject({ revision: 1, attention: 'POSSIBLE_LIFE_SAFETY', confirmedReportIds: ['rep-1'] });
   });
 
   it('toCheck keeps Claude to the job: known reports, candidate incidents, target always cited', () => {

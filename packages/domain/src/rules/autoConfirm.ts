@@ -76,7 +76,8 @@ const RANK: Record<Attention, number> = { INFORMATION: 0, ACTIVE_NEED: 1, POSSIB
  * May this report confirm without a person? Only when Laya and Claude agree on the incident (or both say
  * a new incident at the report's stated place) and on attention, neither says possible life safety,
  * Claude's action is a plain attach or new incident, and every incident either saw is unchanged.
- * Corrections, conflicts and review requests always go to a person. An attach never lowers attention.
+ * Corrections, conflicts and review requests always go to a person, and so does any report on an incident that is
+ * currently possible life safety (it may be an all-clear: lowering life safety needs a person). An attach never lowers attention.
  * `incidentId` is null for a new incident (the backend names it).
  */
 export function autoConfirmDecision({ suggestion, check, placeId, incidents }: AutoConfirmArgs): AutoConfirmDecision {
@@ -100,6 +101,7 @@ export function autoConfirmDecision({ suggestion, check, placeId, incidents }: A
   if (check.action === 'ATTACH_REPORT') {
     if (laya.candidateIncidentId !== check.candidateIncidentId) reasons.push(`incident differs: Laya ${laya.candidateIncidentId ?? 'none'}, Claude ${check.candidateIncidentId}`);
     if (target?.status !== 'OPEN') reasons.push('the incident is not open');
+    if (target?.attention === 'POSSIBLE_LIFE_SAFETY') reasons.push('the incident is possible life safety: only a person may lower it');
   }
   if (check.action === 'NEW_INCIDENT' && placeId === null) reasons.push('a new incident needs a place the sender stated');
   if (reasons.length) return { confirm: false, reasons: [...new Set(reasons)] };
