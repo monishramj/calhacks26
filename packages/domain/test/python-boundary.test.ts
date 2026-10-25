@@ -2,25 +2,29 @@
 // Python → TS: payloads produced by real json.dumps calls (the bridge and Laya worker
 // serialize this way). TS → Python: TS-built payloads validated by jsonschema.
 import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { acceptReport, buildJobInput, parseWire } from '../src/index.ts';
 import { DOMAIN_ROOT, firstValid } from './helpers.ts';
-
-const VENV_PYTHON = process.env.DOMAIN_PYTHON ?? join(DOMAIN_ROOT, '.venv', 'bin', 'python');
+import { hasVenv, systemPython, venvPython } from './python-env.mjs';
 
 function emitted(): Record<string, { type: string; json: string; expectOk: boolean; text: string | null }> {
-  const r = spawnSync('python3', [join(DOMAIN_ROOT, 'test', 'python', 'emit_payloads.py')], { encoding: 'utf8' });
+  const py = systemPython();
+  if (!py) throw new Error('No Python 3 found (environment, not a contract result). Install Python 3 or set PYTHON.');
+  const r = spawnSync(py[0], [...py[1], join(DOMAIN_ROOT, 'test', 'python', 'emit_payloads.py')], {
+    encoding: 'utf8',
+    env: { ...process.env, PYTHONIOENCODING: 'utf-8' }, // Windows consoles default to a legacy code page
+  });
   if (r.status !== 0) throw new Error(`emit_payloads.py failed (environment, not a contract result): ${r.stderr}`);
   return JSON.parse(r.stdout);
 }
 
 function pythonValidates(type: string, value: unknown): { ok: boolean; stderr: string } {
-  if (!existsSync(VENV_PYTHON)) throw new Error(`No Python env at ${VENV_PYTHON} (environment, not a contract result). Run npm run setup:py.`);
-  const r = spawnSync(VENV_PYTHON, [join(DOMAIN_ROOT, 'test', 'python', 'validate_payload.py'), type], {
+  if (!hasVenv()) throw new Error(`No Python env at ${venvPython()} (environment, not a contract result). Run npm run setup:py.`);
+  const r = spawnSync(venvPython(), [join(DOMAIN_ROOT, 'test', 'python', 'validate_payload.py'), type], {
     input: JSON.stringify(value),
     encoding: 'utf8',
+    env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
   });
   return { ok: r.status === 0, stderr: r.stderr };
 }

@@ -82,7 +82,7 @@ export const EXPECTATIONS_PATH = join(REPO_ROOT, 'fixtures', 'private', 'exercis
 export function groundTruthExercise(): { id: string; text: string; expected: string }[] {
   const doc = readFileSync(join(REPO_ROOT, 'docs', 'GROUND_TRUTH.md'), 'utf8');
   const rows: { id: string; text: string; expected: string }[] = [];
-  for (const line of doc.split('\n')) {
+  for (const line of doc.split(/\r?\n/)) {
     const m = /^\| (R\d\d) \| (.+?) \| (.+?) \|$/.exec(line);
     if (m) rows.push({ id: m[1]!, text: m[2]!, expected: m[3]! });
   }
