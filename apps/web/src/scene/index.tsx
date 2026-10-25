@@ -117,7 +117,7 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
       <span className="scene-place">Outer Sunset · San Francisco</span>
       <span className="scene-segment" role="group" aria-label="Map layer">
         <button type="button" className="scene-mode" aria-pressed={layer === 'incidents'} onClick={() => setLayer('incidents')}>Incidents</button>
-        <button type="button" className="scene-mode" aria-pressed={layer === 'network'} onClick={() => setLayer('network')}>LoRa network</button>
+        <button type="button" className="scene-mode" aria-pressed={layer === 'network'} onClick={() => { setLayer('network'); setView('top'); }}>LoRa network</button>
       </span>
       <button type="button" className="scene-mode" aria-pressed={!threeD} disabled={!webgl} onClick={() => setUse2d((value) => !value)}>2D map</button>
       {threeD && VIEWS.map((v) => <button key={v.id} type="button" className="scene-mode" aria-pressed={view === v.id}
@@ -159,6 +159,6 @@ function NetworkStats() {
       <span>3-hop delivery at 25% load</span><b>{pct(s.p3)} <small>vs {pct(s.rawP3)} raw</small></b>
     </span>
     <span className="legend-row"><i style={{ background: '#4ea1ff' }} />team radio <i style={{ background: '#f2c94c' }} />report waiting for coverage <i style={{ background: '#7cf0c4' }} />packet <i style={{ background: '#f2994a' }} />command post</span>
-    <span>Simulated network · LongFast · {RANGE_M} m range. Codec sizes are estimates from {SCENARIO.codecEstimate.samples} measured packets.</span>
+    <span>Simulated network · LongFast · {RANGE_M} m range. Codec sizes are estimates from {SCENARIO.codecEstimate.samples} measured packets. Packet motion is slowed so it stays visible.</span>
   </div>;
 }

@@ -80,7 +80,10 @@ function Mast({ x, z, h, label, color, big }: { x: number; z: number; h: number;
 }
 
 const MAX_LINKS = 400;
-const MAX_PACKETS = 12;
+const MAX_PACKETS = 24;
+// A LoRa hop takes about half a second. Packets are drawn over at least VISUAL_HOP_S of real time per hop so they
+// stay visible at any speed; the desk still receives each report at its simulated delivery time.
+const VISUAL_HOP_S = 1.2;
 
 /** Relays, the command post, links in range right now, and packets hopping toward the command post. */
 export function Network() {
@@ -110,8 +113,10 @@ export function Network() {
       }
       links.geometry.setDrawRange(0, n * 2); pos.needsUpdate = true;
     }
-    // Packets in flight (and their route) from shortly before sending until 6 s after delivery.
-    const live = DELIVERIES.filter((d) => d.sentAt - 1 <= t && t <= d.deliveredAt + 6).slice(0, MAX_PACKETS);
+    // Every packet in flight, each hop stretched to a visible duration, plus a short glow after it lands.
+    const hopS = Math.max(VISUAL_HOP_S * clock.speed, 1);
+    const end = (d: typeof DELIVERIES[number]) => d.sentAt + d.hops.length * hopS;
+    const live = DELIVERIES.filter((d) => d.sentAt <= t && t <= end(d) + 2 * clock.speed).slice(-MAX_PACKETS);
     const rpos = route.geometry.attributes.position as BufferAttribute;
     let r = 0;
     packets.current!.children.forEach((child, i) => {
@@ -123,12 +128,13 @@ export function Network() {
         const a = at(hop.from, hop.start), b = at(hop.to, hop.start);
         rpos.setXYZ(r++, a.x, 6, a.z); rpos.setXYZ(r++, b.x, 6, b.z);
       }
-      const hop = d.hops.find((h) => t <= h.end) ?? d.hops.at(-1)!;
+      const k = Math.min(Math.floor((t - d.sentAt) / hopS), d.hops.length - 1), hop = d.hops[k];
       const a = at(hop.from, hop.start), b = at(hop.to, hop.start);
-      const f = Math.min(Math.max((t - hop.start) / (hop.end - hop.start), 0), 1);
-      m.position.set(a.x + (b.x - a.x) * f, 14 + Math.sin(f * Math.PI) * 18, a.z + (b.z - a.z) * f);
-      m.scale.setScalar(t > d.deliveredAt ? 1.6 + (t - d.deliveredAt) * .4 : 1.6);
-      (m.material as MeshBasicMaterial).opacity = t > d.deliveredAt ? Math.max(0, 1 - (t - d.deliveredAt) / 6) : 1;
+      const f = Math.min((t - d.sentAt - k * hopS) / hopS, 1);
+      m.position.set(a.x + (b.x - a.x) * f, 14 + Math.sin(f * Math.PI) * 30, a.z + (b.z - a.z) * f);
+      const landed = (t - end(d)) / clock.speed;
+      m.scale.setScalar(landed > 0 ? 1 + landed * 1.5 : 1);
+      (m.material as MeshBasicMaterial).opacity = landed > 0 ? Math.max(0, 1 - landed / 2) : 1;
     });
     route.geometry.setDrawRange(0, r); rpos.needsUpdate = true;
   });

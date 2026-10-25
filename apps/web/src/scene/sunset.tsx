@@ -20,6 +20,9 @@ const CZ = (B.minZ + B.maxZ) / 2;
 // Outer Sunset stucco: whites, creams, pastel blues, greens and pinks.
 const STUCCO = ['#ece6da', '#e4dccb', '#d9e2e4', '#cfdccf', '#e8d6cc', '#d8d2e2', '#efe4c4', '#c9d6dd', '#f1ece3', '#dcd3c0'];
 const FOG = '#aebcc2';
+// Network view: the city turns a dark violet so radios, links and packets carry the picture.
+const NIGHT = '#1b1430';
+const VIOLET = '#7a62c9';
 // Overview: looking north-west over the three sites toward the beach.
 const HOME_TARGET = new Vector3(-20, 0, 20);
 const HOME = new Vector3(380, 480, 700);
@@ -139,16 +142,16 @@ function Town({ dim }: { dim: boolean }) {
   const windows = useMemo(windowTexture, []);
   const { walls, roofs } = useMemo(() => buildingGeometry(SUNSET.buildings), []);
   return <group>
-    <mesh geometry={land} receiveShadow><meshStandardMaterial map={ground} roughness={.95} /></mesh>
-    <mesh geometry={walls} castShadow receiveShadow><meshStandardMaterial map={windows} vertexColors roughness={.85} transparent opacity={dim ? .35 : 1} /></mesh>
-    <mesh geometry={roofs} castShadow receiveShadow><meshStandardMaterial vertexColors roughness={.9} transparent opacity={dim ? .35 : 1} /></mesh>
-    <Trees /><Cars />
+    <mesh geometry={land} receiveShadow><meshStandardMaterial map={ground} roughness={.95} color={dim ? '#5a4796' : '#ffffff'} /></mesh>
+    <mesh geometry={walls} castShadow receiveShadow><meshStandardMaterial map={windows} vertexColors roughness={.85} color={dim ? VIOLET : '#ffffff'} transparent opacity={dim ? .55 : 1} /></mesh>
+    <mesh geometry={roofs} castShadow receiveShadow><meshStandardMaterial vertexColors roughness={.9} color={dim ? VIOLET : '#ffffff'} transparent opacity={dim ? .55 : 1} /></mesh>
+    {!dim && <><Trees /><Cars /></>}
   </group>;
 }
 
 // ---- ocean: animated normal-mapped water with a foam line ------------------------------------------------
 
-function Ocean() {
+function Ocean({ night }: { night: boolean }) {
   const normal = useMemo(() => {
     const n = 256, data = new Uint8Array(n * n * 4);
     for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
@@ -177,7 +180,7 @@ function Ocean() {
   return <group>
     <mesh rotation-x={-Math.PI / 2} position={[CX - 600, -.6, CZ]} receiveShadow>
       <planeGeometry args={[W + 3200, D + 3200]} />
-      <meshStandardMaterial color="#3d6670" normalMap={normal} normalScale={new Vector2(.45, .45)} roughness={.22} metalness={.15} />
+      <meshStandardMaterial color={night ? '#241a46' : '#3d6670'} normalMap={normal} normalScale={new Vector2(.45, .45)} roughness={.22} metalness={.15} />
     </mesh>
     <mesh ref={foam} geometry={foamGeometry}><meshBasicMaterial color="#f3f5f0" transparent opacity={.5} depthWrite={false} /></mesh>
   </group>;
@@ -391,7 +394,7 @@ function CameraRig({ view, focus, onFailure }: { view: CameraView; focus: { x: n
   useEffect(() => {
     const f = view === 'selected' && focus ? focus : null;
     const target = f ? new Vector3(f.x, 0, f.z) : view === 'top' ? new Vector3(CX, 0, CZ) : HOME_TARGET;
-    const pos = f ? new Vector3(f.x + 170, 210, f.z + 260) : view === 'top' ? new Vector3(CX, 1350, CZ + 1) : HOME;
+    const pos = f ? new Vector3(f.x + 170, 210, f.z + 260) : view === 'top' ? new Vector3(CX, 2100, CZ + 1) : HOME;
     goal.current = { pos, target, until: performance.now() + 1400 };
   }, [view, focus?.x, focus?.z]); // eslint-disable-line react-hooks/exhaustive-deps
   useFrame(() => {
@@ -418,8 +421,8 @@ export function SunsetCanvas({ incidents, selectedIncidentId, onSelectIncident, 
   const focus = selected ? placePosition(selected.confirmedPlaceId) : null;
   return <Canvas shadows camera={{ position: HOME.toArray(), fov: 38, near: 1, far: 6000 }} dpr={[1, 2]}
     onPointerMissed={() => onSelectIncident(null)} gl={{ antialias: true }} aria-label="Outer Sunset exercise map · 3D">
-    <color attach="background" args={[FOG]} />
-    <fog attach="fog" args={[FOG, 900, 3200]} />
+    <color attach="background" args={[layer === 'network' ? NIGHT : FOG]} />
+    <fog attach="fog" args={[layer === 'network' ? NIGHT : FOG, 900, 3200]} />
     <hemisphereLight args={['#dfe7ea', '#6f6a5c', 1.1]} />
     <directionalLight position={[-500, 650, 350]} intensity={1.6} color="#fff3e0" castShadow
       shadow-mapSize={[4096, 4096]} shadow-camera-left={-800} shadow-camera-right={800} shadow-camera-top={700} shadow-camera-bottom={-700}
@@ -427,8 +430,8 @@ export function SunsetCanvas({ incidents, selectedIncidentId, onSelectIncident, 
     <Town dim={layer === 'network'} />
     <Teams strong={layer === 'network'} />
     {layer === 'network' && <Network />}
-    <Ocean />
-    <SiteHighlights />
+    <Ocean night={layer === 'network'} />
+    {layer === 'incidents' && <SiteHighlights />}
     {layer === 'incidents' && located.map((row, i) => <Beacon key={row.incidentId} incident={row} selected={row.incidentId === selectedIncidentId}
       offset={located.slice(0, i).filter((prior) => prior.confirmedPlaceId === row.confirmedPlaceId).length}
       onSelect={() => onSelectIncident(row.incidentId)} />)}
