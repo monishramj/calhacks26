@@ -15,7 +15,8 @@ async function queueOrder(page: Page): Promise<string[]> {
 test('labeled replay: R07 needs review, approval moves the school up', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByTestId('run-mode')).toHaveText('LOCAL REPLAY');
-  await expect(page.getByText('Fictional Helene-inspired exercise', { exact: false })).toBeVisible();
+  // Banner and scene both carry the disclosure.
+  await expect(page.getByText('Fictional Helene-inspired exercise', { exact: false }).first()).toBeVisible();
   await expect(page.getByText(/Inference: fixture/)).toBeVisible();
 
   await expect.poll(() => queueOrder(page)).toEqual(['INC-residence', 'INC-shelter', 'INC-school']);
