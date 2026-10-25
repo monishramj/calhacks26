@@ -1,17 +1,28 @@
-// Coordinator entry. Backend: FIXTURE (in-memory) until G3's live adapter lands.
-//   npm start -w @calhacks26/coordinator               # Laya from LOCAL_LAYA_URL if healthy, Claude if keyed
-//   npm start -w @calhacks26/coordinator -- --laya-stub  # labeled stub instead of Laya
+// Coordinator entry: long-running worker loop on SpacetimeDB (or --fixture: one pass over the in-memory backend).
+//   npm start                # Laya from LOCAL_LAYA_URL while healthy; enrich with INFERENCE_PROVIDER (default gemini) if keyed
+//   npm start -- --laya-stub # labeled stub instead of Laya
+import { enrichReady, provider } from './inference/claude/enrich';
 import { createFixtureBackend } from './fixtureBackend';
-import { layaReady, runOnce, type LayaMode } from './runner';
+import { layaReady, runLoop, runOnce, type LayaMode } from './runner';
+import { connectStdb } from './stdbBackend';
 
-const backend = createFixtureBackend();
 const url = process.env.LOCAL_LAYA_URL;
-let laya: LayaMode = { kind: 'off' };
-if (process.argv.includes('--laya-stub')) laya = { kind: 'stub' };
-else if (url && (await layaReady(url))) laya = { kind: 'http', url };
-const claude = Boolean(process.env.ANTHROPIC_API_KEY && process.env.CLAUDE_MODEL);
+const getOpts = async (): Promise<{ laya: LayaMode; claude: boolean }> => ({
+  laya: process.argv.includes('--laya-stub') ? { kind: 'stub' } : url && (await layaReady(url)) ? { kind: 'http', url } : { kind: 'off' },
+  claude: enrichReady(),
+});
+const opts = await getOpts();
+const model = provider() === 'claude' ? process.env.CLAUDE_MODEL : process.env.GEMINI_MODEL;
+const info = { provider: provider(), enrich: opts.claude ? model : 'unavailable', laya: opts.laya.kind };
 
-console.log(JSON.stringify({ event: 'start', backend: 'fixture', runId: backend.runId, laya: laya.kind, claude: claude ? process.env.CLAUDE_MODEL : 'unavailable' }));
-const handled = await runOnce(backend, backend.runId, { laya, claude });
-const left = backend.jobs.filter((j) => j.job.state === 'QUEUED').map((j) => j.job.jobId);
-console.log(JSON.stringify({ event: 'done', handled, stillQueued: left }));
+if (process.argv.includes('--fixture')) {
+  const backend = createFixtureBackend();
+  console.log(JSON.stringify({ event: 'start', backend: 'fixture', runId: backend.runId, ...info }));
+  const handled = await runOnce(backend, backend.runId, opts);
+  console.log(JSON.stringify({ event: 'done', handled, stillQueued: backend.jobs.filter((j) => j.job.state === 'QUEUED').map((j) => j.job.jobId) }));
+  process.exit(0);
+}
+
+const backend = await connectStdb(process.env.SPACETIMEDB_URI ?? 'http://127.0.0.1:3000', process.env.SPACETIMEDB_DATABASE ?? 'incident-desk');
+console.log(JSON.stringify({ event: 'start', backend: 'spacetimedb', identity: backend.identityHex, ...info }));
+await runLoop(backend, getOpts);

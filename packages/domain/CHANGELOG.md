@@ -2,6 +2,7 @@
 
 One line per `CONTRACT_VERSION`. Newest first.
 
+- v1.1.0 · 2026-10-25 · Added provider `gemini` (incident proposals from the coordinator; same worker rules as `claude`).
 - v1.0.0 · 2026-10-25 · Shared contracts frozen (review passed).
   - §17 types, verbatim.
   - §9 records: `Report`, `ReportRelation`, `SuggestionRecord`, `ProposalRecord`, `Job` (with `baseIncidentVersions`), `JobInput`, `ReviewEvent`, `ScenarioState`.

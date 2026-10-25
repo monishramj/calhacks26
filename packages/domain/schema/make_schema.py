@@ -16,7 +16,7 @@ from pathlib import Path
 
 OUT = Path(__file__).parent / "contract.schema.json"
 
-CONTRACT_VERSION = "1.0.0"
+CONTRACT_VERSION = "1.1.0"
 MAX_ID_LENGTH = 128
 # Authored bound, not a measured one: ~4x the 233-byte packet ceiling so llm-coded
 # radio text fits, while operator text stays short. Revisit with C1's measured ratio.
@@ -194,7 +194,7 @@ defs["IncidentProposal"] = closed(
         "suggestedSummary": nullable(SUMMARY),
         "evidenceReportIds": ids(),
         "uncertainties": {"type": "array", "items": SHORT_TEXT, "maxItems": 32},
-        "provider": enum(["claude", "operator", "recording", "fixture"]),
+        "provider": enum(["claude", "gemini", "operator", "recording", "fixture"]),
     },
     # A summary is a claim; it needs cited evidence or it goes back to review.
     when({"suggestedSummary": {"type": "string"}}, {"evidenceReportIds": {"minItems": 1}}),
@@ -230,7 +230,7 @@ defs["ProposalRecord"] = closed(
         "proposal": ref("IncidentProposal"),
     },
     when({"submittedByRole": {"const": "operator"}}, {"proposal": {"properties": {"provider": {"const": "operator"}}}}),
-    when({"submittedByRole": {"const": "worker"}}, {"proposal": {"properties": {"provider": enum(["claude", "recording", "fixture"])}}}),
+    when({"submittedByRole": {"const": "worker"}}, {"proposal": {"properties": {"provider": enum(["claude", "gemini", "recording", "fixture"])}}}),
 )
 
 CLAIM = closed({"workerIdentity": ID, "leaseExpiresAt": LEASE_AT})

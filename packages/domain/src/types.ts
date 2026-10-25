@@ -6,7 +6,7 @@
 
 export type Attention = 'POSSIBLE_LIFE_SAFETY' | 'ACTIVE_NEED' | 'INFORMATION';
 export type LocalAction = 'NEW_INCIDENT' | 'ATTACH_REPORT' | 'FLAG_CORRECTION' | 'FLAG_CONFLICT' | 'REQUEST_REVIEW';
-export type Provider = 'local_laya' | 'claude' | 'operator' | 'recording' | 'fixture' | 'rule';
+export type Provider = 'local_laya' | 'claude' | 'gemini' | 'operator' | 'recording' | 'fixture' | 'rule';
 
 export type ReportInput = {
   runId: string;
