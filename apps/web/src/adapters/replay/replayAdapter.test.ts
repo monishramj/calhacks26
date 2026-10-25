@@ -127,8 +127,8 @@ describe('replay adapter over the §18 exercise', () => {
     expect(r11.receiveSequence).toBeGreaterThan(r07.receiveSequence);
     // Every original is still in the school timeline, in receive order; R10 (a question,
     // no proposal) stays visible there as a pending review item.
-    expect(timeline(s, 'INC-school').map((r) => r.input.messageId)).toEqual(['R01', 'R05', 'R07', 'R08', 'R09', 'R10', 'R11', 'R12']);
-    expect(reviewBand(s).map((i) => msg(s, i.reportId))).toEqual(['R10']);
+    expect(timeline(s, 'INC-school').map((e) => e.report.input.messageId)).toEqual(['R01', 'R05', 'R07', 'R08', 'R09', 'R10', 'R11', 'R12']);
+    expect(reviewBand(s).map((i) => msg(s, i.reportId!))).toEqual(['R10']);
     expect(s.reports).toHaveLength(12);
   });
 

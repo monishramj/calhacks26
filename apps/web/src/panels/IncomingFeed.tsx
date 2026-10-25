@@ -25,7 +25,7 @@ export function IncomingFeed({ selectedIncidentId, onSelectIncident }: PanelProp
   const { state } = useDesk();
   if (!state) return <p className="empty">No source connected.</p>;
   if (state.reports.length === 0) return <p className="empty">No reports received.</p>;
-  const reports = timeline(state).slice().reverse();
+  const reports = timeline(state).map((e) => e.report).reverse();
   const band = reviewBand(state);
   return (
     <ol className="panel-list" aria-label="Incoming reports, newest first">

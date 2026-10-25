@@ -23,6 +23,8 @@ services:
       - "${SPACETIMEDB_HOST_PORT:-3000}:3000"
     volumes:
       - spacetimedb-data:/home/spacetime/.local/share/spacetime/data
+      - .:/repo # module source for `spacetime publish`/`generate` (scripts/stdb-setup.sh)
+    user: root # the named volume is root-owned; the image's default user cannot write to it
     restart: unless-stopped
 
 volumes:
