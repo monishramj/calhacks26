@@ -2,7 +2,7 @@
 
 Rule: sweep p_min 0.25..0.60 step 0.01, margin fixed 0.2. Pick the lowest p_min whose accepted actions
 (top p >= p_min and margin >= 0.2) are >= 90% correct with >= 5 accepted; otherwise keep 0.6 for that mode.
-Uses the cached marker features; no heldout, exercise or replay data is read.
+Uses the cached marker features; no evaluation-set, exercise or replay data is read.
 Run: LAYA_MODEL_PATH=... python -m finetune.threshold [models_dir]   (from services/local-laya)
 """
 import datetime
