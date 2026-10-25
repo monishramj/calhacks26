@@ -2,7 +2,7 @@
 id: 1025-005903-orchestrator-state
 from: orchestrator
 to: state
-status: answered
+status: closed
 asked: 2026-10-25T00:59-07:00
 ---
 
