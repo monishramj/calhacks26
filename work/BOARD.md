@@ -19,13 +19,15 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | G8 resilience | P0 | all | not started | `G8-state.md`, `G8-inference.md`, `G8-web.md` | After the G3–G7 real paths. |
 | G9 end-to-end | P0 | all | not started | `G9-radio.md`, `G9-integration.md` | Every pitched feature. |
 
-## Milestones (§14)
+## Checkpoints (schedule: `docs/KICKOFF.md`, T0 = ____)
 
-| Milestone | Status |
-|---|---|
-| M1 labeled replay with basic 3D, evidence, queue movement | not started |
-| M2 real local backend + Laya + Claude with core tests | not started |
-| M3 radio-connected demo with failure tests and a baseline | not started |
+| Checkpoint | Target | Status |
+|---|---|---|
+| CP1 contracts merged + preflight filled | T+1:30 | not started |
+| CP2 / M1 labeled replay with basic 3D, evidence, queue movement | T+3:00 | not started |
+| CP3 / M2 real local backend + Laya (+ Claude), two clients agree | T+5:30 | not started |
+| CP4 feature freeze; G9 evidence and pitch-claim check | T+7:00 | not started |
+| M3 radio-connected demo with failure tests and a baseline | by T+8:00 | not started |
 
 ## Preflight
 

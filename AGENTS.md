@@ -20,7 +20,7 @@ Help LoRa-equipped disaster teams send detailed reports and keep the most import
 1. This file.
 2. `work/status/<your-workstream>.md`: where the last person or agent left off.
 3. `work/inbox/<your-workstream>.md` on `origin/main`: requests from the orchestrator.
-4. `work/BOARD.md` on `origin/main`: gate status across all computers.
+4. `work/BOARD.md` on `origin/main`: gate status across all computers. `docs/KICKOFF.md` has the 8-hour schedule and checkpoints.
 5. The ground-truth sections for your current gate: §12 row, §20 prompts, §17 contracts, plus whatever that gate cites.
 
 ```bash

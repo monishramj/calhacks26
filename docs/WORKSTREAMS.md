@@ -98,7 +98,7 @@ See `docs/ORCHESTRATOR.md`. Hour 0: initialize `work/BOARD.md` and `work/PREFLIG
 
 ## Bootstrap prompt for each computer
 
-Paste this into a fresh Claude Code session on the computer, after checking out its branch:
+**For the 8-hour run, use the per-computer start prompts in `docs/KICKOFF.md`.** They also start the first phase. Use this generic one to resume a workstream in a fresh session:
 
 ```text
 You are the coding agent for workstream <ws/NAME> (computer <Cn>) on calhacks26.
