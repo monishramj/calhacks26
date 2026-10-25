@@ -151,7 +151,10 @@ def cmd_send(a):
     b = Bridge(radio, model, log, ack_timeout=a.ack_timeout)
     force = {"raw": mc.RAW, "unishox": mc.UNISHOX, "llm": mc.LLM}.get(a.force_method)
     msg_id = int(a.msg_id, 16) if a.msg_id else None
-    texts = a.text or []
+    texts = list(a.text or [])
+    if a.text_file:   # one report per line, UTF-8; avoids console-codepage mangling of Unicode on Windows
+        texts += [ln.rstrip("\r\n") for ln in Path(a.text_file).read_text(encoding="utf-8").splitlines()
+                  if ln.strip()]
     interactive = not texts
     try:
         while True:
@@ -192,6 +195,7 @@ def main():
     s.add_argument("--port", default=os.environ.get("RADIO_SERIAL_PORT"))
     s.add_argument("--dest", default=os.environ.get("RADIO_DESTINATION_ID"))
     s.add_argument("--text", action="append", help="report text (repeatable); omit to type reports")
+    s.add_argument("--text-file", help="UTF-8 file, one report per line (exact bytes; no trimming)")
     s.add_argument("--msg-id", help="test: fixed message id (hex) to exercise duplicates/conflicts")
     s.add_argument("--repeat", type=int, default=1, help="test: send each report N times with the same id "
                                                          "(only meaningful with --msg-id)")
