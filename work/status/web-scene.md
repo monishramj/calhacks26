@@ -70,3 +70,10 @@ Do not run another agent in this folder. Do not commit root/package lockfile cha
 - npm run verify: 70 unit/component/asset tests and 3 replay browser tests pass. Scene suite: 5 tests pass. Production build passes (existing lazy Three chunk-size advisory remains). Screenshot visually checked with textured building walls; no live backend/radio/model or laptop FPS evidence added.
 - Parallel browser runs exposed the lead suite clearing nested scene artifacts. Scene output now uses scene-artifacts/test-results, outside the lead output tree and covered by the existing test-results ignore pattern. An artifact-path failure was rerun after isolation; it was not a scene behavior failure.
 - Exact next step: lead merges ws/web-scene and reruns whole-web verify; Codex continues actionable scene fixes independently. Sources/tool packs remain in the persistent sibling asset cache, outside git.
+
+
+## Integration monitor - 2026-10-25 02:38 PDT
+
+- Fetched and merged origin/main eb96482 (bookkeeping only); origin/ws/web remains unchanged. No scene integration request or new code defect is actionable. Existing verification remains applicable because no application code changed.
+- Read web inbox 10 and 11: lead merge/v1 migration remains with lead; C1 endpoint model/hardware check remains outside the scene lane. Human explicitly approved generic textures and continued Codex work, overriding the older texture timing/paused visualization notes. Texture handoff 1025-023643 is already posted.
+- Exact next step: monitor lead merge/v1 adapter integration and questions; fix scene-owned regressions if they arise. No additional polish work is queued.
