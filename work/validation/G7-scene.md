@@ -77,3 +77,10 @@ Real tools/providers: Blender/BLOSM and source data downloads were real; Windows
 Still unverified: actual live SpacetimeDB adapter, stale/unauthorized backend action rejection, radios, real inference, actual demo laptop frame-rate target and display measurements. Those are not claimed as passes. Scene browser review is green; the lead retains whole-G7/live integration acceptance.
 
 Next: lead merges ws/web-scene and runs verify; scene continues independently on any actionable review or integration defect. Human clarified Codex should continue despite Claude usage-limit handoffs; Codex's recurring follow-up is ACTIVE.
+
+### REVIEW follow-up · 2026-10-25
+
+- Manual in-app browser pointer pick on the actual 3D shelter sphere selected INC-shelter and its timeline, independently of the DOM incident buttons.
+- Heatmap visual check caught marker colors being washed out by Three's separate opaque/transparent render queues. Markers and selection rings now render in the transparent queue with their existing explicit order; colors remain visible above the surface. Actual screenshot rechecked; production build passes.
+- Preserved the portable Blender tools, official BLOSM checkout, source OSM/water polygon, compatible Shapely packages and terrain cache in the persistent sibling calhacks26-scene-assets folder, outside git. The temporary session folder is no longer the only copy of bake inputs/tooling.
+- Codex follow-up automation is ACTIVE following the human clarification; Claude lead/panels HANDOFF requests remain separate.

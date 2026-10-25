@@ -46,3 +46,9 @@ Do not run another agent in this folder. Do not commit root/package lockfile cha
 - Lead provided @types/node 22.10.2 in 4e1d8fc; merged and questions item 1025-015224 closed.
 - Human relayed Claude usage-limit HANDOFF; board requests 1025-020730 (lead) and 1025-020735 (panels) were sent. Human then clarified Codex should keep working; those Claude handoffs do not pause this lane.
 - Needs from lead: merge scene branch and run verify. Future domain/live work stays with its owners.
+
+## Final visual follow-up
+
+- Direct 3D shelter-sphere pointer pick reached INC-shelter history. Fixed transparent-queue marker/ring contrast above the heatmap and visually rechecked. Build passes after the fix.
+- Bake tooling/source cache is persistent in sibling calhacks26-scene-assets: tools, blosm, blosm-cache, geo-libs, blender-geo, sources. No need to depend on the session scratch folder for rebuilding. This cache stays outside git.
+- Preview tab remains open; Codex automation is active. Lead merge request/evidence was posted as questions item 1025-021221. No known scene code failure or uncommitted work should remain after the current review commit.

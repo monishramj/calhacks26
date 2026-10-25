@@ -149,9 +149,9 @@ function World({ incidents, selectedIncidentId, onSelectIncident, heatmap, baked
       return <group key={row.incidentId} position={[place.x + offset, top, place.z - 8]}>
         <mesh renderOrder={6} onClick={(event) => { event.stopPropagation(); onSelectIncident(row.incidentId); }}>
           <sphereGeometry args={[selected ? 5 : 4, 16, 12]} />
-          <meshStandardMaterial color={attentionColor(row.attention)} emissive={attentionColor(row.attention)} emissiveIntensity={selected ? .5 : .15} depthTest={false} depthWrite={false} />
+          <meshStandardMaterial transparent color={attentionColor(row.attention)} emissive={attentionColor(row.attention)} emissiveIntensity={selected ? .5 : .15} depthTest={false} depthWrite={false} />
         </mesh>
-        {selected && <mesh renderOrder={6} rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[6, 7, 32]} /><meshBasicMaterial color="#fff4d3" side={DoubleSide} depthTest={false} depthWrite={false} /></mesh>}
+        {selected && <mesh renderOrder={6} rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[6, 7, 32]} /><meshBasicMaterial transparent color="#fff4d3" side={DoubleSide} depthTest={false} depthWrite={false} /></mesh>}
       </group>;
     })}
   </>;
