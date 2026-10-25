@@ -20,8 +20,12 @@ def test_poc_run_records_and_checks_the_original_text(model, tmp_path):
     src = tmp_path / "in.jsonl"
     src.write_text(json.dumps({"id": "t1", "text": TEXT}) + "\n", encoding="utf-8")
     enc, dec = tmp_path / "enc.jsonl", tmp_path / "dec.jsonl"
+    import runtime  # codec/runtime.py (on sys.path via conftest): the child uses the same pinned build
     env = dict(os.environ)
-    common = [os.environ["CODEC_MODEL_PATH"], "2", os.environ["CODEC_CONTEXT_PATH"]]
+    if (runtime.platform_dir() / "SHA256SUMS").exists():
+        env["LLAMA_CPP_LIB_PATH"] = str(runtime.platform_dir())
+        env["PYTHONPATH"] = os.pathsep.join([str(SERVICE / "third_party"), env.get("PYTHONPATH", "")])
+    common = [str(runtime.model_path()), str(runtime.MODEL_ID), str(runtime.context_path())]
     run = lambda *a: subprocess.run([sys.executable, str(SERVICE / "codec" / "poc_run.py"), *a],  # noqa: E731
                                     capture_output=True, text=True, env=env, timeout=600)
     p = run("encode", *common, str(src), str(enc), "0:1")

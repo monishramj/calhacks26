@@ -27,21 +27,30 @@ for i, r in enumerate(rows, start=a):
         continue
     t = time.time()
     if mode == "encode":
-        text = " ".join(r["text"].split())
+        text = r["text"]  # exactly as typed: the codec must carry it unchanged or reject it
         # exercise the structured header on some messages
         people = (i % 7) + 1 if i % 3 == 0 else None
         loc = ((i * 2654435761) & 0xFFFF, (i * 40503) & 0xFFFF) if i % 2 == 0 else None
         mtype = mc.TYPES[i % len(mc.TYPES)]
-        chosen, method = mc.build_packet(text, model, mtype, i % 4, people, loc)
+        try:
+            chosen, method = mc.build_packet(text, model, mtype, i % 4, people, loc)
+        except ValueError as e:  # explicit rejection (e.g. empty or oversized text) is recorded, not hidden
+            rec = {"id": r["id"], "text": text, "utf8_bytes": len(text.encode()), "rejected": str(e)}
+            out.write(json.dumps(rec) + "\n"); out.flush(); n += 1
+            continue
         enc_s = time.time() - t
         try:
             forced, _ = mc.build_packet(text, model, mtype, i % 4, people, loc, force_method=mc.LLM)
             forced = forced.hex()
-        except (KeyError, ValueError):
+        except ValueError:  # the model coder can't carry this text exactly (e.g. it contains a newline)
             forced = None
         rec = {"id": r["id"], "text": text, "utf8_bytes": len(text.encode()), "method": method,
                "packet": chosen.hex(), "llm_packet": forced, "enc_s": round(enc_s, 3)}
     else:
+        if "packet" not in r:
+            rec = {"id": r["id"], "rejected_at_encode": r.get("rejected")}
+            out.write(json.dumps(rec) + "\n"); out.flush(); n += 1
+            continue
         res = mc.parse_packet(bytes.fromhex(r["packet"]), model)
         ok_chosen = res.get("ok") and res["text"] == r["text"]
         ok_llm = None
