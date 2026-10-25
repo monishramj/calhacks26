@@ -6,9 +6,12 @@ import { enrich } from './inference/claude/enrich';
 import type { WorkerBackend } from './fixtureBackend';
 
 const MAX_ATTEMPTS = 3;
-type Backend = WorkerBackend & { issueIncidentJob?: (incidentId: string, targetReportId: string) => Promise<Result<null>> };
+type Backend = WorkerBackend;
 
 const LAYA_TIMEOUT_MS = 10_000;
+/** Picture jobs wait for a short quiet period so reports that arrive together share one pass (one job per incident). */
+const SETTLE_MS = 1500;
+const SETTLE_MAX_MS = 4000;
 
 export type LayaMode = { kind: 'http'; url: string } | { kind: 'stub' } | { kind: 'off' };
 
@@ -22,11 +25,16 @@ export async function layaReady(url: string): Promise<boolean> {
   }
 }
 
-/** POST /suggest with the JobInput; the worker returns a LocalSuggestion or {error:{code}}. */
+/**
+ * POST /suggest with the JobInput; the worker returns a LocalSuggestion or {error:{code}}.
+ * ponytail: the Laya worker on :8091 runs the v1.2 closed schema and rejects the v1.3 candidatePictures field,
+ * so it is dropped here. Drop this line once Laya runs v1.3 (its schema accepts the field).
+ */
 async function layaSuggest(url: string, input: JobInput): Promise<LocalSuggestion | string> {
+  const { candidatePictures: _pictures, ...forLaya } = input;
   try {
     const r = await fetch(new URL('/suggest', url), {
-      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input), signal: AbortSignal.timeout(LAYA_TIMEOUT_MS),
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(forLaya), signal: AbortSignal.timeout(LAYA_TIMEOUT_MS),
     });
     const body = await r.json();
     if (!r.ok) return `laya ${r.status} ${body?.error?.code ?? ''}`.trim();
@@ -69,16 +77,16 @@ export async function runOnce(backend: Backend, runId: string, opts: { laya: Lay
       if (typeof s === 'string') { log({ event: 'laya_failed', jobId: job.jobId, detail: s }); return handled; }
       const r = await backend.submitLocalSuggestion({ jobId: job.jobId, suggestion: s });
       log({ event: 'suggestion', jobId: job.jobId, provider: s.provider, action: s.action, submitted: r.ok ? r.value : r.error });
-      // Conflict or correction: ask for a Claude proposal (the module only lets an operator identity issue it).
-      if (r.ok && backend.issueIncidentJob && s.candidateIncidentId && (s.action === 'FLAG_CONFLICT' || s.action === 'FLAG_CORRECTION')) {
-        const q = await backend.issueIncidentJob(s.candidateIncidentId, s.reportId);
-        log({ event: 'issue_incident_job', incidentId: s.candidateIncidentId, ok: q.ok, ...(q.ok ? {} : { error: q.error }) });
-      }
     } else {
       const res = await enrich(job, input);
       if (!res.ok) { log({ event: 'claude_failed', jobId: job.jobId, ...res }); return handled; }
-      const r = await backend.submitIncidentProposal({ jobId: job.jobId, proposal: res.proposal });
-      log({ event: 'proposal', jobId: job.jobId, model: res.model, responses: res.responses, toolExecutions: res.toolExecutions, ms: res.ms, submitted: r.ok ? r.value : r.error, proposal: res.proposal });
+      // The optional queue proposal goes first: submitting the picture finishes the job.
+      if (res.proposal) {
+        const p = await backend.submitIncidentProposal({ jobId: job.jobId, proposal: res.proposal });
+        log({ event: 'proposal', jobId: job.jobId, submitted: p.ok ? p.value : p.error, proposal: res.proposal });
+      }
+      const r = await backend.submitIncidentPicture({ jobId: job.jobId, picture: res.picture });
+      log({ event: 'picture', jobId: job.jobId, incidentId: res.picture.incidentId, model: res.model, responses: res.responses, toolExecutions: res.toolExecutions, ms: res.ms, submitted: r.ok ? r.value : r.error });
     }
   }
 }
@@ -90,12 +98,21 @@ export async function runLoop(
   { tickMs = 3000, signal }: { tickMs?: number; signal?: AbortSignal } = {},
 ) {
   let wake = () => {};
-  backend.onChange(() => wake());
+  let lastChange = 0;
+  backend.onChange(() => ((lastChange = Date.now()), wake()));
   while (!signal?.aborted) {
     const runId = backend.runId(); // jobs of old runs are never claimed: claim is always for the active run
     const opts = await getOpts();
     const kinds = [...(opts.laya.kind !== 'off' ? ['LOCAL_SUGGESTION'] : []), ...(opts.claude ? ['INCIDENT_PROPOSAL'] : [])];
-    if (runId && kinds.length && backend.queued(kinds) > 0) await runOnce(backend, runId, opts);
+    if (runId && kinds.length && backend.queued(kinds) > 0) {
+      if (kinds.includes('INCIDENT_PROPOSAL')) {
+        // Debounce: wait until reports stop arriving for SETTLE_MS (capped), so a burst makes one pass per incident.
+        const started = Date.now();
+        while (Date.now() - lastChange < SETTLE_MS && Date.now() - started < SETTLE_MAX_MS) await new Promise((r) => setTimeout(r, 100));
+      }
+      // A failed pass is logged and retried later; it must not stop the worker.
+      await runOnce(backend, runId, opts).catch((e: unknown) => console.log(JSON.stringify({ event: 'loop_error', detail: (e as Error).message })));
+    }
     await new Promise<void>((res) => { wake = res; setTimeout(res, tickMs); });
   }
 }

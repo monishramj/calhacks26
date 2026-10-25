@@ -66,26 +66,7 @@ function QueueCard({
         )}
       </button>
       <OverrideControl incident={incident} />
-      {selected && <AskClaude incidentId={incident.incidentId} />}
     </li>
-  );
-}
-
-function AskClaude({ incidentId }: { incidentId: string }) {
-  const { adapter } = useDesk();
-  const { run, error, busy } = useCommand();
-  if (!adapter?.askClaude) return null;
-  return (
-    <div className="panel-actions">
-      <button type="button" disabled={busy} onClick={() => run(() => adapter.askClaude!(incidentId))}>
-        Ask Claude for summary
-      </button>
-      {error && (
-        <p role="alert" className="panel-error">
-          {error}
-        </p>
-      )}
-    </div>
   );
 }
 

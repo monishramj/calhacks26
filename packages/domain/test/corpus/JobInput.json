@@ -67,7 +67,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     },
     {
@@ -135,7 +136,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     },
     {
@@ -187,6 +189,170 @@
           {
             "placeId": "shelter",
             "aliases": []
+          }
+        ],
+        "candidatePictures": []
+      }
+    },
+    {
+      "name": "with the latest working picture as context",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "INCIDENT_PROPOSAL",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": null,
+        "incidentId": "inc-school",
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ],
+        "candidatePictures": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "model": "claude-test",
+            "areas": [
+              {
+                "label": "Waterfront",
+                "severity": null,
+                "chronology": [],
+                "uncertainties": [],
+                "conflicts": [],
+                "reportIds": [
+                  "rep-000001",
+                  "rep-000007"
+                ],
+                "sites": [
+                  {
+                    "label": "school",
+                    "severity": "POSSIBLE_LIFE_SAFETY",
+                    "chronology": [],
+                    "uncertainties": [],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000001",
+                      "rep-000007"
+                    ],
+                    "siteKind": "school",
+                    "subareas": [
+                      {
+                        "label": "gym",
+                        "severity": "INFORMATION",
+                        "chronology": [
+                          {
+                            "reportId": "rep-000001",
+                            "supersedesReportId": null,
+                            "late": false
+                          },
+                          {
+                            "reportId": "rep-000007",
+                            "supersedesReportId": "rep-000001",
+                            "late": false
+                          }
+                        ],
+                        "uncertainties": [],
+                        "conflicts": [],
+                        "reportIds": [
+                          "rep-000001",
+                          "rep-000007"
+                        ],
+                        "claims": [
+                          {
+                            "text": "Gym is clear: the correction says everyone checked is outside.",
+                            "reportIds": [
+                              "rep-000007"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "label": "main building",
+                        "severity": "POSSIBLE_LIFE_SAFETY",
+                        "chronology": [
+                          {
+                            "reportId": "rep-000007",
+                            "supersedesReportId": null,
+                            "late": false
+                          }
+                        ],
+                        "uncertainties": [
+                          "Search of the main building is not complete."
+                        ],
+                        "conflicts": [],
+                        "reportIds": [
+                          "rep-000007"
+                        ],
+                        "claims": [
+                          {
+                            "text": "Someone may still be upstairs in the main building.",
+                            "reportIds": [
+                              "rep-000007"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "status": "CURRENT",
+            "staleSinceReportId": null,
+            "throughSequence": 7
           }
         ]
       }
@@ -259,7 +425,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     },
     {
@@ -328,6 +495,7 @@
             "aliases": []
           }
         ],
+        "candidatePictures": [],
         "expectations": {
           "R07": "School correction"
         }
@@ -399,6 +567,7 @@
             "aliases": []
           }
         ],
+        "candidatePictures": [],
         "futureReports": [
           {
             "messageId": "R08"
@@ -472,6 +641,7 @@
             "aliases": []
           }
         ],
+        "candidatePictures": [],
         "script": [
           {
             "messageId": "R08"
@@ -545,6 +715,7 @@
             "aliases": []
           }
         ],
+        "candidatePictures": [],
         "desiredQueue": [
           "inc-school",
           "inc-residence"
@@ -615,7 +786,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     },
     {
@@ -663,7 +835,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     },
     {
@@ -731,7 +904,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     },
     {
@@ -796,7 +970,8 @@
             "placeId": "shelter",
             "aliases": []
           }
-        ]
+        ],
+        "candidatePictures": []
       }
     }
   ]

@@ -15,6 +15,7 @@ import PutPlaceReducer from "../put_place_reducer";
 import ReceiveReportReducer from "../receive_report_reducer";
 import RejectProposalReducer from "../reject_proposal_reducer";
 import ResetRunReducer from "../reset_run_reducer";
+import SubmitIncidentPictureReducer from "../submit_incident_picture_reducer";
 import SubmitIncidentProposalReducer from "../submit_incident_proposal_reducer";
 import SubmitLocalSuggestionReducer from "../submit_local_suggestion_reducer";
 
@@ -27,6 +28,7 @@ export type PutPlaceParams = __Infer<typeof PutPlaceReducer>;
 export type ReceiveReportParams = __Infer<typeof ReceiveReportReducer>;
 export type RejectProposalParams = __Infer<typeof RejectProposalReducer>;
 export type ResetRunParams = __Infer<typeof ResetRunReducer>;
+export type SubmitIncidentPictureParams = __Infer<typeof SubmitIncidentPictureReducer>;
 export type SubmitIncidentProposalParams = __Infer<typeof SubmitIncidentProposalReducer>;
 export type SubmitLocalSuggestionParams = __Infer<typeof SubmitLocalSuggestionReducer>;
 

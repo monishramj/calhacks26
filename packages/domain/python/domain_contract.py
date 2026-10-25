@@ -57,6 +57,25 @@ def _too_long(text: str) -> bool:
     return len(text.encode("utf-8")) > MAX_REPORT_TEXT_BYTES
 
 
+def _picture_problem(n: dict) -> str | None:
+    """Mirror of validate.ts pictureProblem: chronology and claims cite only the node's own reports."""
+    own = set(n["reportIds"])
+    for e in n["chronology"]:
+        if e["reportId"] not in own:
+            return f"chronology in {n['label']} names {e['reportId']}, which is not one of its reports"
+        if e["supersedesReportId"] is not None and e["supersedesReportId"] not in own:
+            return f"chronology in {n['label']} supersedes {e['supersedesReportId']}, which is not one of its reports"
+    for c in n.get("claims", []):
+        stray = next((i for i in c["reportIds"] if i not in own), None)
+        if stray:
+            return f"claim in {n['label']} cites {stray}, which is not one of its reports"
+    for child in n.get("sites", n.get("subareas", [])):
+        problem = _picture_problem(child)
+        if problem:
+            return problem
+    return None
+
+
 def _cross_field(type_name: str, v: dict) -> list[str]:
     if type_name == "ReportInput":
         return [f"text is over the {MAX_REPORT_TEXT_BYTES}-byte limit; rejected, not truncated"] if _too_long(v["text"]) else []
@@ -80,6 +99,10 @@ def _cross_field(type_name: str, v: dict) -> list[str]:
         return _cross_field("LocalSuggestion", v["suggestion"])
     if type_name in ("ProposalRecord", "SubmitIncidentProposalCommand"):
         return _cross_field("IncidentProposal", v["proposal"])
+    if type_name in ("IncidentPictureDraft", "IncidentPicture"):
+        return [p for a in v["areas"] if (p := _picture_problem(a))][:1]
+    if type_name == "SubmitIncidentPictureCommand":
+        return _cross_field("IncidentPictureDraft", v["picture"])
     return []
 
 

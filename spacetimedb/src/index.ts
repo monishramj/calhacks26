@@ -11,6 +11,7 @@ import {
   buildJobInput,
   changeFlags,
   checkFreshness,
+  checkPicture,
   checkProviderAllowed,
   checkSourceOwnership,
   citedReportIds,
@@ -24,9 +25,11 @@ import {
   type ClaimJobCommand,
   type DeskState,
   type IncidentChange,
+  type IncidentPicture,
   type IncidentProposal,
   type IncidentView,
   type Job,
+  type JobInput,
   type JobKind,
   type OperatorEditCommand,
   type ProposalRecord,
@@ -37,6 +40,7 @@ import {
   type ResetRunCommand,
   type Result,
   type ReviewEvent,
+  type SubmitIncidentPictureCommand,
   type SubmitIncidentProposalCommand,
   type SubmitLocalSuggestionCommand,
   type SuggestionRecord,
@@ -85,6 +89,8 @@ const spacetimedb = schema({
     },
   ),
   review_event: table({ public: true }, { sequence: t.u32().primaryKey(), runId: t.string().index('btree'), json: t.string() }),
+  // Claude working picture per incident (IncidentPicture JSON). Unconfirmed working state, never the queue.
+  incident_picture: table({ public: true }, { incidentId: t.string().primaryKey(), runId: t.string().index('btree'), json: t.string() }),
   // Current inputSignature per incident (DeskState.inputSignatures) for operator-authored proposals.
   incident_signature: table({ public: true }, { incidentId: t.string().primaryKey(), runId: t.string(), signature: t.string() }),
   // Idempotency ledger: repeated commandIds return the recorded result.
@@ -98,6 +104,8 @@ type Ctx = Parameters<Parameters<typeof spacetimedb.reducer>[1]>[0];
 
 const RUN_MODE = 'live';
 const LEASE_MICROS = 60_000_000n;
+// A claim that lapses this many times is FAILED, so one bad job cannot block its incident forever.
+const MAX_JOB_ATTEMPTS = 3;
 
 // Contract errors surface to callers as "CODE: message" (the reducer call fails, nothing commits).
 function must<T>(r: Result<T>): T {
@@ -150,7 +158,8 @@ function loadState(ctx: Ctx, runId: string): DeskState {
   };
 }
 
-type Scope = { incidentIds: string[]; targetReportId: string | null };
+// allReports: a Claude picture job sees every report of the run, not only the relevant ones.
+type Scope = { incidentIds: string[]; targetReportId: string | null; allReports?: boolean };
 
 /**
  * Relevant reports for a scope: the target, every confirmed report of the scoped
@@ -159,6 +168,7 @@ type Scope = { incidentIds: string[]; targetReportId: string | null };
  * not only a confirmed revision change (§17).
  */
 function relevantReports(state: DeskState, scope: Scope): Report[] {
+  if (scope.allReports) return state.reports;
   const ids = new Set<string>(scope.targetReportId ? [scope.targetReportId] : []);
   for (const incidentId of scope.incidentIds) {
     const incident = state.incidents.find((i) => i.incidentId === incidentId);
@@ -273,20 +283,36 @@ function issueJob(ctx: Ctx, runId: string, kind: JobKind, scope: Scope, incident
   return jobId;
 }
 
-/** Queue a Claude summary job for an incident unless one is already queued or claimed (one active job per incident). */
+/**
+ * Queue a Claude working-picture job for an incident. One active job per incident: a queued or claimed
+ * job already covers new reports (its input is built at claim time), so nothing is added then.
+ */
 function askClaude(ctx: Ctx, runId: string, incidentId: string, targetReportId: string | null) {
   for (const row of ctx.db.job.runId.filter(runId)) {
     if (row.state !== 'QUEUED' && row.state !== 'CLAIMED') continue;
     const j = JSON.parse(row.json) as Job;
     if (j.kind === 'INCIDENT_PROPOSAL' && j.incidentId === incidentId) return;
   }
-  issueJob(ctx, runId, 'INCIDENT_PROPOSAL', { incidentIds: [incidentId], targetReportId }, incidentId);
+  issueJob(ctx, runId, 'INCIDENT_PROPOSAL', { incidentIds: [incidentId], targetReportId, allReports: true }, incidentId);
 }
 
-/** When a report just confirmed into an incident was flagged as a correction or conflict, queue a Claude summary job. */
-function askClaudeOnConfirmed(ctx: Ctx, state: DeskState, incidentId: string, confirmed: string[]) {
-  const hit = changeFlags(state, incidentId).find((f) => (f.kind === 'POSSIBLE_CORRECTION' || f.kind === 'POSSIBLE_CONFLICT') && confirmed.includes(f.reportId));
-  if (hit) askClaude(ctx, state.runId, incidentId, hit.reportId);
+function pictures(ctx: Ctx, runId: string): IncidentPicture[] {
+  return [...ctx.db.incident_picture.runId.filter(runId)].map((r) => JSON.parse(r.json) as IncidentPicture);
+}
+
+function putPicture(ctx: Ctx, picture: IncidentPicture) {
+  const row = { incidentId: picture.incidentId, runId: picture.runId, json: JSON.stringify(picture) };
+  if (ctx.db.incident_picture.incidentId.find(picture.incidentId)) ctx.db.incident_picture.incidentId.update(row);
+  else ctx.db.incident_picture.insert(row);
+}
+
+/** A new report newer than a picture's input makes that picture stale, naming the first such report. */
+function markPicturesStale(ctx: Ctx, runId: string, report: Report) {
+  for (const p of pictures(ctx, runId)) {
+    if (p.status === 'CURRENT' && report.receiveSequence > p.throughSequence) {
+      putPicture(ctx, { ...p, status: 'STALE', staleSinceReportId: report.reportId });
+    }
+  }
 }
 
 // ---- lifecycle ---------------------------------------------------------------------------------
@@ -353,9 +379,11 @@ export const receive_report = spacetimedb.reducer({ reportInputJson: t.string() 
     messageId: input.messageId,
     json: JSON.stringify(report),
   });
-  // Every new report gets a local suggestion job against the open incidents.
+  // Every new report gets a local suggestion job against the open incidents, and a Claude picture job per open incident.
   const open = state.incidents.filter((i) => i.status === 'OPEN').map((i) => i.incidentId);
   issueJob(ctx, runId, 'LOCAL_SUGGESTION', { incidentIds: open, targetReportId: report.reportId }, null);
+  for (const incidentId of open) askClaude(ctx, runId, incidentId, null);
+  markPicturesStale(ctx, runId, report);
   refreshSignatures(ctx);
 });
 
@@ -389,7 +417,17 @@ export const claim_job = spacetimedb.reducer({ commandJson: t.string() }, (ctx, 
   const now = ctx.timestamp.microsSinceUnixEpoch;
 
   const rows = [...ctx.db.job.runId.filter(runId)].sort((a, b) => Number(a.jobId.split('job')[1]) - Number(b.jobId.split('job')[1]));
+  const failed = new Set<string>();
+  for (const r of rows) {
+    const job = JSON.parse(r.json) as Job;
+    const lapsed = job.state === 'CLAIMED' && BigInt(Date.parse(job.claim!.leaseExpiresAt)) * 1000n < now;
+    if (lapsed && job.attempts >= MAX_JOB_ATTEMPTS) {
+      ctx.db.job.jobId.update({ ...r, state: 'FAILED', json: JSON.stringify({ ...job, state: 'FAILED', claim: null }) });
+      failed.add(r.jobId);
+    }
+  }
   const row = rows.find((r) => {
+    if (failed.has(r.jobId)) return false;
     const job = JSON.parse(r.json) as Job;
     if (!cmd.kinds.includes(job.kind)) return false;
     if (job.state === 'QUEUED') return true;
@@ -411,6 +449,7 @@ export const claim_job = spacetimedb.reducer({ commandJson: t.string() }, (ctx, 
       reports: relevantReports(state, scope),
       incidents: state.incidents.filter((i) => scope.incidentIds.includes(i.incidentId)),
       places: [...ctx.db.place.iter()].map((p) => ({ placeId: p.placeId, aliases: JSON.parse(p.aliasesJson) })),
+      pictures: pictures(ctx, runId),
     }),
   );
   const leaseExpiresAt = new Date(Number((now + LEASE_MICROS) / 1000n)).toISOString();
@@ -494,7 +533,32 @@ export const submit_incident_proposal = spacetimedb.reducer({ commandJson: t.str
   const rec: ProposalRecord = { jobId: cmd.jobId, submittedByRole: role as 'worker' | 'operator', reviewState: 'PENDING', proposal: p };
   must(validateWire('ProposalRecord', rec));
   ctx.db.proposal.insert({ proposalId: p.proposalId, runId, scopeJson: JSON.stringify(scope), json: JSON.stringify(rec) });
-  if (jobRef) finishJob(ctx, jobRef.row, jobRef.job);
+  // A worker's job finishes with its picture (submit_incident_picture), not with a proposal.
+  refreshSignatures(ctx);
+});
+
+/** Claude's working picture for one incident (worker only). Validated against the job's own input, then stored. */
+export const submit_incident_picture = spacetimedb.reducer({ commandJson: t.string() }, (ctx, { commandJson }) => {
+  const cmd = must(parseWire<SubmitIncidentPictureCommand>('SubmitIncidentPictureCommand', commandJson));
+  allow(ctx, 'submitIncidentPicture');
+  const { runId } = desk(ctx);
+  sameRun(cmd.picture.runId, runId);
+  const { row, job } = claimedJob(ctx, cmd.jobId, 'INCIDENT_PROPOSAL');
+  if (cmd.picture.incidentId !== job.incidentId) deny('INVALID_SOURCE', `job ${job.jobId} is about ${job.incidentId}`);
+  const input = JSON.parse(ctx.db.job.jobId.find(job.jobId)!.inputJson) as JobInput;
+  const picture = must(checkPicture(cmd.picture, input));
+
+  const throughSequence = Math.max(0, ...input.reports.map((r) => r.receiveSequence));
+  const newer = loadState(ctx, runId).reports.filter((r) => r.receiveSequence > throughSequence);
+  putPicture(ctx, {
+    ...picture,
+    status: newer.length ? 'STALE' : 'CURRENT',
+    staleSinceReportId: newer[0]?.reportId ?? null,
+    throughSequence,
+  });
+  finishJob(ctx, row, job);
+  // Reports that arrived while this job ran are not in the picture yet: queue the next pass.
+  if (newer.length) askClaude(ctx, runId, job.incidentId!, null);
   refreshSignatures(ctx);
 });
 
@@ -566,7 +630,7 @@ export const approve_proposal = spacetimedb.reducer({ commandJson: t.string() },
   if (!fieldChange && p.relations.length === 0) deny('INVALID_INPUT', `proposal ${p.proposalId} changes nothing`);
 
   const { prior, next: view } = commitChange(ctx, state, p.incidentId, change, !fieldChange);
-  askClaudeOnConfirmed(ctx, state, p.incidentId, p.addReportIds);
+  askClaude(ctx, runId, p.incidentId, null);
   const reviewer = ctx.sender.toHexString();
   p.relations.forEach((r, n) => {
     const rel: ReportRelation = {
@@ -631,7 +695,7 @@ export const operator_edit = spacetimedb.reducer({ commandJson: t.string() }, (c
   must(checkSourceOwnership(runId, [...(cmd.changes.addReportIds ?? []), ...cmd.sourceReportIds], knownReports(state)));
 
   const { prior, next: view } = commitChange(ctx, state, cmd.incidentId, cmd.changes, false);
-  askClaudeOnConfirmed(ctx, state, cmd.incidentId, cmd.changes.addReportIds ?? []);
+  askClaude(ctx, runId, cmd.incidentId, null);
   const keys = Object.keys(cmd.changes) as (keyof typeof cmd.changes)[];
   appendReviewEvent(ctx, {
     runId,

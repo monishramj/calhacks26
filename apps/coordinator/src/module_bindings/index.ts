@@ -43,6 +43,7 @@ import PutPlaceReducer from "./put_place_reducer";
 import ReceiveReportReducer from "./receive_report_reducer";
 import RejectProposalReducer from "./reject_proposal_reducer";
 import ResetRunReducer from "./reset_run_reducer";
+import SubmitIncidentPictureReducer from "./submit_incident_picture_reducer";
 import SubmitIncidentProposalReducer from "./submit_incident_proposal_reducer";
 import SubmitLocalSuggestionReducer from "./submit_local_suggestion_reducer";
 
@@ -52,6 +53,7 @@ import SubmitLocalSuggestionReducer from "./submit_local_suggestion_reducer";
 import CommandRow from "./command_table";
 import DeskRow from "./desk_table";
 import IncidentRow from "./incident_table";
+import IncidentPictureRow from "./incident_picture_table";
 import IncidentSignatureRow from "./incident_signature_table";
 import JobRow from "./job_table";
 import PlaceRow from "./place_table";
@@ -101,6 +103,20 @@ const tablesSchema = __schema({
       { name: 'incident_incident_id_key', constraint: 'unique', columns: ['incidentId'] },
     ],
   }, IncidentRow),
+  incidentPicture: __table({
+    name: 'incident_picture',
+    indexes: [
+      { accessor: 'incidentId', name: 'incident_picture_incident_id_idx_btree', algorithm: 'btree', columns: [
+        'incidentId',
+      ] },
+      { accessor: 'runId', name: 'incident_picture_run_id_idx_btree', algorithm: 'btree', columns: [
+        'runId',
+      ] },
+    ],
+    constraints: [
+      { name: 'incident_picture_incident_id_key', constraint: 'unique', columns: ['incidentId'] },
+    ],
+  }, IncidentPictureRow),
   incidentSignature: __table({
     name: 'incident_signature',
     indexes: [
@@ -220,6 +236,7 @@ const reducersSchema = __reducers(
   __reducerSchema("receive_report", ReceiveReportReducer),
   __reducerSchema("reject_proposal", RejectProposalReducer),
   __reducerSchema("reset_run", ResetRunReducer),
+  __reducerSchema("submit_incident_picture", SubmitIncidentPictureReducer),
   __reducerSchema("submit_incident_proposal", SubmitIncidentProposalReducer),
   __reducerSchema("submit_local_suggestion", SubmitLocalSuggestionReducer),
 );
@@ -230,6 +247,8 @@ const proceduresSchema = __procedures(
 
 type __SchemaWithTableAccessorAliases = Omit<typeof tablesSchema.schemaType, "tables"> & {
   tables: typeof tablesSchema.schemaType.tables & {
+    /** @deprecated Use `incidentPicture` instead. This alias will be removed in the next major version. */
+    readonly "incident_picture": Omit<typeof tablesSchema.schemaType.tables["incidentPicture"], "accessorName"> & { readonly accessorName: "incident_picture" };
     /** @deprecated Use `incidentSignature` instead. This alias will be removed in the next major version. */
     readonly "incident_signature": Omit<typeof tablesSchema.schemaType.tables["incidentSignature"], "accessorName"> & { readonly accessorName: "incident_signature" };
     /** @deprecated Use `reviewEvent` instead. This alias will be removed in the next major version. */
@@ -252,6 +271,7 @@ const REMOTE_MODULE = {
 >;
 
 const tableAccessorAliases = {
+  "incident_picture": "incidentPicture",
   "incident_signature": "incidentSignature",
   "review_event": "reviewEvent",
 } as const;
@@ -274,6 +294,8 @@ function __withTableAccessorAliases<T extends object>(target: T, freeze = false)
 
 type __DbViewBase = __DbConnectionImpl<typeof REMOTE_MODULE>["db"];
 export type DbView = __DbViewBase & {
+  /** @deprecated Use `incidentPicture` instead. This alias will be removed in the next major version. */
+  readonly "incident_picture": __DbViewBase["incidentPicture"];
   /** @deprecated Use `incidentSignature` instead. This alias will be removed in the next major version. */
   readonly "incident_signature": __DbViewBase["incidentSignature"];
   /** @deprecated Use `reviewEvent` instead. This alias will be removed in the next major version. */
@@ -282,6 +304,8 @@ export type DbView = __DbViewBase & {
 
 type __TablesBase = __QueryBuilder<typeof tablesSchema.schemaType>;
 export type Tables = __TablesBase & {
+  /** @deprecated Use `incidentPicture` instead. This alias will be removed in the next major version. */
+  readonly "incident_picture": __TablesBase["incidentPicture"];
   /** @deprecated Use `incidentSignature` instead. This alias will be removed in the next major version. */
   readonly "incident_signature": __TablesBase["incidentSignature"];
   /** @deprecated Use `reviewEvent` instead. This alias will be removed in the next major version. */

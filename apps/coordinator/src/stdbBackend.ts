@@ -14,8 +14,6 @@ export type StdbBackend = WorkerBackend & {
   runId(): string | null;
   /** Jobs of these kinds waiting in the active run. */
   queued(kinds: string[]): number;
-  /** Ask for an incident proposal (needs the operator role; the loop just logs the refusal). */
-  issueIncidentJob(incidentId: string, targetReportId: string): Promise<Result<null>>;
   onChange(cb: () => void): void;
   close(): void;
 };
@@ -61,10 +59,15 @@ export async function connectStdb(uri: string, database: string): Promise<StdbBa
   return {
     identityHex: me,
     runId,
-    queued: (kinds) => jobs().filter((r) => r.state === 'QUEUED' && kinds.includes((JSON.parse(r.json) as Job).kind)).length,
+    // A claim whose lease lapsed (a worker timed out) is retried, so it counts as waiting work.
+    queued: (kinds) =>
+      jobs().filter((r) => {
+        const job = JSON.parse(r.json) as Job;
+        const lapsed = r.state === 'CLAIMED' && job.claim !== null && Date.parse(job.claim.leaseExpiresAt) < Date.now();
+        return (r.state === 'QUEUED' || lapsed) && kinds.includes(job.kind);
+      }).length,
     onChange: (cb) => void listeners.push(cb),
     close: () => conn.disconnect(),
-    issueIncidentJob: (incidentId, targetReportId) => call(() => conn.reducers.issueIncidentJob({ incidentId, targetReportId })),
     async claimJob(cmd) {
       const r = await call(() => conn.reducers.claimJob({ commandJson: JSON.stringify(cmd) }));
       if (!r.ok) return r;
@@ -82,6 +85,10 @@ export async function connectStdb(uri: string, database: string): Promise<StdbBa
     async submitLocalSuggestion(cmd) {
       const r = await call(() => conn.reducers.submitLocalSuggestion({ commandJson: JSON.stringify(cmd) }));
       return r.ok ? { ok: true, value: { suggestionId: cmd.jobId } } : r;
+    },
+    async submitIncidentPicture(cmd) {
+      const r = await call(() => conn.reducers.submitIncidentPicture({ commandJson: JSON.stringify(cmd) }));
+      return r.ok ? { ok: true, value: { incidentId: cmd.picture.incidentId } } : r;
     },
     async submitIncidentProposal(cmd) {
       const r = await call(() => conn.reducers.submitIncidentProposal({ commandJson: JSON.stringify(cmd) }));

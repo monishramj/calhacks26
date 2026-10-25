@@ -10,3 +10,4 @@ export { IncomingFeed } from './IncomingFeed';
 export { ReviewBand } from './ReviewBand';
 export { ConfirmedQueue } from './ConfirmedQueue';
 export { IncidentHistory } from './IncidentHistory';
+export { PicturePanel } from './PicturePanel';

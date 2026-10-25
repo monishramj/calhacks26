@@ -25,7 +25,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       const res = await fetch(`${http}/v1/database/${s.database}/call/${reducer}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: JSON.stringify(Array.isArray(arg) ? arg : [typeof arg === 'string' ? arg : JSON.stringify(arg)]),
+        body: JSON.stringify([typeof arg === 'string' ? arg : JSON.stringify(arg)]),
       });
       if (res.ok) return ok(null);
       const text = (await res.text()).trim();
@@ -87,6 +87,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       },
       // ponytail: operator proposals for a not-yet-existing incident (desk.newIncidentSignature) are not offered by the UI yet.
       inputSignatures: Object.fromEntries([...conn.db.incidentSignature.iter()].filter((r) => r.runId === desk.runId).map((r) => [r.incidentId, r.signature])),
+      pictures: rows(conn.db.incidentPicture.iter()),
     };
     for (const l of [...listeners]) l(structuredClone(state));
   }
@@ -98,7 +99,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       .withDatabaseName(s.database)
       .withToken(s.token)
       .onConnect((c) => {
-        const tables = [c.db.desk, c.db.report, c.db.incident, c.db.relation, c.db.suggestion, c.db.proposal, c.db.reviewEvent, c.db.incidentSignature];
+        const tables = [c.db.desk, c.db.report, c.db.incident, c.db.relation, c.db.suggestion, c.db.proposal, c.db.reviewEvent, c.db.incidentSignature, c.db.incidentPicture];
         for (const t of tables) (t as any).onInsert(rebuild), (t as any).onUpdate(rebuild), (t as any).onDelete(rebuild);
         c.subscriptionBuilder().onApplied(rebuild).subscribeToAllTables();
       })
@@ -150,10 +151,6 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
         const i = st.incidents.find((x) => x.incidentId === cmd.incidentId);
         return i && i.revision > cmd.baseRevision ? { incidentId: i.incidentId, revision: i.revision } : undefined;
       });
-    },
-
-    askClaude(incidentId) {
-      return call('issue_incident_job', [incidentId, '']);
     },
 
     async claimJob() {

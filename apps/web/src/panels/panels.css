@@ -21,3 +21,15 @@
 .panel-error { color: var(--life-safety); font-size: 0.8rem; }
 .change-flag { color: var(--active-need); font-size: 0.75rem; }
 .muted { color: var(--muted); font-size: 0.8rem; }
+
+/* Claude working picture (unconfirmed). */
+.picture-incident { margin-bottom: 0.75rem; }
+.picture-incident h3 { font-size: 0.95rem; margin: 0.25rem 0; }
+.picture-node { margin: 0.25rem 0 0.25rem 0.75rem; }
+.picture-site { border-left: 2px solid currentColor; padding-left: 0.5rem; }
+.picture-subarea { margin-left: 0.5rem; }
+.picture-claim { margin: 0.15rem 0; font-size: 0.9rem; }
+.picture-note { margin: 0.1rem 0; font-size: 0.8rem; opacity: 0.85; }
+.picture-stale { color: #b45309; font-weight: 600; font-size: 0.85rem; }
+.picture-chip { font: inherit; font-size: 0.75rem; margin: 0 0.15rem; padding: 0 0.35rem; border: 1px solid currentColor; border-radius: 3px; background: transparent; cursor: pointer; }
+.picture-chip.active { background: currentColor; }

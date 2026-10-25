@@ -52,7 +52,7 @@ def make_job(text, candidates=(), relevant=(), report_id="rep-new", seq=100, sen
     reports = sorted([*relevant, report(report_id, text, seq, sent_at)], key=lambda r: r["receiveSequence"])
     return {"runId": RUN, "jobId": "job-dev-1", "kind": "LOCAL_SUGGESTION", "inputSignature": signature,
             "targetReportId": report_id, "incidentId": None, "reports": reports,
-            "candidateIncidents": list(candidates), "places": []}
+            "candidateIncidents": list(candidates), "places": [], "candidatePictures": []}
 
 
 def target(job):
