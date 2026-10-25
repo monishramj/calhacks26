@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "label": "Montclair residential hills",
+  "asset": "montclair.glb",
+  "topdown": "topdown.png",
+  "projection": {
+    "kind": "blosm-spherical-transverse-mercator",
+    "radiusMeters": 6378137,
+    "scaleFactor": 1,
+    "originLatitude": 37.8291,
+    "originLongitude": -122.2046,
+    "verticalOriginMeters": 0.0,
+    "axes": "x=east,y=up,z=south",
+    "units": "meters"
+  },
+  "geographicBounds": {
+    "south": 37.826854144809936,
+    "west": -122.20858054465603,
+    "north": 37.83134572121969,
+    "east": -122.20061921303494
+  },
+  "sceneBounds": {
+    "minX": -350,
+    "maxX": 350,
+    "minZ": -250,
+    "maxZ": 250
+  },
+  "terrainMaxY": 133.0,
+  "exerciseGroundY": {
+    "school": 108.3199462890625,
+    "residence": 83.915771484375,
+    "shelter": 65.2071533203125
+  },
+  "triangleCount": 11304,
+  "assetBytes": 203468,
+  "assetSha256": "255c9da02735a37321df033b98cfa57ce460596117a4c27a2cd330d76f5cca16",
+  "osmSha256": "080505259cf108b58d153e52818941088f19f34d4a90837b15c0fc9c682b791b",
+  "blenderVersion": "4.5.15 LTS",
+  "blosmVersion": "2.7.28",
+  "genericTextures": [],
+  "attribution": "Map data (c) OpenStreetMap contributors (ODbL). Elevation: Mapzen terrain tiles (Skadi).",
+  "sources": [
+    "https://www.openstreetmap.org/copyright",
+    "https://github.com/tilezen/joerd",
+    "https://github.com/vvoovv/blosm",
+    "https://meshview.bayme.sh/map"
+  ],
+  "coverageUse": "Residential deployment illustration, not measured LoRa coverage. No third-party node positions bundled.",
+  "landscaping": {
+    "kind": "authored procedural",
+    "trees": 55,
+    "seed": 21026,
+    "note": "Decorative landscaping; not surveyed trees"
+  },
+  "appearance": "Generic pastel stucco and slate/terracotta roofs; not actual building colors",
+  "goldenCoordinates": [
+    {
+      "latitude": 37.8291,
+      "longitude": -122.2046,
+      "x": 0.0,
+      "z": -0.0
+    },
+    {
+      "latitude": 37.830099999999995,
+      "longitude": -122.2046,
+      "x": 0.0,
+      "z": -111.3194907929834
+    },
+    {
+      "latitude": 37.8291,
+      "longitude": -122.2036,
+      "x": 87.92498965492477,
+      "z": -0.00047058520688203487
+    },
+    {
+      "latitude": 37.8281,
+      "longitude": -122.2056,
+      "x": -87.9261812331454,
+      "z": 111.31902021202521
+    }
+  ],
+  "sourceBbox": [
+    -122.2098,
+    37.8255,
+    -122.1994,
+    37.8327
+  ],
+  "compression": "EXT_meshopt_compression",
+  "optimizerVersion": "@gltf-transform/cli 4.2.1",
+  "blosmCommit": "4adff00270f4492667f3bf1305d0b338f3cd1268"
+}
