@@ -1,0 +1,10 @@
+# Measured on C4 (Windows 11, Python 3.11.2). CPU torch: pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+laya==0.3.20
+torch==2.14.1
+transformers==5.20.2
+tokenizers==0.23.3
+safetensors==0.8.0
+huggingface_hub==2.3.0
+numpy==2.4.6
+pytest==9.1.1
+jsonschema==4.26.0
