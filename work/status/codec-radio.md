@@ -1,6 +1,6 @@
 # Status · ws/codec-radio (C1)
 
-_Updated: 2026-10-25 01:55 PDT by the C1 agent (Claude), with Sud_
+_Updated: 2026-10-25 02:05 PDT by the C1 agent (Claude), with Sud_
 
 ## Now
 
@@ -43,9 +43,9 @@ None for G1. G1 REVIEW needs endpoint B (C4) for the cross-machine check.
 
 ## Needs from others
 
-- **ws/state (G0):** frozen `ReportInput` + envelope (stable message ID, version) and the intake transport. Per D-003 the transport is a LAN hop from the C4 bridge to the C2 coordinator, so the host and port must be configurable, not localhost-only.
-- **ws/web / C4 human:** a slot on C4 for G1 REVIEW (copy the model, run the pinned runtime, compare fingerprint and cross-decode), then the receiving board on a USB port for G2. It runs natively, outside `apps/web`.
+- **ws/state (G0):** frozen `ReportInput` + envelope (stable message ID, version) and the intake transport. Per D-003 (02:00) the coordinator runs on C4 next to the bridge by default, but the address stays configurable (host/port, not localhost-only).
+- **C4 human (command post):** a slot on C4 for G1 REVIEW (copy the model, run the pinned runtime, compare fingerprint and cross-decode), then the receiving board on a USB port for G2. It runs natively, outside `apps/web`.
 
 ## Inbox acknowledged
 
-1, 2, 3, 4 (kit imported first; G1 started without waiting for G0; preflight above; questions board checked at phase start: nothing for codec-radio). 5 (C4 = endpoint B; runtime binaries go in git under services/codec-radio/runtime/). 6 (codec and bridge stay native).
+1, 2, 3, 4 (kit imported first; G1 started without waiting for G0; preflight above; questions board checked at phase start: nothing for codec-radio). 5 (C4 = endpoint B; runtime binaries go in git under services/codec-radio/runtime/). 6 (codec and bridge stay native). 7 (C4 is the command post; bridge → coordinator is local on C4, address configurable).
