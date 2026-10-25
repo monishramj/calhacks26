@@ -1,8 +1,8 @@
 // Pinned review band (§5): unconfirmed possible life-safety concerns, contradictions,
 // unknowns. Nothing here changes the confirmed queue until the operator approves.
 import { useState } from 'react';
-import type { DeskState, LocalSuggestion, Report } from '../adapters/contract';
-import { reviewBand, type ReviewItem } from '../adapters/derived';
+import type { Attention, DeskState, LocalSuggestion, Report } from '../adapters/contract';
+import { ATTENTION_LABEL, reviewBand, type ReviewItem } from '../adapters/derived';
 import { useDesk } from '../adapters/DeskContext';
 import type { PanelProps } from './index';
 import { AttentionTag, ProvenanceTag, TimeField, messageLabel, useCommand } from './shared';
@@ -109,6 +109,7 @@ function ReviewCard({
         </div>
       ) : null}
       {!suggestion && !proposal && <div className="muted">No suggestion · manual review</div>}
+      {suggestion && !proposal && state.mode === 'LIVE' && <SuggestionApprove report={report} suggestion={suggestion} state={state} />}
       {proposal && (
         <div>
           <div className="muted">
@@ -172,5 +173,80 @@ function ReviewCard({
         </p>
       )}
     </li>
+  );
+}
+
+const ATTENTION_CHOICES = Object.keys(ATTENTION_LABEL) as Attention[];
+
+/**
+ * Live only: the operator approves a local suggestion by naming the incident and attention, through
+ * the existing operator_edit reducer (the source report is recorded as the reason). Nothing applies
+ * until this click. Replay has fixture proposals instead, so it does not show this form.
+ */
+function SuggestionApprove({ report, suggestion, state }: { report: Report; suggestion: LocalSuggestion; state: DeskState }) {
+  const { run, error, busy } = useCommand();
+  const open = state.incidents.filter((i) => i.status === 'OPEN');
+  const [target, setTarget] = useState(suggestion.candidateIncidentId ?? '');
+  const [newId, setNewId] = useState('');
+  const [attention, setAttention] = useState<Attention | 'UNKNOWN'>(suggestion.attention ?? 'UNKNOWN');
+  const incident = open.find((i) => i.incidentId === target);
+  const incidentId = incident ? incident.incidentId : newId.trim();
+  const valid = incident !== undefined || /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(incidentId);
+
+  async function approve() {
+    const att = attention === 'UNKNOWN' ? null : attention;
+    await run((a, runId, commandId) =>
+      a.operatorEdit({
+        runId,
+        commandId,
+        incidentId,
+        baseRevision: incident?.revision ?? 0,
+        changes: incident
+          ? { addReportIds: [report.reportId], attention: att }
+          : { status: 'OPEN', attention: att, addReportIds: [report.reportId] },
+        reason: null,
+        sourceReportIds: [report.reportId],
+      }),
+    );
+  }
+
+  return (
+    <div className="panel-actions">
+      <label>
+        Target{' '}
+        <select value={incident ? target : ''} onChange={(e) => setTarget(e.target.value)}>
+          <option value="">New incident</option>
+          {open.map((i) => (
+            <option key={i.incidentId} value={i.incidentId}>
+              {i.incidentId}
+            </option>
+          ))}
+        </select>
+      </label>
+      {!incident && (
+        <label>
+          New incident ID <input value={newId} onChange={(e) => setNewId(e.target.value)} />
+        </label>
+      )}
+      <label>
+        Attention{' '}
+        <select value={attention} onChange={(e) => setAttention(e.target.value as Attention | 'UNKNOWN')}>
+          {ATTENTION_CHOICES.map((a) => (
+            <option key={a} value={a}>
+              {ATTENTION_LABEL[a]}
+            </option>
+          ))}
+          <option value="UNKNOWN">Unknown</option>
+        </select>
+      </label>
+      <button type="button" onClick={approve} disabled={busy || !valid}>
+        Approve
+      </button>
+      {error && (
+        <p role="alert" className="panel-error">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
