@@ -31,7 +31,7 @@ _Snapshot 02:30 PDT, written by the C4 orchestrator session as it hands off._
 | G4 local Laya | P0 | ws/inference (laya lane) | TEST red (37074d8: 81 red on stubs, against v1) | `G4.md` on ws/inference-laya | Laya loads on C4 CPU: warm p50 1,064 ms / p95 1,322 ms for 3 questions. Next: IMPLEMENT. |
 | G5 Claude enrichment | P1 | ws/inference | not started | `work/validation/G5.md` | Fixture tools first, live after G3. |
 | G6 queue and history | P0 | ws/state + ws/web (panels lane) | rules: TEST red (5981075, 64/69 red); panels: IMPL green on replay (6118ffc, pre-v1) | `G6-state.md`, `G6-panels.md` | Panels must migrate to v1 types. |
-| G7 scene and heatmap | P0 | ws/web (scene lane) | REVIEW passed, slice (1c1f820, v1 types, 70/70 + e2e) | `G7-scene.md` on ws/web-scene | Not merged into ws/web yet. Lead adapter/panels v1 migration still open (question 1025-022132). |
+| G7 scene and heatmap | P0 | ws/web (scene lane) | REVIEW passed, slice (30adf68: v1 types, CC0 textures, 70/70 + 5 scene e2e) | `G7-scene.md` on ws/web-scene | Not merged into ws/web yet. Lead adapter/panels v1 migration still open (question 1025-022132). |
 | G8 resilience | P0 | all | not started | `G8-state.md`, `G8-inference.md`, `G8-web.md` | After the G3–G7 real paths. |
 | G9 end-to-end | P0 | all | not started | `G9-radio.md`, `G9-integration.md` | Every pitched feature. |
 
