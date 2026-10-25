@@ -4,7 +4,7 @@ import json
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from .config import LAYA_REVISION, LAYA_RUNTIME
+from .config import LAYA_REVISION, LAYA_RUNTIME, settings
 from .runtime import LayaUnavailable, load
 from .suggest import InvalidJob, domain_contract, suggest, validate_job
 
@@ -17,8 +17,13 @@ class Worker:
     """Loads the runtime once through `loader` and serves requests against it."""
 
     def __init__(self, loader):
+        self.scorer_provenance = None
         try:
             self.runtime = loader()
+            scorer_path = settings().scorer_path
+            if scorer_path:
+                from finetune.scorer import load_scorer
+                self.scorer_provenance = load_scorer(self.runtime, scorer_path)[2]
         except Exception:
             logging.getLogger(__name__).warning("Local model unavailable at startup")
             self.runtime = None
@@ -27,7 +32,10 @@ class Worker:
         if method == "GET" and path == "/health":
             if self.runtime is None:
                 return 503, {"status": "unavailable"}
-            return 200, {"status": "ready", "runtime": LAYA_RUNTIME, "revision": LAYA_REVISION}
+            health = {"status": "ready", "runtime": LAYA_RUNTIME, "revision": LAYA_REVISION}
+            if self.scorer_provenance:
+                health["scorer"] = self.scorer_provenance
+            return 200, health
         if method != "POST" or path != "/suggest":
             return 404, error("NOT_FOUND")
         if len(body) > domain_contract.MAX_WIRE_BYTES:

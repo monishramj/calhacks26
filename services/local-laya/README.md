@@ -2,7 +2,7 @@
 
 **Spec:** §4, §5, §17 `LocalSuggestion`, §20 Useful local inference
 
-This is a local Python worker. It loads Laya once and answers bounded action, relationship, and attention questions about the current candidates. It serves at `LOCAL_LAYA_URL`. It has no generated summaries, no cloud dependency, no retrieval service, and no fine-tuning (§20 Useful local inference). It runs natively on the command post.
+This is a local Python worker. It loads Laya once and answers bounded action, relationship, and attention questions about the current candidates. It serves at `LOCAL_LAYA_URL`. It has no generated summaries, cloud dependency, or retrieval service. Stock inference is the default; an optional scorer head is described below. It runs natively on the command post.
 
 ## Setup (once per machine)
 
@@ -37,6 +37,45 @@ services/local-laya/
 - Laya scored at chance on raw JSON in flyby. Render the state as plain sentences.
 
 Weights stay outside git (`LAYA_MODEL_PATH`).
+
+## Optional incident scorer
+
+`finetune/make_data.py` authors 200 synthetic examples with generic places; it reads no fixtures.
+The fixed split has 160 training examples and 40 validation examples with disjoint wording groups.
+Places are shared across the split. This is limited synthetic validation, not calibration.
+`finetune/train.py` freezes stock Laya and trains only a copy of its 1,052,673-parameter scorer
+for action and attention. It selects the epoch by synthetic validation cross entropy and saves
+`models/laya_incident_scorer.pt` plus `.json` metrics, data digest, and pinned base revision/digest.
+
+```bash
+export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
+python services/local-laya/finetune/make_data.py
+python services/local-laya/finetune/train.py
+LAYA_SCORER_PATH="$PWD/models/laya_incident_scorer.pt" PYTHONPATH=services/local-laya \
+  python -m laya_worker.server --host 127.0.0.1 --port 8094
+```
+
+Use the installed Laya environment and set `LAYA_MODEL_PATH` to the verified stock checkpoint first.
+Without `LAYA_SCORER_PATH`, behavior and health output remain stock. When set, `/health.scorer`
+identifies **uncalibrated fine-tuned-head scores**, the head/data hashes, and the base revision.
+Action and attention use `kind: "score"`; candidate selection retains stock probabilities.
+The contract's provider remains `local_laya`. Invalid or incompatible heads fail unavailable.
+The review thresholds and open-candidate guard remain; plausible harm from either the stock or
+tuned attention scores blocks a downgrade. Configure the environment before worker startup.
+
+The saved experiment selected epoch 394/400: synthetic validation accuracy is 70% action and
+80% attention (cross entropy 0.814 and 0.679). This split has no `ACTIVE_NEED` or `REQUEST_REVIEW`
+validation labels, so those accuracies do not establish performance across every class.
+`models/laya_incident_evaluation.json` records the unchanged `scripts/evaluate.py:laya` evaluation
+through `Worker.handle`: stock → tuned counts across 26 cases are false links 0 → 0, missed
+corrections 2 → 2, attention confusions 1 → 2, unjustified downgrades 0 → 0, and review 26 → 26.
+All 26 actions remain `REQUEST_REVIEW`: this head **has not demonstrated reduced review load**.
+The port-8094 worker could not bind in the sandbox (`PermissionError: [Errno 1] Operation not permitted`),
+so these are in-process results, not HTTP verification. The evaluator's git/codec main was not run.
+The 80-epoch initial run is retained separately; the extension addressed synthetic underfitting,
+with checkpoint selection using only the synthetic validation loss. No evaluation text or labels
+entered training. All 100 service tests passed with the local real model; the only warning was
+the stock checkpoint's existing temperature clamp for 11+ choices.
 
 ## Native Mac worker
 

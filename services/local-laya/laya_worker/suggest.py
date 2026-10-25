@@ -7,6 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "packages/domain/py
 import domain_contract
 
 from .runtime import LayaUnavailable, check_answers
+from .config import settings
 
 LOG = logging.getLogger(__name__)
 ACTION = {
@@ -107,13 +108,21 @@ def suggest(job: dict, runtime) -> dict:
         if runtime.count_tokens(state) > min(runtime.state_room(q) for q in questions.values()):
             LOG.warning("REQUEST_REVIEW: context would be truncated; originals preserved; no inference")
             return finish()
-        answers = check_answers(runtime.ask(state, questions)["answers"], questions)
+        scorer_path = settings().scorer_path
+        stock_harm = 0
+        if scorer_path:
+            from finetune.scorer import ask_with_scorer
+            raw, stock_harm = ask_with_scorer(runtime, state, questions, scorer_path)
+        else:
+            raw = runtime.ask(state, questions)["answers"]
+        answers = check_answers(raw, questions)
     except (ValueError, TypeError, KeyError, AttributeError):
         LOG.warning("REQUEST_REVIEW: invalid model output or question budget")
         return finish()
     result["scores"] = [
-        {"label": label, "value": value, "kind": "probability"}
-        for answer in answers.values() for label, value in answer["probabilities"].items()
+        {"label": label, "value": value,
+         "kind": "score" if scorer_path and qid in ("action", "attention") else "probability"}
+        for qid, answer in answers.items() for label, value in answer["probabilities"].items()
     ]
     result["action"] = _certain(answers["action"]) or "REQUEST_REVIEW"
     if result["action"] in LINK_ACTIONS:
@@ -133,7 +142,7 @@ def suggest(job: dict, runtime) -> dict:
                 or result["action"] == "REQUEST_REVIEW"]
     # Harm is plausible when the model gives it real mass, with or without a candidate (NEW_INCIDENT has none).
     # shortcut: authored 0.15 plausibility floor, uncalibrated.
-    plausible = answers["attention"]["probabilities"].get("POSSIBLE_LIFE_SAFETY", 0) >= 0.15
+    plausible = max(stock_harm, answers["attention"]["probabilities"].get("POSSIBLE_LIFE_SAFETY", 0)) >= 0.15
     if attention and attention != order[0] and (plausible or any(
             c["status"] == "OPEN" and (c["attention"] is None or order.index(c["attention"]) < order.index(attention))
             for c in relevant)):

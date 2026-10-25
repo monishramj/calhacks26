@@ -16,6 +16,7 @@ LAYA_WEIGHTS_SHA256 = "891102d372688fc2a094dac56a384bc537b87c63f21f9f3dac0be2b7c
 class Settings:
     model_path: Path = field(default_factory=lambda: Path(os.environ.get("LAYA_MODEL_PATH", "")))
     device: str = field(default_factory=lambda: os.environ.get("LAYA_DEVICE", "cpu"))
+    scorer_path: str = field(default_factory=lambda: os.environ.get("LAYA_SCORER_PATH", ""))
     results_dir: Path = SERVICE_DIR / "results"
 
 
