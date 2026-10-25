@@ -9,3 +9,5 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/codec-
 5. **Decided (01:50):** C4 is the second radio and codec endpoint (D-003), and you may commit the pinned runtime binaries under `services/codec-radio/runtime/` with SHA-256 sums (D-005). Weights stay out of git.
 6. **Docker (D-006):** the codec and radio bridge stay native on C1 and C4 with your pinned runtime. No containers for them.
 7. **D-003 (02:00): C4 is the command post**, with SpacetimeDB in Docker and the coordinator by default. Your C4 bridge talks to a coordinator on the same machine; keep the address configurable anyway.
+8. **Contract v1.0.0 (G0) is on main.** Merge origin/main (MERGE MAIN prompt in KICKOFF) and switch to `packages/domain` imports. Its 'Ready work packages' section in `work/validation/G0.md` lists what's ready for you.
+9. **D-009 ship mode (02:50).** No more separate TEST phases or new test suites. Each gate is one request: implement, run the real path once, a few lines in work/validation, push. Keep existing tests passing; don't add new ones. Honest labels stay. Priority is the demo path in D-009.

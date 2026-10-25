@@ -1,0 +1,130 @@
+{
+  "type": "ScenarioState",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "waiting on presenter before R07",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT"
+      }
+    },
+    {
+      "name": "finished",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 12,
+        "deliveredCount": 12,
+        "totalCount": 12,
+        "awaitingPresenter": false,
+        "nextGate": null
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "next report text",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT",
+        "nextText": "Correction: the school gym is clear..."
+      }
+    },
+    {
+      "name": "next message id",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT",
+        "nextMessageId": "R07"
+      }
+    },
+    {
+      "name": "script",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT",
+        "script": []
+      }
+    },
+    {
+      "name": "expectations",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT",
+        "expectations": {}
+      }
+    },
+    {
+      "name": "timer gate",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "TIMER"
+      }
+    },
+    {
+      "name": "delay",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": 6,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT",
+        "nextDelayMs": 5000
+      }
+    },
+    {
+      "name": "negative delivered",
+      "payload": {
+        "runId": "run-001",
+        "exerciseVersion": "exercise-v1",
+        "seed": "seed-001",
+        "logicalClock": 6,
+        "deliveredCount": -1,
+        "totalCount": 12,
+        "awaitingPresenter": true,
+        "nextGate": "SEND_NEXT_REPORT"
+      }
+    }
+  ]
+}
