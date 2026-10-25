@@ -1,19 +1,23 @@
 import { SCENE_METADATA } from './georeference';
+import type { IncidentView, ReportProvenance } from '../../../../packages/domain/src/types';
 
-// Lane-local rendering input, not a public wire contract. Replace with a Pick
-// of packages/domain IncidentView after G0. Only confirmed state enters here.
-export type SceneIncident = {
-  incidentId: string;
-  status: 'OPEN' | 'RESOLVED';
-  attention: 'POSSIBLE_LIFE_SAFETY' | 'ACTIVE_NEED' | 'INFORMATION' | null;
-  confirmedPlaceId: string | null;
-  confirmedReportIds: readonly string[];
+// A read-only rendering projection of frozen contract v1, not another schema.
+export type SceneIncident = Readonly<Pick<IncidentView,
+  'incidentId' | 'status' | 'attention' | 'confirmedPlaceId'>> & {
+  readonly confirmedReportIds: Readonly<IncidentView['confirmedReportIds']>;
 };
 
 export type SceneDataProps = {
   incidents?: readonly SceneIncident[];
-  sourceProvenance?: 'fixture' | 'recording' | 'live' | 'none';
+  sourceProvenance?: ReportProvenance | 'recording' | 'none';
 };
+
+// Contract v1 puts provenance on individual reports, not the desk snapshot.
+// Keep all source kinds visible when a snapshot contains mixed evidence.
+export function reportSourceLabel(reports: readonly { provenance: string }[]): string {
+  const sources = [...new Set(reports.map((report) => report.provenance))].sort();
+  return sources.length ? sources.join(' + ') : 'none';
+}
 
 export type GroundPoint = { x: number; z: number };
 

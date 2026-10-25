@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useDesk } from '../adapters/DeskContext';
 import { attentionColor, attentionLabel, HEATMAP_HEIGHT_SCALE, HEATMAP_RADIUS,
-  PLACES, placePosition, type SceneDataProps, type SceneIncident } from './model';
+  PLACES, placePosition, reportSourceLabel, type SceneDataProps, type SceneIncident } from './model';
 import './scene.css';
 import { SCENE_METADATA, sceneToGeographic } from './georeference';
 
@@ -64,7 +64,7 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
 export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplied, sourceProvenance }: SceneProps) {
   const { state } = useDesk();
   const incidents = supplied ?? state?.incidents ?? [];
-  const provenance = sourceProvenance ?? state?.sourceProvenance ?? 'none';
+  const provenance = sourceProvenance ?? reportSourceLabel(state?.reports ?? []);
   const [heatmap, setHeatmap] = useState(false);
   const [webgl, setWebgl] = useState(false);
   const [use2d, setUse2d] = useState(false);

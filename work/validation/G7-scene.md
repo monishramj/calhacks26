@@ -84,3 +84,12 @@ Next: lead merges ws/web-scene and runs verify; scene continues independently on
 - Heatmap visual check caught marker colors being washed out by Three's separate opaque/transparent render queues. Markers and selection rings now render in the transparent queue with their existing explicit order; colors remain visible above the surface. Actual screenshot rechecked; production build passes.
 - Preserved the portable Blender tools, official BLOSM checkout, source OSM/water polygon, compatible Shapely packages and terrain cache in the persistent sibling calhacks26-scene-assets folder, outside git. The temporary session folder is no longer the only copy of bake inputs/tooling.
 - Codex follow-up automation is ACTIVE following the human clarification; Claude lead/panels HANDOFF requests remain separate.
+
+### Contract v1 integration · 2026-10-25 heartbeat
+
+- Fetched and merged origin/ws/web (3ba8c6f) and origin/main (1975187); contract v1.0.0 is frozen and inbox item 9 is acknowledged. Read its Ready work packages and current decisions.
+- SceneIncident is now a read-only projection of packages/domain IncidentView. Source prop types consume ReportProvenance. These imports erase at build time; no shared package/lockfile/config changes.
+- Removed scene access to the interim snapshot sourceProvenance string because contract v1 has no such field. Source labels derive from received reports, retain all distinct kinds, and show none when no evidence exists. Existing optional scene-only test inputs remain compatible.
+- Added provenance.test.ts: no evidence cannot imply live, recorded/simulated/fixture remain distinct, and mixed evidence labels stay stable under repeat/reordering.
+- npm run verify: typecheck and 70/70 unit/component/asset tests plus 3/3 lead browser story tests pass. Scene Playwright suite 4/4 passes; npm run build passes. No live provider or performance claim added.
+- Lead-owned adapter/replay/panels still require migration to the nested v1 records/commands, scenario, and backend signatures. Posted questions item 1025-022132 instead of editing those shared paths. Whole-web v1 integration is not yet claimed complete.
