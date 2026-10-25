@@ -71,6 +71,32 @@ export type IncidentProposal = {
   provider: Provider;
 };
 
+// ---- Claude working picture (v1.3.0): unconfirmed working state, never confirmed truth ----
+
+export type PictureClaim = { text: string; reportIds: string[] };
+export type PictureChronologyEntry = { reportId: string; supersedesReportId: string | null; late: boolean };
+/** Shared by area, site and subarea. */
+export type PictureNode = {
+  label: string;
+  severity: Attention | null;
+  /** Every report of this node in receive order; `late` = sent before a report received earlier. */
+  chronology: PictureChronologyEntry[];
+  uncertainties: string[];
+  conflicts: string[];
+  reportIds: string[];
+};
+export type PictureSubarea = PictureNode & { claims: PictureClaim[] };
+export type PictureSite = PictureNode & { siteKind: 'school' | 'residence' | 'shelter' | 'other'; subareas: PictureSubarea[] };
+export type PictureArea = PictureNode & { sites: PictureSite[] };
+/** What the worker submits: the picture of one incident, built from the job's reports only. */
+export type IncidentPictureDraft = { runId: string; incidentId: string; model: string; areas: PictureArea[] };
+/** Stored picture. STALE means reports newer than throughSequence exist; staleSinceReportId names the first. */
+export type IncidentPicture = IncidentPictureDraft & {
+  status: 'CURRENT' | 'STALE';
+  staleSinceReportId: string | null;
+  throughSequence: number;
+};
+
 export type ErrorCode =
   | 'STALE_REVISION'
   | 'INVALID_SOURCE'
@@ -94,6 +120,7 @@ export type AdapterMethod =
   | 'receiveReport'
   | 'submitLocalSuggestion'
   | 'submitIncidentProposal'
+  | 'submitIncidentPicture'
   | 'approveProposal'
   | 'rejectProposal'
   | 'operatorEdit'
@@ -183,6 +210,8 @@ export type JobInput = {
   reports: JobReport[];
   candidateIncidents: IncidentView[];
   places: { placeId: string; aliases: string[] }[];
+  /** Latest picture per candidate incident, as context. Empty means none. */
+  candidatePictures: IncidentPicture[];
 };
 
 export type ChangeField = 'status' | 'attention' | 'confirmedPlaceId' | 'summary' | 'addReportIds' | 'relations';
@@ -245,6 +274,7 @@ export type OperatorEditCommand = {
 export type ClaimJobCommand = { runId: string; kinds: JobKind[] };
 export type SubmitLocalSuggestionCommand = { jobId: string; suggestion: LocalSuggestion };
 export type SubmitIncidentProposalCommand = { jobId: string | null; proposal: IncidentProposal };
+export type SubmitIncidentPictureCommand = { jobId: string; picture: IncidentPictureDraft };
 export type AdvanceScenarioCommand = { commandId: string; runId: string; expectedDeliveredCount: number };
 export type ResetRunCommand = { commandId: string; runId: string };
 
@@ -270,6 +300,8 @@ export type DeskState = {
   inputSignatures: Record<string, string>;
   /** Live only: jobs still waiting for a worker, by kind (a long wait means that provider is unavailable). */
   queuedJobs?: Partial<Record<JobKind, number>>;
+  /** Latest Claude working picture per incident (live only; unconfirmed). */
+  pictures?: IncidentPicture[];
 };
 
 export interface DeskAdapter {

@@ -38,7 +38,7 @@ describe('§17 enums', () => {
 });
 
 describe('adapter surface', () => {
-  it('has exactly the ten §17 methods', () => {
+  it('has the ten §17 methods plus the Claude picture submission', () => {
     expect([...ADAPTER_METHODS].sort()).toEqual(
       [
         'advanceScenario',
@@ -48,6 +48,7 @@ describe('adapter surface', () => {
         'receiveReport',
         'rejectProposal',
         'resetRun',
+        'submitIncidentPicture',
         'submitIncidentProposal',
         'submitLocalSuggestion',
         'subscribeState',

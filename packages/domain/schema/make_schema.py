@@ -16,7 +16,7 @@ from pathlib import Path
 
 OUT = Path(__file__).parent / "contract.schema.json"
 
-CONTRACT_VERSION = "1.2.0"
+CONTRACT_VERSION = "1.3.0"
 MAX_ID_LENGTH = 128
 # Authored bound, not a measured one: ~4x the 233-byte packet ceiling so llm-coded
 # radio text fits, while operator text stays short. Revisit with C1's measured ratio.
@@ -272,10 +272,49 @@ defs["JobInput"] = closed(
         "reports": {"type": "array", "items": JOB_REPORT, "maxItems": 256},
         "candidateIncidents": {"type": "array", "items": ref("IncidentView"), "maxItems": 32},
         "places": {"type": "array", "items": PLACE, "maxItems": 64},
+        "candidatePictures": described({"type": "array", "items": ref("IncidentPicture"), "maxItems": 32},
+                                       "Latest Claude working picture per candidate incident, as context. Empty means none."),
     },
     when({"kind": {"const": "LOCAL_SUGGESTION"}}, {"targetReportId": ID, "reports": {"minItems": 1}}),
     when({"kind": {"const": "INCIDENT_PROPOSAL"}}, {"incidentId": ID}),
 )
+# Claude working picture (unconfirmed, v1.3.0): area -> site -> subarea -> claims. Fixed depth, no recursion.
+SITE_KINDS = ["school", "residence", "shelter", "other"]
+PICTURE_CHRONOLOGY = closed({"reportId": ID, "supersedesReportId": nullable(ID), "late": {"type": "boolean"}})
+PICTURE_CLAIM = closed({"text": SHORT_TEXT, "reportIds": ids(64, minItems=1)})
+
+
+def picture_node(**extra) -> dict:
+    return {
+        "label": SHORT_TEXT,
+        "severity": nullable(enum(ATTENTION)),
+        "chronology": {"type": "array", "items": PICTURE_CHRONOLOGY, "maxItems": 64},
+        "uncertainties": {"type": "array", "items": SHORT_TEXT, "maxItems": 16},
+        "conflicts": {"type": "array", "items": SHORT_TEXT, "maxItems": 16},
+        "reportIds": ids(64),
+        **extra,
+    }
+
+
+# Nested levels are inline (not $defs): the picture tree is fixed-depth and only the top level is a wire type.
+PICTURE_SUBAREA = closed(picture_node(claims={"type": "array", "items": PICTURE_CLAIM, "maxItems": 32}))
+PICTURE_SITE = closed(picture_node(
+    siteKind=enum(SITE_KINDS),
+    subareas={"type": "array", "items": PICTURE_SUBAREA, "maxItems": 16},
+))
+PICTURE_AREA = closed(picture_node(sites={"type": "array", "items": PICTURE_SITE, "maxItems": 16}))
+PICTURE_AREAS = {"type": "array", "items": PICTURE_AREA, "maxItems": 8}
+defs["IncidentPictureDraft"] = closed({"runId": ID, "incidentId": ID, "model": SHORT_TEXT, "areas": PICTURE_AREAS})
+defs["IncidentPicture"] = closed({
+    "runId": ID,
+    "incidentId": ID,
+    "model": SHORT_TEXT,
+    "areas": PICTURE_AREAS,
+    "status": enum(["CURRENT", "STALE"]),
+    "staleSinceReportId": nullable(ID),
+    "throughSequence": COUNT,
+})
+defs["SubmitIncidentPictureCommand"] = closed({"jobId": ID, "picture": ref("IncidentPictureDraft")})
 
 defs["ReviewEvent"] = closed(
     {
@@ -364,6 +403,7 @@ SCHEMA = {
         "IncidentProposal: no relation has reportId == targetReportId",
         "ReportRelation: reportId != targetReportId",
         "ReviewEvent: newRevision > priorRevision",
+        "IncidentPicture(Draft): every chronology reportId and supersedesReportId, and every claim reportId, is in its node's reportIds",
         "ReportInput.text, Report.input.text, JobInput.reports[].text: at most x-maxReportTextBytes UTF-8 bytes",
     ],
     "$defs": defs,

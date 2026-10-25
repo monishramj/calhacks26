@@ -1,0 +1,391 @@
+{
+  "type": "IncidentPicture",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "current picture through R07",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "model": "claude-test",
+        "areas": [
+          {
+            "label": "Waterfront",
+            "severity": null,
+            "chronology": [],
+            "uncertainties": [],
+            "conflicts": [],
+            "reportIds": [
+              "rep-000001",
+              "rep-000007"
+            ],
+            "sites": [
+              {
+                "label": "school",
+                "severity": "POSSIBLE_LIFE_SAFETY",
+                "chronology": [],
+                "uncertainties": [],
+                "conflicts": [],
+                "reportIds": [
+                  "rep-000001",
+                  "rep-000007"
+                ],
+                "siteKind": "school",
+                "subareas": [
+                  {
+                    "label": "gym",
+                    "severity": "INFORMATION",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000001",
+                        "supersedesReportId": null,
+                        "late": false
+                      },
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": "rep-000001",
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000001",
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Gym is clear: the correction says everyone checked is outside.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "main building",
+                    "severity": "POSSIBLE_LIFE_SAFETY",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": null,
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [
+                      "Search of the main building is not complete."
+                    ],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Someone may still be upstairs in the main building.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "status": "CURRENT",
+        "staleSinceReportId": null,
+        "throughSequence": 7
+      }
+    },
+    {
+      "name": "stale since R08",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "model": "claude-test",
+        "areas": [
+          {
+            "label": "Waterfront",
+            "severity": null,
+            "chronology": [],
+            "uncertainties": [],
+            "conflicts": [],
+            "reportIds": [
+              "rep-000001",
+              "rep-000007"
+            ],
+            "sites": [
+              {
+                "label": "school",
+                "severity": "POSSIBLE_LIFE_SAFETY",
+                "chronology": [],
+                "uncertainties": [],
+                "conflicts": [],
+                "reportIds": [
+                  "rep-000001",
+                  "rep-000007"
+                ],
+                "siteKind": "school",
+                "subareas": [
+                  {
+                    "label": "gym",
+                    "severity": "INFORMATION",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000001",
+                        "supersedesReportId": null,
+                        "late": false
+                      },
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": "rep-000001",
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000001",
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Gym is clear: the correction says everyone checked is outside.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "main building",
+                    "severity": "POSSIBLE_LIFE_SAFETY",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": null,
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [
+                      "Search of the main building is not complete."
+                    ],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Someone may still be upstairs in the main building.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "status": "STALE",
+        "staleSinceReportId": "rep-000008",
+        "throughSequence": 7
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "unknown status",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "model": "claude-test",
+        "areas": [
+          {
+            "label": "Waterfront",
+            "severity": null,
+            "chronology": [],
+            "uncertainties": [],
+            "conflicts": [],
+            "reportIds": [
+              "rep-000001",
+              "rep-000007"
+            ],
+            "sites": [
+              {
+                "label": "school",
+                "severity": "POSSIBLE_LIFE_SAFETY",
+                "chronology": [],
+                "uncertainties": [],
+                "conflicts": [],
+                "reportIds": [
+                  "rep-000001",
+                  "rep-000007"
+                ],
+                "siteKind": "school",
+                "subareas": [
+                  {
+                    "label": "gym",
+                    "severity": "INFORMATION",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000001",
+                        "supersedesReportId": null,
+                        "late": false
+                      },
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": "rep-000001",
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000001",
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Gym is clear: the correction says everyone checked is outside.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "main building",
+                    "severity": "POSSIBLE_LIFE_SAFETY",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": null,
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [
+                      "Search of the main building is not complete."
+                    ],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Someone may still be upstairs in the main building.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "status": "PAUSED",
+        "staleSinceReportId": null,
+        "throughSequence": 7
+      }
+    },
+    {
+      "name": "missing throughSequence",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "model": "claude-test",
+        "areas": [
+          {
+            "label": "Waterfront",
+            "severity": null,
+            "chronology": [],
+            "uncertainties": [],
+            "conflicts": [],
+            "reportIds": [
+              "rep-000001",
+              "rep-000007"
+            ],
+            "sites": [
+              {
+                "label": "school",
+                "severity": "POSSIBLE_LIFE_SAFETY",
+                "chronology": [],
+                "uncertainties": [],
+                "conflicts": [],
+                "reportIds": [
+                  "rep-000001",
+                  "rep-000007"
+                ],
+                "siteKind": "school",
+                "subareas": [
+                  {
+                    "label": "gym",
+                    "severity": "INFORMATION",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000001",
+                        "supersedesReportId": null,
+                        "late": false
+                      },
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": "rep-000001",
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000001",
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Gym is clear: the correction says everyone checked is outside.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "main building",
+                    "severity": "POSSIBLE_LIFE_SAFETY",
+                    "chronology": [
+                      {
+                        "reportId": "rep-000007",
+                        "supersedesReportId": null,
+                        "late": false
+                      }
+                    ],
+                    "uncertainties": [
+                      "Search of the main building is not complete."
+                    ],
+                    "conflicts": [],
+                    "reportIds": [
+                      "rep-000007"
+                    ],
+                    "claims": [
+                      {
+                        "text": "Someone may still be upstairs in the main building.",
+                        "reportIds": [
+                          "rep-000007"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "status": "CURRENT",
+        "staleSinceReportId": null
+      }
+    }
+  ]
+}

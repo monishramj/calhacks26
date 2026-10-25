@@ -15,9 +15,12 @@ import {
   type LocalSuggestion,
   type Report,
   type Result,
+  type SubmitIncidentPictureCommand,
 } from '@calhacks26/domain';
 
-export type WorkerBackend = Pick<DeskAdapter, 'claimJob' | 'submitLocalSuggestion' | 'submitIncidentProposal'>;
+export type WorkerBackend = Pick<DeskAdapter, 'claimJob' | 'submitLocalSuggestion' | 'submitIncidentProposal'> & {
+  submitIncidentPicture(cmd: SubmitIncidentPictureCommand): Promise<Result<{ incidentId: string }>>;
+};
 
 const RUN = 'run-fixture-dev';
 const T0 = Date.parse('2026-10-25T09:00:00Z');
@@ -117,6 +120,13 @@ export function createFixtureBackend(): WorkerBackend & { runId: string; jobs: E
       if (!done.ok) return done;
       suggestions.push(v.value);
       return { ok: true, value: { suggestionId: `sug-${suggestions.length}` } };
+    },
+    async submitIncidentPicture({ jobId, picture }) {
+      // Fixture pictures are not stored anywhere; this only finishes the fixture job.
+      const e = jobs.find((x) => x.job.jobId === jobId && x.job.state === 'CLAIMED');
+      if (!e) return { ok: false, error: { code: 'INVALID_INPUT', message: `no claimed job ${jobId}` } };
+      e.job.state = 'DONE';
+      return { ok: true, value: { incidentId: picture.incidentId } };
     },
     async submitIncidentProposal({ jobId, proposal }) {
       const v = validateWire<IncidentProposal>('IncidentProposal', proposal);

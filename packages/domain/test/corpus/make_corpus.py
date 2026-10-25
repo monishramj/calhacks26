@@ -439,6 +439,43 @@ job = {
     ],
 }
 
+# --- Claude working picture (v1.3.0): unconfirmed, area -> site -> subarea -> claims ----
+
+def pnode(label, reports, **extra):
+    return {"label": label, "severity": None, "chronology": [], "uncertainties": [], "conflicts": [], "reportIds": reports, **extra}
+
+GYM = pnode("gym", ["rep-000001", "rep-000007"], severity="INFORMATION",
+            chronology=[{"reportId": "rep-000001", "supersedesReportId": None, "late": False},
+                        {"reportId": "rep-000007", "supersedesReportId": "rep-000001", "late": False}],
+            claims=[{"text": "Gym is clear: the correction says everyone checked is outside.", "reportIds": ["rep-000007"]}])
+MAIN = pnode("main building", ["rep-000007"], severity="POSSIBLE_LIFE_SAFETY",
+             chronology=[{"reportId": "rep-000007", "supersedesReportId": None, "late": False}],
+             uncertainties=["Search of the main building is not complete."],
+             claims=[{"text": "Someone may still be upstairs in the main building.", "reportIds": ["rep-000007"]}])
+SCHOOL = pnode("school", ["rep-000001", "rep-000007"], severity="POSSIBLE_LIFE_SAFETY", siteKind="school",
+               subareas=[GYM, MAIN])
+PICTURE_DRAFT = {"runId": RUN, "incidentId": "inc-school", "model": "claude-test",
+                 "areas": [pnode("Waterfront", ["rep-000001", "rep-000007"], sites=[SCHOOL])]}
+PICTURE = {**PICTURE_DRAFT, "status": "CURRENT", "staleSinceReportId": None, "throughSequence": 7}
+picture_draft = {
+    "valid": [("school gym clear, main building possible person upstairs", PICTURE_DRAFT)],
+    "invalid": [
+        ("claim cites a report outside its node", at(PICTURE_DRAFT, "areas.0.sites.0.subareas.1.claims.0.reportIds", ["rep-000001"])),
+        ("chronology supersedes a report outside its node", at(PICTURE_DRAFT, "areas.0.sites.0.subareas.0.chronology.1.supersedesReportId", "rep-000099")),
+        ("unknown severity word", at(PICTURE_DRAFT, "areas.0.sites.0.severity", "HIGH")),
+        ("a status field on the draft", with_(PICTURE_DRAFT, status="CURRENT")),
+        ("a claim with no cited report", at(PICTURE_DRAFT, "areas.0.sites.0.subareas.1.claims.0.reportIds", [])),
+    ],
+}
+incident_picture = {
+    "valid": [("current picture through R07", PICTURE), ("stale since R08", with_(PICTURE, status="STALE", staleSinceReportId="rep-000008"))],
+    "invalid": [("unknown status", with_(PICTURE, status="PAUSED")), ("missing throughSequence", without(PICTURE, "throughSequence"))],
+}
+submit_picture = {
+    "valid": [("worker submits a picture for its job", {"jobId": "job-0001", "picture": PICTURE_DRAFT})],
+    "invalid": [("no job", {"jobId": None, "picture": PICTURE_DRAFT})],
+}
+
 # --- JobInput: what a worker (Laya / Claude) receives ------------------------------
 
 
@@ -470,12 +507,14 @@ JOB_INPUT = {
         {"placeId": "residence", "aliases": ["house beside the school"]},
         {"placeId": "shelter", "aliases": []},
     ],
+    "candidatePictures": [],
 }
 job_input = {
     "valid": [
         ("local suggestion job", JOB_INPUT),
         ("incident proposal job", with_(JOB_INPUT, kind="INCIDENT_PROPOSAL", targetReportId=None, incidentId="inc-school")),
         ("no candidates yet", with_(JOB_INPUT, candidateIncidents=[])),
+        ("with the latest working picture as context", with_(JOB_INPUT, kind="INCIDENT_PROPOSAL", targetReportId=None, incidentId="inc-school", candidatePictures=[PICTURE])),
     ],
     "invalid": [
         ("expected label smuggled into a report", at(JOB_INPUT, "reports.1", with_(JOB_INPUT["reports"][1], expectedAttention="POSSIBLE_LIFE_SAFETY"))),
@@ -489,6 +528,7 @@ job_input = {
         ("place with coordinates of a real geocode", at(JOB_INPUT, "places.0", {"placeId": "school", "aliases": [], "lat": 35.6})),
     ],
 }
+
 
 # --- ReviewEvent (§9) -------------------------------------------------------------
 
@@ -641,6 +681,7 @@ commands = {
             ("missing commandId", without(ADVANCE, "commandId")),
         ],
     },
+    "SubmitIncidentPictureCommand": submit_picture,
     "ResetRunCommand": {
         "valid": [("reset the current run", RESET)],
         "invalid": [
@@ -662,6 +703,8 @@ ALL = {
     "ProposalRecord": proposal_record,
     "Job": job,
     "JobInput": job_input,
+    "IncidentPictureDraft": picture_draft,
+    "IncidentPicture": incident_picture,
     "ReviewEvent": review_event,
     "ScenarioState": scenario_state,
     "ContractError": contract_error,
@@ -677,6 +720,8 @@ CROSS_FIELD = {
     ("IncidentProposal", "baseIncidentVersions omits the target incident"),
     ("IncidentProposal", "relation to itself"),
     ("ReportRelation", "relation to itself"),
+    ("IncidentPictureDraft", "claim cites a report outside its node"),
+    ("IncidentPictureDraft", "chronology supersedes a report outside its node"),
 }
 
 

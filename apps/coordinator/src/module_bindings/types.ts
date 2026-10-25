@@ -39,6 +39,13 @@ export const Incident = __t.object("Incident", {
 });
 export type Incident = __Infer<typeof Incident>;
 
+export const IncidentPicture = __t.object("IncidentPicture", {
+  incidentId: __t.string(),
+  runId: __t.string(),
+  json: __t.string(),
+});
+export type IncidentPicture = __Infer<typeof IncidentPicture>;
+
 export const IncidentSignature = __t.object("IncidentSignature", {
   incidentId: __t.string(),
   runId: __t.string(),

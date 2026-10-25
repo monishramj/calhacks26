@@ -107,6 +107,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       // ponytail: operator proposals for a not-yet-existing incident (desk.newIncidentSignature) are not offered by the UI yet.
       inputSignatures: Object.fromEntries([...conn.db.incidentSignature.iter()].filter((r) => r.runId === desk.runId).map((r) => [r.incidentId, r.signature])),
       queuedJobs: queued(conn, desk.runId),
+      pictures: rows(conn.db.incidentPicture.iter()),
     };
     for (const l of [...listeners]) l(structuredClone(state));
   }
@@ -118,7 +119,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       .withDatabaseName(s.database)
       .withToken(s.token)
       .onConnect((c) => {
-        const tables = [c.db.desk, c.db.report, c.db.incident, c.db.relation, c.db.suggestion, c.db.proposal, c.db.reviewEvent, c.db.incidentSignature];
+        const tables = [c.db.desk, c.db.report, c.db.incident, c.db.relation, c.db.suggestion, c.db.proposal, c.db.reviewEvent, c.db.incidentSignature, c.db.incidentPicture];
         for (const t of tables) (t as any).onInsert(rebuild), (t as any).onUpdate(rebuild), (t as any).onDelete(rebuild);
         c.subscriptionBuilder().onApplied(() => ((degraded = false), rebuild())).subscribeToAllTables();
       })

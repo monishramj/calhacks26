@@ -49,6 +49,24 @@ function shapeProblem(v: unknown, depth = 0): string | null {
   return null;
 }
 
+/** Picture nodes: chronology and claims may cite only the node's own reports. */
+function pictureProblem(n: any): string | null {
+  const own = new Set<string>(n.reportIds);
+  for (const e of n.chronology) {
+    if (!own.has(e.reportId)) return `chronology in ${n.label} names ${e.reportId}, which is not one of its reports`;
+    if (e.supersedesReportId !== null && !own.has(e.supersedesReportId)) return `chronology in ${n.label} supersedes ${e.supersedesReportId}, which is not one of its reports`;
+  }
+  for (const c of n.claims ?? []) {
+    const stray = c.reportIds.find((id: string) => !own.has(id));
+    if (stray) return `claim in ${n.label} cites ${stray}, which is not one of its reports`;
+  }
+  for (const child of n.sites ?? n.subareas ?? []) {
+    const p = pictureProblem(child);
+    if (p) return p;
+  }
+  return null;
+}
+
 /** Cross-field rules (schema `x-crossFieldRules`). Returns a message or null. */
 function crossField(type: string, v: any): string | null {
   switch (type) {
@@ -81,6 +99,15 @@ function crossField(type: string, v: any): string | null {
       return crossField('LocalSuggestion', v.suggestion);
     case 'SubmitIncidentProposalCommand':
       return crossField('IncidentProposal', v.proposal);
+    case 'IncidentPictureDraft':
+    case 'IncidentPicture':
+      for (const area of v.areas) {
+        const p = pictureProblem(area);
+        if (p) return p;
+      }
+      return null;
+    case 'SubmitIncidentPictureCommand':
+      return crossField('IncidentPictureDraft', v.picture);
     default:
       return null;
   }

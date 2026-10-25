@@ -4,6 +4,7 @@
 import { sha256Hex } from '../sha256';
 import type {
   AdapterMethod,
+  IncidentPicture,
   IncidentProposal,
   IncidentView,
   JobInput,
@@ -34,6 +35,7 @@ export const ADAPTER_METHODS = Object.freeze([
   'receiveReport',
   'submitLocalSuggestion',
   'submitIncidentProposal',
+  'submitIncidentPicture',
   'approveProposal',
   'rejectProposal',
   'operatorEdit',
@@ -115,6 +117,7 @@ export function recallCommand(
 const ONLY: Partial<Record<AdapterMethod, readonly Role[]>> = {
   subscribeState: ROLES,
   submitLocalSuggestion: ['worker'],
+  submitIncidentPicture: ['worker'],
   approveProposal: ['operator'],
   rejectProposal: ['operator'],
   operatorEdit: ['operator'],
@@ -221,6 +224,8 @@ export type BuildJobInputArgs = {
   reports: readonly unknown[];
   incidents: readonly unknown[];
   places: readonly { placeId: string; aliases: readonly string[] }[];
+  /** Stored pictures; only those of `incidents` are copied into the input. */
+  pictures?: readonly unknown[];
 };
 
 /**
@@ -270,6 +275,15 @@ export function buildJobInput(args: BuildJobInputArgs): Result<JobInput> {
     })),
     candidateIncidents: incidents,
     places: args.places.map((p) => ({ placeId: p.placeId, aliases: [...p.aliases] })),
+    candidatePictures: [],
   };
+  const wanted = new Set(incidents.map((i) => i.incidentId));
+  const candidatePictures: IncidentPicture[] = [];
+  for (const p of args.pictures ?? []) {
+    const checked = validateWire<IncidentPicture>('IncidentPicture', p);
+    if (!checked.ok) return checked;
+    if (checked.value.runId === args.runId && wanted.has(checked.value.incidentId)) candidatePictures.push(checked.value);
+  }
+  input.candidatePictures = candidatePictures;
   return validateWire<JobInput>('JobInput', input);
 }

@@ -7,7 +7,7 @@ import { FailureNotices } from './layout/FailureNotices';
 import { ScenarioControls } from './layout/ScenarioControls';
 import { Section } from './layout/Section';
 import { Scene } from './scene';
-import { ConfirmedQueue, IncidentHistory, IncomingFeed, ReviewBand } from './panels';
+import { ConfirmedQueue, IncidentHistory, IncomingFeed, PicturePanel, ReviewBand } from './panels';
 import type { DeskAdapter, DeskState } from './adapters/contract';
 import { inferenceLabel, sourceLabel } from './adapters/derived';
 
@@ -69,6 +69,9 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
           </Section>
           <Section id="queue" title="Confirmed queue">
             <ConfirmedQueue {...selection} />
+          </Section>
+          <Section id="picture" title="Claude's working picture (unconfirmed)">
+            <PicturePanel {...selection} />
           </Section>
           <Section id="incoming" title="Incoming reports">
             <IncomingFeed {...selection} />

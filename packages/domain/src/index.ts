@@ -31,6 +31,7 @@ export {
   recordCommand,
 } from './rules/contract';
 export type { Assigned, BuildJobInputArgs, CommandLedger, FreshnessCurrent, FreshnessSubmitted, SignatureInput } from './rules/contract';
+export { checkPicture } from './rules/picture';
 export {
   ATTENTION_LABEL,
   applyIncidentChange,
