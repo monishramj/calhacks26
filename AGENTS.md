@@ -91,6 +91,8 @@ At the start of every phase, check `python scripts/questions.py list`. Answer `o
 
 ## Gate workflow (§12)
 
+**Ship mode (D-009) overrides this section until CP4:** one request per gate. Implement, run the real path once, write a few lines in `work/validation/`, push. No new test suites. The original workflow below is suspended.
+
 Every gate runs as **three separate requests**, never chained automatically:
 
 1. **TEST:** inspect existing callers, write meaningful failing behavior tests and the minimal harness. Run them, record why they fail, then stop.
