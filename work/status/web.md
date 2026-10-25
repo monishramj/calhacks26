@@ -7,7 +7,9 @@ _Updated: 2026-10-25 by lead lane (Claude Code, C4)_
 - **Gate / phase:** shell, replay adapter + §18 fixture, panels (G6 UI IMPL, merged from ws/web-panels), e2e browser story on replay (3/3 green). Scene (G7) in progress on ws/web-scene (Codex).
 - **Last commit:** `[ws/web][G8][TEST] e2e replay story + verify script`
 - **Exact next step (lead):** merge `origin/ws/web-scene` when Codex pushes, then `npm run verify`. When `[contract] v1` merges, replace `src/adapters/contract.ts` with `packages/domain` imports and `src/adapters/derived.ts` with `packages/domain/src/rules`. Then G6 panels REVIEW and the live adapter wiring.
-- **Automation on C4:** the lead's Claude session runs a 6-minute tick: it answers questions-board items for `web`, merges lane branches when `verify` stays green, and watches `main` for the contract. `questions.py watch` is also running, but it can't auth (`claude` CLI login 401) until someone runs `claude` → `/login` on C4.
+- **Automation on C4:** PAUSED (02:20, usage limits). When it was on, the lead's Claude session ran a 6-minute tick (answer board items for `web`, merge lane branches if `npm run verify` stays green, watch `main` for the contract) plus `python scripts/questions.py watch --ws web --every 60`. To resume by hand, do those same steps.
+- **Installing in apps/web:** the root workspace now exists (ws/state), so use `npm install --workspaces=false --package-lock=false` inside `apps/web`. A plain `npm install` rewrites the root lockfile and creates a root `node_modules` with a second Playwright copy, which breaks e2e.
+- **Scene:** Codex's G7 IMPL is merged; D-004 is approved (SF Embarcadero BLOSM bake, guardrails in `work/DECISIONS.md`). The bake is still on `ws/web-scene`.
 
 ## For the lanes: how to get data (read this)
 
