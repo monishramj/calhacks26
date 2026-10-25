@@ -1,5 +1,5 @@
 import { SCENE_METADATA } from './georeference';
-import type { IncidentView, ReportProvenance } from '../../../../packages/domain/src/types';
+import type { IncidentView } from '../../../../packages/domain/src/types';
 
 // A read-only rendering projection of frozen contract v1, not another schema.
 export type SceneIncident = Readonly<Pick<IncidentView,
@@ -9,15 +9,7 @@ export type SceneIncident = Readonly<Pick<IncidentView,
 
 export type SceneDataProps = {
   incidents?: readonly SceneIncident[];
-  sourceProvenance?: ReportProvenance | 'recording' | 'none';
 };
-
-// Contract v1 puts provenance on individual reports, not the desk snapshot.
-// Keep all source kinds visible when a snapshot contains mixed evidence.
-export function reportSourceLabel(reports: readonly { provenance: string }[]): string {
-  const sources = [...new Set(reports.map((report) => report.provenance))].sort();
-  return sources.length ? sources.join(' + ') : 'none';
-}
 
 export type GroundPoint = { x: number; z: number };
 

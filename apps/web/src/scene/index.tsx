@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useDesk } from '../adapters/DeskContext';
 import { attentionColor, attentionLabel, HEATMAP_HEIGHT_SCALE, HEATMAP_RADIUS,
-  PLACES, placePosition, reportSourceLabel, type SceneDataProps, type SceneIncident } from './model';
+  PLACES, placePosition, type SceneDataProps, type SceneIncident } from './model';
 import './scene.css';
 import { SCENE_METADATA, sceneToGeographic } from './georeference';
 
@@ -61,10 +61,9 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
   </svg>;
 }
 
-export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplied, sourceProvenance }: SceneProps) {
+export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplied }: SceneProps) {
   const { state } = useDesk();
   const incidents = supplied ?? state?.incidents ?? [];
-  const provenance = sourceProvenance ?? reportSourceLabel(state?.reports ?? []);
   const [heatmap, setHeatmap] = useState(false);
   const [webgl, setWebgl] = useState(false);
   const [use2d, setUse2d] = useState(false);
@@ -73,7 +72,6 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
   const mapAssetFailed = useCallback(() => setAssetFailed(true), []);
   useEffect(() => { setWebgl(supportsWebGL()); }, []);
   const unique = useMemo(() => [...new Map(incidents.map((row) => [row.incidentId, row])).values()], [incidents]);
-  const located = unique.filter((row) => placePosition(row.confirmedPlaceId));
   const unplaced = unique.filter((row) => !placePosition(row.confirmedPlaceId));
   function incidentButton(row: SceneIncident) {
     const place = PLACES.find((candidate) => candidate.id === row.confirmedPlaceId);
@@ -89,12 +87,10 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
   }
   return <div className="valley-scene">
     <header className="scene-heading">
-      <div><p className="scene-eyebrow">INCIDENT DESK / EXERCISE AREA</p><h2>SF waterfront</h2></div>
+      <div><h2>SF waterfront</h2></div>
       <div className="scene-toolbar"><button type="button" className="scene-mode" aria-pressed={!webgl || use2d} disabled={!webgl} onClick={() => setUse2d((value) => !value)}>2D map</button>
       <button type="button" className="scene-mode" aria-pressed={heatmap} onClick={() => setHeatmap((value) => !value)}>Heatmap {heatmap ? 'on' : 'off'}</button></div>
     </header>
-    <p className="scene-disclosure">Fictional Helene-inspired exercise · incidents are synthetic</p>
-    <p className="scene-disclosure">Real OSM geography · exercise sites are synthetic overlays</p>
     <div className="scene-viewport">
       {webgl && !use2d ? <RenderBoundary onFailure={rendererFailed}><Suspense fallback={<p className="scene-empty">Loading local 3D scene…</p>}>
         <ValleyCanvas incidents={unique} selectedIncidentId={selectedIncidentId} onSelectIncident={onSelectIncident} heatmap={heatmap} onFailure={rendererFailed} baked={!assetFailed} onAssetFailure={mapAssetFailed} />
@@ -110,9 +106,8 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
       <span>Height is not severity, terrain, or flood depth. Repeated reports add no height.</span>
       {(!webgl || use2d) && <span>2D shows equal fixed-radius density footprints; elevation requires 3D.</span>}
     </div>}
-    <div className="scene-incident-list" aria-label="Located incidents">{located.map(incidentButton)}</div>
     {unplaced.length > 0 && <section className="scene-unplaced" aria-label="Unplaced incidents"><h3>Unplaced incidents</h3><p>Unknown location · excluded from heatmap</p>{unplaced.map(incidentButton)}</section>}
     {unique.length === 0 && <p className="scene-empty">No confirmed incidents. Reports appear after an adapter connects.</p>}
-    <footer className="scene-footer"><span>Source: {provenance}</span><span>BLOSM · local OSM basemap</span><span>{SCENE_METADATA.attribution}</span><span>Public mesh map informed area choice · no measured radio coverage shown</span></footer>
+    <footer className="scene-footer"><span>Map data © OpenStreetMap contributors (ODbL)</span></footer>
   </div>;
 }

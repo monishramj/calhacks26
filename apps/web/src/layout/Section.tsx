@@ -17,7 +17,6 @@ export function Section({ id, title, pinned = false, defaultOpen = true, childre
       <h2>
         <button type="button" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((o) => !o)}>
           <span aria-hidden="true">{open ? '▾' : '▸'}</span> {title}
-          {pinned && <span className="pin-label"> · pinned</span>}
         </button>
       </h2>
       <div id={bodyId} hidden={!open} className="panel-body">

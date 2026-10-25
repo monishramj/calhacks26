@@ -46,21 +46,19 @@ describe('IncomingFeed', () => {
   it('shows all six originals verbatim, newest first, labeled Fixture provenance', async () => {
     setup();
     const list = await screen.findByRole('list', { name: 'Incoming reports, newest first' });
-    const items = within(list).getAllByRole('listitem');
+    const items = Array.from(list.children) as HTMLElement[];
     expect(items).toHaveLength(6);
     const ids = ['R06', 'R05', 'R04', 'R03', 'R02', 'R01'];
     items.forEach((item, i) => {
       const id = ids[i];
-      expect(item).toHaveTextContent(`${id} · #${6 - i}`);
+      expect(item).toHaveTextContent(new RegExp(`^${id} · `));
+      expect(item).not.toHaveTextContent('#');
       expect(within(item).getByText(exerciseFixture.reports[id].text)).toHaveClass('original-text');
-      expect(within(item).getByText('Fixture (authored)')).toBeInTheDocument();
-      expect(item).toHaveTextContent(/Sent:/);
-      expect(item).toHaveTextContent(/Event: not given/);
-      expect(item).toHaveTextContent(/Received:/);
-      expect(item).toHaveTextContent(`Receive #${6 - i}`);
-      expect(item).toHaveTextContent(/sender stated/);
+      expect(item).not.toHaveTextContent(/Fixture \(authored\)|Source:|Origin:/);
+      expect(item).toHaveTextContent(/sent (\d\d:\d\d|not given)/);
+      expect(item).not.toHaveTextContent(/Event:|Received|Receive #|sender stated/);
     });
-    expect(items[0]).toHaveTextContent('Confirmed in INC-residence');
+    expect(items[0]).toHaveTextContent('Confirmed · INC-residence');
   });
 
   it('selects the incident by keyboard', async () => {
@@ -75,8 +73,8 @@ describe('IncomingFeed', () => {
     const { adapter, runId } = setup();
     await advanceTo(adapter, runId(), 4); // R07..R10
     const r10 = (await screen.findByText(exerciseFixture.reports.R10.text)).closest('li')!;
-    expect(r10).toHaveTextContent('Sent: not given');
-    expect(r10).toHaveTextContent('Not yet confirmed · candidate INC-school');
+    expect(r10).toHaveTextContent('sent not given');
+    expect(r10).toHaveTextContent('Unconfirmed · INC-school');
   });
 
   it('flags R11 as sent earlier but arrived late', async () => {

@@ -15,7 +15,6 @@ function renderScene(extra: Partial<SceneProps & SceneDataProps> = {}) {
     selectedIncidentId={null}
     onSelectIncident={onSelectIncident}
     incidents={sceneIncidents}
-    sourceProvenance="fixture"
     {...extra}
   />);
   return { ...result, onSelectIncident };
@@ -27,42 +26,31 @@ describe('scene interaction with WebGL unavailable', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
-  it('shows an explicit 2D map and honest exercise/source labels', () => {
+  it('shows an explicit 2D map and the OSM credit', () => {
     renderScene();
     expect(screen.getByRole('img', { name: /exercise map.*2d/i })).toBeVisible();
     expect(screen.getByText(/webgl unavailable.*2d/i)).toBeVisible();
-    expect(screen.getByText(/fictional helene-inspired exercise/i)).toBeVisible();
-    expect(screen.getByText(/source: fixture/i)).toBeVisible();
+    expect(screen.getByText(/openstreetmap contributors \(odbl\)/i)).toBeVisible();
     expect(screen.getByRole('button', { name: '2D map' })).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('lets pointer selection report an incident ID without mutating inputs', async () => {
+  it('lets map pins report an incident ID without mutating inputs', async () => {
     const before = JSON.stringify(sceneIncidents);
-    const { onSelectIncident } = renderScene();
-    await userEvent.click(screen.getByRole('button', { name: /residence.*possible life safety/i }));
+    const { container, onSelectIncident } = renderScene();
+    const [school, residence, shelter] = Array.from(container.querySelectorAll('.scene-map-marker'));
+    await userEvent.click(residence);
     expect(onSelectIncident).toHaveBeenCalledTimes(1);
     expect(onSelectIncident).toHaveBeenCalledWith('residence-incident');
+    await userEvent.click(school);
+    expect(onSelectIncident).toHaveBeenLastCalledWith('school-incident');
+    await userEvent.click(shelter);
+    expect(onSelectIncident).toHaveBeenLastCalledWith('shelter-incident');
     expect(JSON.stringify(sceneIncidents)).toBe(before);
   });
 
-  it('supports Enter and Space on labeled incident buttons', async () => {
-    const { onSelectIncident } = renderScene();
-    const school = screen.getByRole('button', { name: /school.*information/i });
-    school.focus();
-    await userEvent.keyboard('{Enter}');
-    expect(onSelectIncident).toHaveBeenLastCalledWith('school-incident');
-    const shelter = screen.getByRole('button', { name: /shelter.*active need/i });
-    shelter.focus();
-    await userEvent.keyboard(' ');
-    expect(onSelectIncident).toHaveBeenLastCalledWith('shelter-incident');
-  });
-
-  it('reflects external selection changes from the queue/history', () => {
-    const { rerender } = renderScene({ selectedIncidentId: 'school-incident' });
-    expect(screen.getByRole('button', { name: /school.*information/i })).toHaveAttribute('aria-pressed', 'true');
-    rerender(<SceneUnderTest incidents={sceneIncidents} selectedIncidentId="residence-incident" onSelectIncident={vi.fn()} />);
-    expect(screen.getByRole('button', { name: /school.*information/i })).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByRole('button', { name: /residence.*possible life safety/i })).toHaveAttribute('aria-pressed', 'true');
+  it('has no site cards for located incidents', () => {
+    renderScene();
+    expect(screen.queryByRole('button', { name: /school.*information/i })).not.toBeInTheDocument();
   });
 
   it('keeps unlocated incidents selectable in a written unplaced list', async () => {
@@ -73,7 +61,7 @@ describe('scene interaction with WebGL unavailable', () => {
   });
 
   it('exposes heatmap mode to keyboard users and retains marker selection', async () => {
-    const { onSelectIncident } = renderScene();
+    const { container, onSelectIncident } = renderScene();
     const toggle = screen.getByRole('button', { name: /heatmap/i });
     expect(toggle).toHaveAttribute('aria-pressed', 'false');
     toggle.focus();
@@ -81,7 +69,7 @@ describe('scene interaction with WebGL unavailable', () => {
     expect(toggle).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByText(/confirmed unresolved incident concentration/i)).toBeVisible();
     expect(screen.getByText(/not severity.*terrain.*flood depth/i)).toBeVisible();
-    await userEvent.click(screen.getByRole('button', { name: /school.*information/i }));
+    await userEvent.click(container.querySelector('.scene-map-marker')!);
     expect(onSelectIncident).toHaveBeenLastCalledWith('school-incident');
   });
 
@@ -95,12 +83,6 @@ describe('scene interaction with WebGL unavailable', () => {
     expect(originalLegend).toMatch(/scale/i);
     rerender(<SceneUnderTest incidents={[incident()]} selectedIncidentId={null} onSelectIncident={vi.fn()} />);
     expect(screen.getByRole('note', { name: /heatmap legend/i }).textContent).toBe(originalLegend);
-  });
-
-  it('shows recorded source provenance without implying a live result', () => {
-    renderScene({ sourceProvenance: 'recording' });
-    expect(screen.getByText(/source: recording/i)).toBeVisible();
-    expect(screen.queryByText(/^source: live$/i)).not.toBeInTheDocument();
   });
 
   it('renders no fixture incidents when the shell supplies no incident data', () => {
