@@ -1,0 +1,990 @@
+{
+  "type": "ReportInput",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "radio report, verified, measured bytes",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "scenario report, all times and location null",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "exercise",
+        "messageId": "R02",
+        "text": "Shelter needs blankets for tonight.",
+        "origin": "scenario",
+        "sentAt": null,
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "name": "operator report with offset timestamps",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "desk-operator",
+        "messageId": "op-0001",
+        "text": "Phone call from shelter staff: blankets arrived.",
+        "origin": "operator",
+        "sentAt": "2026-10-25T10:15:00-07:00",
+        "reportedEventAt": "2026-10-25T10:05:00-07:00",
+        "reportedLocation": {
+          "placeId": "shelter",
+          "source": "operator"
+        },
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "name": "exact unicode text with emoji, newline, and surrounding spaces",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "  Água subindo — 2 pessoas no andar de cima 🙏\nR03  ",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "scenario run through the codec in-process: calculated bytes, unverified",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "exercise",
+        "messageId": "R02",
+        "text": "Shelter needs blankets for tonight.",
+        "origin": "scenario",
+        "sentAt": null,
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "llm",
+          "measurementSource": "calculated",
+          "originalBytes": 35,
+          "applicationPacketBytes": 22
+        }
+      }
+    },
+    {
+      "name": "raw fallback encoding over radio",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "raw",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "fractional-second UTC timestamp",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00.250Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing runId",
+      "payload": {
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "empty runId",
+      "payload": {
+        "runId": "",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "runId with a space",
+      "payload": {
+        "runId": "run 001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "runId over 128 characters",
+      "payload": {
+        "runId": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "messageId with a newline",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001\n",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sourceId with non-ASCII",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "équipe-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sourceId leading dash",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "-team",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "empty text",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "text is a number",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": 42,
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "unknown origin 'browser'",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "browser",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sentAt without T separator",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25 09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sentAt without offset (ambiguous local time)",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sentAt as epoch number",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": 1761382800,
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "reportedEventAt free text",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": "yesterday",
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sentAt omitted instead of explicit null",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "sender-supplied receivedAt",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        },
+        "receivedAt": "2026-10-25T09:00:01Z"
+      }
+    },
+    {
+      "name": "sender-supplied receiveSequence",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        },
+        "receiveSequence": 1
+      }
+    },
+    {
+      "name": "sender-supplied canonical reportId",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        },
+        "reportId": "rep-000001"
+      }
+    },
+    {
+      "name": "location source 'gps'",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "gps"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "location missing placeId",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "location with raw coordinates",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit",
+          "lat": 35.6,
+          "lon": -82.5
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "radio origin without verification",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "radio origin with encoding not_applicable",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "not_applicable",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "radio origin with simulated measurement",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "simulated",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "scenario claims radio verification",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "exercise",
+        "messageId": "R02",
+        "text": "Shelter needs blankets for tonight.",
+        "origin": "scenario",
+        "sentAt": null,
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "verified",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "name": "operator claims radio verification",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "desk-operator",
+        "messageId": "op-0001",
+        "text": "Phone call from shelter staff: blankets arrived.",
+        "origin": "operator",
+        "sentAt": "2026-10-25T10:15:00-07:00",
+        "reportedEventAt": "2026-10-25T10:05:00-07:00",
+        "reportedLocation": {
+          "placeId": "shelter",
+          "source": "operator"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "name": "operator report with a codec encoding",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "desk-operator",
+        "messageId": "op-0001",
+        "text": "Phone call from shelter staff: blankets arrived.",
+        "origin": "operator",
+        "sentAt": "2026-10-25T10:15:00-07:00",
+        "reportedEventAt": "2026-10-25T10:05:00-07:00",
+        "reportedLocation": {
+          "placeId": "shelter",
+          "source": "operator"
+        },
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "llm",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "name": "measured but originalBytes null",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": null,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "not_applicable measurement but bytes present",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "exercise",
+        "messageId": "R02",
+        "text": "Shelter needs blankets for tonight.",
+        "origin": "scenario",
+        "sentAt": null,
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "negative originalBytes",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": -1,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "fractional byte count",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 1.5,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "byte count as string",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": "41"
+        }
+      }
+    },
+    {
+      "name": "unknown encoding",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "zip",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        }
+      }
+    },
+    {
+      "name": "headcount field",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        },
+        "peopleCount": 2
+      }
+    },
+    {
+      "name": "team assignment field",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "field-team-a",
+        "messageId": "msg-0001",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "radio",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
+        "transport": {
+          "verification": "verified",
+          "encoding": "llm",
+          "measurementSource": "measured",
+          "originalBytes": 70,
+          "applicationPacketBytes": 41
+        },
+        "assignedTeam": "team-2"
+      }
+    },
+    {
+      "name": "free-text operator identity",
+      "payload": {
+        "runId": "run-001",
+        "sourceId": "desk-operator",
+        "messageId": "op-0001",
+        "text": "Phone call from shelter staff: blankets arrived.",
+        "origin": "operator",
+        "sentAt": "2026-10-25T10:15:00-07:00",
+        "reportedEventAt": "2026-10-25T10:05:00-07:00",
+        "reportedLocation": {
+          "placeId": "shelter",
+          "source": "operator"
+        },
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        },
+        "operatorName": "Dana"
+      }
+    }
+  ]
+}

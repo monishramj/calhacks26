@@ -50,10 +50,10 @@ Four computers, one workstream each. People sleep in shifts, so **a workstream b
 | Computer | Workstream | Branch | Gates | Owns (only this workstream edits these) |
 |---|---|---|---|---|
 | C1 | Codec + radio (package A) | `ws/codec-radio` | G1 → G2, radio part of G9 | `services/codec-radio/**` |
-| C2 | Contracts + state (shared foundation + B-state) | `ws/state` | **G0 first**, then G6 rules, G3, G8 backend | `packages/domain/**`, `spacetimedb/**`, `apps/coordinator/**` except `src/inference/`, `fixtures/private/exercise/`, root `package.json` + lockfile |
-| C3 | Inference (B-inference) | `ws/inference` | Preflight, G4, G5, `npm run evaluate` | `services/local-laya/**`, `apps/coordinator/src/inference/**`, `work/eval/**` |
+| C2 | Contracts + state (shared foundation + B-state) | `ws/state` | **G0 first**, then G6 rules, G3, G8 backend | `packages/domain/**`, `spacetimedb/**` (incl. job issuing, `inputSignature`, scenario injector as reducers), live adapter, `fixtures/private/exercise/`, root `package.json` + lockfile, `docker-compose.yml` |
+| C3 | Inference (B-inference) | `ws/inference` | Preflight, G4, G5, coordinator, `npm run evaluate` | `services/local-laya/**`, `apps/coordinator/**` (D-007), `work/eval/**` |
 | C4 | Dashboard + replay (package C) | `ws/web` | G7, G6 UI, G8 replay | `apps/web/**`, `fixtures/replay/**`, `tests/e2e/**` |
-| Orchestrator | PM bookkeeping (agent + whoever is awake) | `main` only | Board, acceptance, G9 coordination | `work/BOARD.md`, `work/DECISIONS.md`, `work/PREFLIGHT.md`, `work/inbox/**`, `docs/**`, `scripts/questions.py`, `.claude/settings.json` |
+| Orchestrator | PM bookkeeping (agent + whoever is awake) | `main` only | Board, acceptance, G9 coordination | `work/BOARD.md`, `work/DECISIONS.md`, `work/PREFLIGHT.md`, `work/inbox/**`, `docs/**`, `scripts/questions.py`, `scripts/health.py`, `.claude/settings.json` |
 
 Each workstream also owns `work/status/<ws>.md` and its own `work/validation/` files (naming below). A workstream may run several agents in parallel as **lanes**, each in its own worktree on a `ws/<ws>-<lane>` branch with non-overlapping paths. Rules are in `docs/WORKSTREAMS.md`. Full per-computer plans, startup tasks, and bootstrap prompts are in [`docs/WORKSTREAMS.md`](docs/WORKSTREAMS.md).
 
@@ -90,6 +90,8 @@ At the start of every phase, check `python scripts/questions.py list`. Answer `o
 - Never force-push `main` or someone else's branch. Never commit `.env`, model weights, or `.blend` files.
 
 ## Gate workflow (§12)
+
+**Ship mode (D-009) overrides this section until CP4:** one request per gate. Implement, run the real path once, write a few lines in `work/validation/`, push. No new test suites. The original workflow below is suspended.
 
 Every gate runs as **three separate requests**, never chained automatically:
 
@@ -130,7 +132,7 @@ These are the required interface. **None of them exist yet.** The owning workstr
 
 ## Environment
 
-Copy `.env.example` to `.env` on the coordinator machine only. Names are listed there; values never go in git. Pin runtime and SDK versions after preflight and commit lockfiles (§19).
+Docker is allowed for local SpacetimeDB (and optionally the coordinator), never for the codec, the radio bridge, or Laya on the Macs (D-006). Copy `.env.example` to `.env` on the coordinator machine only. Names are listed there; values never go in git. Pin runtime and SDK versions after preflight and commit lockfiles (§19).
 
 ## Repo map
 
@@ -138,7 +140,7 @@ Copy `.env.example` to `.env` on the coordinator machine only. Names are listed 
 docs/                 ground truth, workstreams, orchestrator guide
 packages/domain/      shared contracts (TS + JSON Schema)        ws/state
 spacetimedb/          SpacetimeDB module                          ws/state
-apps/coordinator/     job runner, adapters, bridge intake          ws/state (src/inference: ws/inference)
+apps/coordinator/     job runner, Laya/Claude clients, process     ws/inference (D-007)
 apps/web/             React/Three.js dashboard + replay            ws/web
 services/codec-radio/ codec boundary fixes + Meshtastic bridge     ws/codec-radio
 services/local-laya/  local Laya worker                            ws/inference
@@ -147,5 +149,6 @@ fixtures/replay/      bundled replay data, labeled as fixtures     ws/web
 tests/e2e/            browser story, two-client, fault injection   ws/web
 work/                 board, decisions, status, inbox, validation, eval
 scripts/questions.py  questions board CLI (branch `questions`)    orchestrator
+scripts/health.py     read-only repo health check               orchestrator
 .claude/settings.json hook that surfaces questions-board items    orchestrator
 ```

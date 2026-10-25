@@ -1,0 +1,58 @@
+{
+  "private": true,
+  "neverModelInput": true,
+  "provenance": "authored",
+  "about": "Human-authored §18 acceptance expectations. Test assertions only; never Laya or Claude input, never bundled into the web app or a client-visible table.",
+  "interpretations": {
+    "R01": "School incident with limited source claim; does not prove every school building is clear.",
+    "R02": "Separate active supply need.",
+    "R03": "Separate possible life-safety concern at the residence.",
+    "R04": "New evidence of unresolved need, not another incident or extra heatmap weight.",
+    "R05": "School update/paraphrase about the gym subarea; preserve source scope.",
+    "R06": "Update residence, not school.",
+    "R07": "School correction/uncertainty; highlight possible unresolved harm without claiming a confirmed person.",
+    "R08": "Possible repeat with unresolved concern; do not delete it or add headcounts.",
+    "R09": "School location/subarea clarification, not a new place inferred from sender GPS.",
+    "R10": "Question, not confirmation of a person or a completed rescue.",
+    "R11": "Delayed older gym report; does not override R07.",
+    "R12": "Unresolved school update; do not mark resolved."
+  },
+  "afterR07Confirmed": {
+    "attention": {
+      "inc-school": "POSSIBLE_LIFE_SAFETY",
+      "inc-residence": "POSSIBLE_LIFE_SAFETY",
+      "inc-shelter": "ACTIVE_NEED"
+    },
+    "confirmedQueue": [
+      "inc-school",
+      "inc-residence",
+      "inc-shelter"
+    ]
+  },
+  "invariants": [
+    {
+      "messageId": "R04",
+      "mustNot": "create an incident or add heatmap weight"
+    },
+    {
+      "messageId": "R08",
+      "mustNot": "raise severity or add headcount"
+    },
+    {
+      "messageId": "R09",
+      "mustNot": "create a new place"
+    },
+    {
+      "messageId": "R10",
+      "mustNot": "confirm a person or a completed rescue"
+    },
+    {
+      "messageId": "R11",
+      "mustNot": "override R07 concern"
+    },
+    {
+      "messageId": "R12",
+      "mustNot": "resolve inc-school"
+    }
+  ]
+}

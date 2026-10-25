@@ -1,0 +1,53 @@
+{
+  "type": "ClaimJobCommand",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "claim local suggestion jobs",
+      "payload": {
+        "runId": "run-001",
+        "kinds": [
+          "LOCAL_SUGGESTION"
+        ]
+      }
+    },
+    {
+      "name": "claim both kinds",
+      "payload": {
+        "runId": "run-001",
+        "kinds": [
+          "LOCAL_SUGGESTION",
+          "INCIDENT_PROPOSAL"
+        ]
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "client-supplied workerId",
+      "payload": {
+        "runId": "run-001",
+        "kinds": [
+          "LOCAL_SUGGESTION"
+        ],
+        "workerId": "w1"
+      }
+    },
+    {
+      "name": "no kinds",
+      "payload": {
+        "runId": "run-001",
+        "kinds": []
+      }
+    },
+    {
+      "name": "unknown kind",
+      "payload": {
+        "runId": "run-001",
+        "kinds": [
+          "DISPATCH"
+        ]
+      }
+    }
+  ]
+}

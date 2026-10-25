@@ -6,3 +6,8 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/codec-
 2. G1 can start now. It doesn't wait for G0. G2 integration does: agree on the intake transport with ws/state during G0.
 3. Put the radio and codec preflight results in your status file as soon as you have them. They decide the team's scope estimate (§19).
 4. **Questions board is live** (`docs/QUESTIONS.md`). Run `python scripts/questions.py list` at each phase start and answer open questions for you, through a background subagent if you can.
+5. **Decided (01:50):** C4 is the second radio and codec endpoint (D-003), and you may commit the pinned runtime binaries under `services/codec-radio/runtime/` with SHA-256 sums (D-005). Weights stay out of git.
+6. **Docker (D-006):** the codec and radio bridge stay native on C1 and C4 with your pinned runtime. No containers for them.
+7. **D-003 (02:00): C4 is the command post**, with SpacetimeDB in Docker and the coordinator by default. Your C4 bridge talks to a coordinator on the same machine; keep the address configurable anyway.
+8. **Contract v1.0.0 (G0) is on main.** Merge origin/main (MERGE MAIN prompt in KICKOFF) and switch to `packages/domain` imports. Its 'Ready work packages' section in `work/validation/G0.md` lists what's ready for you.
+9. **D-009 ship mode (02:50).** No more separate TEST phases or new test suites. Each gate is one request: implement, run the real path once, a few lines in work/validation, push. Keep existing tests passing; don't add new ones. Honest labels stay. Priority is the demo path in D-009.

@@ -1,0 +1,81 @@
+{
+  "type": "ContractError",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "stale revision",
+      "payload": {
+        "code": "STALE_REVISION",
+        "message": "Incident inc-school is at revision 3; the proposal was based on 2."
+      }
+    },
+    {
+      "name": "code INVALID_SOURCE",
+      "payload": {
+        "code": "INVALID_SOURCE",
+        "message": "x"
+      }
+    },
+    {
+      "name": "code INVALID_INPUT",
+      "payload": {
+        "code": "INVALID_INPUT",
+        "message": "x"
+      }
+    },
+    {
+      "name": "code UNAUTHORIZED",
+      "payload": {
+        "code": "UNAUTHORIZED",
+        "message": "x"
+      }
+    },
+    {
+      "name": "code WRONG_RUN",
+      "payload": {
+        "code": "WRONG_RUN",
+        "message": "x"
+      }
+    },
+    {
+      "name": "code SERVICE_UNAVAILABLE",
+      "payload": {
+        "code": "SERVICE_UNAVAILABLE",
+        "message": "x"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "unknown code",
+      "payload": {
+        "code": "NOT_FOUND",
+        "message": "x"
+      }
+    },
+    {
+      "name": "embedded provider response",
+      "payload": {
+        "code": "SERVICE_UNAVAILABLE",
+        "message": "Claude failed",
+        "providerResponse": {
+          "error": "overloaded"
+        }
+      }
+    },
+    {
+      "name": "message over 500 characters",
+      "payload": {
+        "code": "INVALID_INPUT",
+        "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "name": "empty message",
+      "payload": {
+        "code": "INVALID_INPUT",
+        "message": ""
+      }
+    }
+  ]
+}
