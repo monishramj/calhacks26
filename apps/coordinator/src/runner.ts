@@ -25,16 +25,11 @@ export async function layaReady(url: string): Promise<boolean> {
   }
 }
 
-/**
- * POST /suggest with the JobInput; the worker returns a LocalSuggestion or {error:{code}}.
- * ponytail: the Laya worker on :8091 runs the v1.2 closed schema and rejects the v1.3 candidatePictures field,
- * so it is dropped here. Drop this line once Laya runs v1.3 (its schema accepts the field).
- */
+/** POST /suggest with the JobInput; the worker returns a LocalSuggestion or {error:{code}}. */
 async function layaSuggest(url: string, input: JobInput): Promise<LocalSuggestion | string> {
-  const { candidatePictures: _pictures, ...forLaya } = input;
   try {
     const r = await fetch(new URL('/suggest', url), {
-      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(forLaya), signal: AbortSignal.timeout(LAYA_TIMEOUT_MS),
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input), signal: AbortSignal.timeout(LAYA_TIMEOUT_MS),
     });
     const body = await r.json();
     if (!r.ok) return `laya ${r.status} ${body?.error?.code ?? ''}`.trim();

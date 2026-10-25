@@ -23,6 +23,10 @@ SIM=$(curl -s -X POST "$URI/v1/identity" | python3 -c 'import sys,json;print(jso
 call grant_role "$TOKEN" "[\"$(identity_of "$SIM")\",\"simulator\"]"
 [ -z "${WORKER_IDENTITY:-}" ] || call grant_role "$TOKEN" "[\"$WORKER_IDENTITY\",\"worker\"]"
 
+# Exercise places (and subarea aliases): without them every sender-stated location is dropped as unknown.
+python3 -c 'import json;[print(json.dumps([p["placeId"],json.dumps(p["aliases"]+[a for s in p.get("subareas",[]) for a in s["aliases"]])])) for p in json.load(open("fixtures/private/exercise/exercise.json"))["places"]]' |
+  while read -r args; do call put_place "$TOKEN" "$args"; done
+
 cat > apps/web/.env.local <<EOF
 VITE_STDB_URI=ws://127.0.0.1:3000
 VITE_STDB_DATABASE=$DB

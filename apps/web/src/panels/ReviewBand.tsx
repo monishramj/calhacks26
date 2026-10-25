@@ -203,7 +203,7 @@ function SuggestionApprove({ report, suggestion, state }: { report: Report; sugg
         baseRevision: incident?.revision ?? 0,
         changes: incident
           ? { addReportIds: [report.reportId], attention: att }
-          : { status: 'OPEN', attention: att, addReportIds: [report.reportId] },
+          : { status: 'OPEN', attention: att, addReportIds: [report.reportId], confirmedPlaceId: report.input.reportedLocation?.placeId ?? null },
         reason: null,
         sourceReportIds: [report.reportId],
       }),

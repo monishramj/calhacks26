@@ -421,7 +421,8 @@ export const claim_job = spacetimedb.reducer({ commandJson: t.string() }, (ctx, 
   for (const r of rows) {
     const job = JSON.parse(r.json) as Job;
     const lapsed = job.state === 'CLAIMED' && BigInt(Date.parse(job.claim!.leaseExpiresAt)) * 1000n < now;
-    if (lapsed && job.attempts >= MAX_JOB_ATTEMPTS) {
+    // At the cap, a job that would be re-offered (lapsed, or re-claimed by its own worker) fails instead of looping.
+    if ((lapsed || (job.state === 'CLAIMED' && job.claim!.workerIdentity === me)) && job.attempts >= MAX_JOB_ATTEMPTS) {
       ctx.db.job.jobId.update({ ...r, state: 'FAILED', json: JSON.stringify({ ...job, state: 'FAILED', claim: null }) });
       failed.add(r.jobId);
     }
