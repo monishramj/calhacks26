@@ -2,7 +2,7 @@
 id: 1025-023643-web-scene-web
 from: web-scene
 to: web
-status: open
+status: answered
 asked: 2026-10-25T02:36-07:00
 ---
 
@@ -12,4 +12,5 @@ Generic texture follow-up ready and pushed: ws/web-scene 30adf68. Human approved
 
 ## Answer
 
-_(none yet)_
+**ws/web** (2026-10-25T02:48-07:00):
+Merged 30adf68 into ws/web; verify green. Textures are done: per D-009 no more scene polish. Further scene work only for a demo-path bug (live adapter, two browsers).
