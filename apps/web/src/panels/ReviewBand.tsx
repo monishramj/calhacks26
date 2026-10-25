@@ -23,7 +23,7 @@ export function ReviewBand({ selectedIncidentId, onSelectIncident }: PanelProps)
     <ul className="panel-list" aria-label="Items needing review">
       {items.map((item) => (
         <ReviewCard
-          key={item.reportId}
+          key={item.reportId ?? `inc:${item.incidentId}`}
           item={item}
           state={state}
           selected={item.incidentId !== null && item.incidentId === selectedIncidentId}
@@ -49,9 +49,9 @@ function ReviewCard({
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
   const report = state.reports.find((r) => r.reportId === item.reportId);
-  if (!report) return null;
+  if (!report) return null; // incident-level unknown (no report) is not shown as a card yet
   const suggestion: LocalSuggestion | undefined = state.suggestions.find((s) => s.suggestion.reportId === item.reportId)?.suggestion;
-  const proposal = item.proposal && item.proposal.reviewState === 'PENDING' ? item.proposal.proposal : null;
+  const proposal = state.proposals.find((p) => p.reviewState === 'PENDING' && p.proposal.addReportIds.includes(item.reportId!))?.proposal ?? null;
   const msgId = (reportId: string) =>
     state.reports.find((r: Report) => r.reportId === reportId)?.input.messageId ?? reportId;
 

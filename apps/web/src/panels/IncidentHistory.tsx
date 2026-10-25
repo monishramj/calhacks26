@@ -21,7 +21,7 @@ export function IncidentHistory({ selectedIncidentId }: PanelProps) {
   if (!incident) return <p className="empty">Incident not found.</p>;
   const id = incident.incidentId;
   const confirmed = new Set(incident.confirmedReportIds);
-  const entries = timeline(state, id);
+  const entries = timeline(state, id).map((e) => e.report);
   const events = state.reviewEvents.filter((e) => e.incidentId === id).sort((a, b) => a.sequence - b.sequence);
   const proposals = state.proposals.filter((p) => p.proposal.incidentId === id);
   const msgId = (reportId: string) => state.reports.find((r) => r.reportId === reportId)?.input.messageId ?? reportId;

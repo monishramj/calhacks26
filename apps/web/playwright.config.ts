@@ -23,10 +23,16 @@ export default defineConfig({
   // Windows defaults to the installed Edge: the bundled Chromium fails with
   // "spawn UNKNOWN" on C4. E2E_CHANNEL overrides (chrome, msedge, or "bundled").
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: e2eChannel() } }],
-  webServer: {
-    command: 'npx vite --mode replay --port 5174 --strictPort',
-    url: 'http://localhost:5174',
-    reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
-  },
+  webServer: [
+    {
+      command: 'npx vite --mode replay --port 5174 --strictPort',
+      url: 'http://localhost:5174',
+      reuseExistingServer: !process.env.CI,
+      timeout: 60_000,
+    },
+    // LIVE_E2E=1: the live dashboard (needs scripts/stdb-setup.sh first) for tests/e2e/live-story.spec.ts.
+    ...(process.env.LIVE_E2E
+      ? [{ command: 'npx vite --mode live --port 5175 --strictPort', url: 'http://localhost:5175', reuseExistingServer: !process.env.CI, timeout: 60_000 }]
+      : []),
+  ],
 });

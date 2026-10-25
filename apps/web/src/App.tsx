@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DeskProvider, useDesk } from './adapters/DeskContext';
-import { createExerciseReplay } from './adapters/replay';
+import { createExerciseReplay, exerciseFixture } from './adapters/replay';
+import { createLiveAdapter } from './adapters/live/liveAdapter';
 import { ModeBanner } from './layout/ModeBanner';
 import { ScenarioControls } from './layout/ScenarioControls';
 import { Section } from './layout/Section';
@@ -10,9 +11,17 @@ import type { DeskAdapter, DeskState } from './adapters/contract';
 import { inferenceLabel, sourceLabel } from './adapters/derived';
 
 // `vite --mode replay` (npm run dev:replay) runs the isolated browser replay.
-// The live adapter (ws/state, SpacetimeDB) plugs in here after G3.
+// `vite --mode live` (npm run dev:live) connects to SpacetimeDB; settings come from VITE_STDB_* (see scripts/stdb-setup.sh).
 function createAdapter(): DeskAdapter | null {
-  return import.meta.env.MODE === 'replay' ? createExerciseReplay() : null;
+  if (import.meta.env.MODE === 'replay') return createExerciseReplay();
+  const e = import.meta.env;
+  if (e.MODE !== 'live' || !e.VITE_STDB_URI || !e.VITE_STDB_DATABASE) return null;
+  return createLiveAdapter(exerciseFixture, {
+    uri: e.VITE_STDB_URI,
+    database: e.VITE_STDB_DATABASE,
+    token: e.VITE_STDB_TOKEN,
+    simToken: e.VITE_STDB_SIM_TOKEN,
+  });
 }
 
 export function App({ adapter }: { adapter?: DeskAdapter | null }) {
