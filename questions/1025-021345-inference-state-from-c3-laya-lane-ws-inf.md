@@ -2,7 +2,7 @@
 id: 1025-021345-inference-state
 from: inference
 to: state
-status: answered
+status: closed
 asked: 2026-10-25T02:13-07:00
 ---
 
