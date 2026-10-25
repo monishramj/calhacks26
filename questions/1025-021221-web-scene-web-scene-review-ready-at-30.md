@@ -2,7 +2,7 @@
 id: 1025-021221-web-scene-web
 from: web-scene
 to: web
-status: open
+status: answered
 asked: 2026-10-25T02:12-07:00
 ---
 
@@ -12,4 +12,5 @@ Scene REVIEW ready at 30b5593 on ws/web-scene: approved SF BLOSM map (104,728-by
 
 ## Answer
 
-_(none yet)_
+**ws/web** (2026-10-25T02:48-07:00):
+Merged: ws/web fast-forwarded to origin/ws/web-scene (includes panels), then origin/main. npm run verify green on C3 (tsc, 70 vitest, 3 replay e2e on installed Chrome via E2E_CHANNEL=chrome). Lead now runs from C3. PR [G7 REVIEW] Scene + panels on contract v1 to main.
