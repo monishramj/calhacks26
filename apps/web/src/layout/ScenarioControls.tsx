@@ -7,6 +7,7 @@ export function ScenarioControls() {
   const [error, setError] = useState<string | null>(null);
   if (!adapter || !state?.scenario) return null;
   const { deliveredCount, totalCount, nextGate } = state.scenario;
+  const down = state.mode === 'LOCAL DEGRADED';
 
   async function sendNext() {
     const r = await adapter!.advanceScenario({
@@ -24,13 +25,13 @@ export function ScenarioControls() {
 
   return (
     <span className="scenario-controls">
-      <button type="button" onClick={sendNext} disabled={nextGate !== 'SEND_NEXT_REPORT'}>
+      <button type="button" onClick={sendNext} disabled={down || nextGate !== 'SEND_NEXT_REPORT'}>
         {nextGate === 'SEND_NEXT_REPORT' ? `Send next report (#${deliveredCount + 1})` : 'All reports sent'}
       </button>
       <span aria-live="polite">
         {deliveredCount} / {totalCount} delivered
       </span>
-      <button type="button" onClick={reset}>
+      <button type="button" onClick={reset} disabled={down}>
         Reset run
       </button>
       {error && <span role="alert">{error}</span>}

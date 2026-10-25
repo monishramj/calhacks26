@@ -76,5 +76,5 @@ export function useCommand() {
       setBusy(false);
     }
   }
-  return { run, error, busy };
+  return { run, error, busy: busy || state?.mode === 'LOCAL DEGRADED' }; // §10: no writes while the database is down
 }

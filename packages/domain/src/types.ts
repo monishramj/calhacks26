@@ -268,6 +268,8 @@ export type DeskState = {
    * proposal; never compute it in the browser.
    */
   inputSignatures: Record<string, string>;
+  /** Live only: jobs still waiting for a worker, by kind (a long wait means that provider is unavailable). */
+  queuedJobs?: Partial<Record<JobKind, number>>;
 };
 
 export interface DeskAdapter {
