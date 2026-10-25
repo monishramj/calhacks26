@@ -35,3 +35,16 @@ The team has two Macs (C2, C3) and two Windows machines (C1, C4). Docker is allo
 - **Don't use it for:** the codec and radio bridge (C1, C4). USB serial passthrough on Docker Desktop is unreliable, and C1 showed decoding needs the identical pinned build; a Linux or emulated build on another CPU can compute different logits. The same applies to Laya on the Macs, where a Linux container loses Metal/MPS acceleration. Run those natively unless a measurement says the container is equivalent.
 - **Native paths keep working.** `npm run dev:replay` never needs Docker. Docker is never a second backend or a sync layer (§4, §23).
 - **Demo is offline-safe.** Pull and pin images before the demo. Nothing may download at demo time.
+
+## D-007 · approved (2026-10-25 by the C4 human, proposed by C2, accepted by C3) · coordinator handoff
+
+- **ws/inference owns all of `apps/coordinator/**`:** the job runner (claimJob → Laya/Claude → submitLocalSuggestion/submitIncidentProposal), the coordinator process and env shell on the C4 command post, `apps/coordinator/package.json`, and a radio-intake HTTP endpoint only if G0 picks that transport.
+- **ws/state keeps:** G0 (all contracts, including the inference job input, the adapter interface, and the radio-intake transport), G3, G6 rules, and the live adapter (in a ws/state path such as `packages/live-adapter`). It also keeps **job issuing + `inputSignature`** and the **scenario injector**, both as SpacetimeDB reducers, so the same code validates freshness at submission and approval (§17) and future exercise truth stays out of the inference owner's code (§18). Plus the root `package.json`/lockfile, the root `dev:live`/`preflight` scripts, and `docker-compose.yml`.
+- **Radio intake:** C2's G0 proposal is that the C4 bridge calls the `receiveReport` reducer directly with its own identity. Fallback: an HTTP POST to the coordinator, host/port from env.
+
+## D-008 · approved (2026-10-25 by the C4 human) · replacement agents run C3
+
+The C3 human is asleep and their computer is locked. Replacement agents take over ws/inference from what's on GitHub. Unpushed work on the C3 machine is out of reach.
+- **Lead lane (`ws/inference`):** a Claude cloud session runs G5 (Claude tool loop) and the coordinator (D-007), against fixture tools until G3 is live. `ANTHROPIC_API_KEY` is set as a cloud environment secret, never committed.
+- **Laya lane (`ws/inference-laya`):** Cursor on C4 runs the flyby port, weights, preflight, and G4. **The Laya worker runs natively on C4** (the command post), which amends D-003's "Laya on a Mac" default. Measurements happen on C4, the demo machine.
+- When the C3 human wakes up, they rejoin through the status files and these lanes; they don't restart anything.

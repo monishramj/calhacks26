@@ -50,8 +50,8 @@ Four computers, one workstream each. People sleep in shifts, so **a workstream b
 | Computer | Workstream | Branch | Gates | Owns (only this workstream edits these) |
 |---|---|---|---|---|
 | C1 | Codec + radio (package A) | `ws/codec-radio` | G1 → G2, radio part of G9 | `services/codec-radio/**` |
-| C2 | Contracts + state (shared foundation + B-state) | `ws/state` | **G0 first**, then G6 rules, G3, G8 backend | `packages/domain/**`, `spacetimedb/**`, `apps/coordinator/**` except `src/inference/`, `fixtures/private/exercise/`, root `package.json` + lockfile |
-| C3 | Inference (B-inference) | `ws/inference` | Preflight, G4, G5, `npm run evaluate` | `services/local-laya/**`, `apps/coordinator/src/inference/**`, `work/eval/**` |
+| C2 | Contracts + state (shared foundation + B-state) | `ws/state` | **G0 first**, then G6 rules, G3, G8 backend | `packages/domain/**`, `spacetimedb/**` (incl. job issuing, `inputSignature`, scenario injector as reducers), live adapter, `fixtures/private/exercise/`, root `package.json` + lockfile, `docker-compose.yml` |
+| C3 | Inference (B-inference) | `ws/inference` | Preflight, G4, G5, coordinator, `npm run evaluate` | `services/local-laya/**`, `apps/coordinator/**` (D-007), `work/eval/**` |
 | C4 | Dashboard + replay (package C) | `ws/web` | G7, G6 UI, G8 replay | `apps/web/**`, `fixtures/replay/**`, `tests/e2e/**` |
 | Orchestrator | PM bookkeeping (agent + whoever is awake) | `main` only | Board, acceptance, G9 coordination | `work/BOARD.md`, `work/DECISIONS.md`, `work/PREFLIGHT.md`, `work/inbox/**`, `docs/**`, `scripts/questions.py`, `scripts/health.py`, `.claude/settings.json` |
 
@@ -138,7 +138,7 @@ Docker is allowed for local SpacetimeDB (and optionally the coordinator), never 
 docs/                 ground truth, workstreams, orchestrator guide
 packages/domain/      shared contracts (TS + JSON Schema)        ws/state
 spacetimedb/          SpacetimeDB module                          ws/state
-apps/coordinator/     job runner, adapters, bridge intake          ws/state (src/inference: ws/inference)
+apps/coordinator/     job runner, Laya/Claude clients, process     ws/inference (D-007)
 apps/web/             React/Three.js dashboard + replay            ws/web
 services/codec-radio/ codec boundary fixes + Meshtastic bridge     ws/codec-radio
 services/local-laya/  local Laya worker                            ws/inference
