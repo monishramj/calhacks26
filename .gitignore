@@ -50,3 +50,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Coordinator worker identity token
+apps/coordinator/.worker-token
