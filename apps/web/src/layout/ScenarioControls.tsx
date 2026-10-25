@@ -1,28 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDesk } from '../adapters/DeskContext';
+import { clock, mmss, seek, setPlaying, setSpeed, useClock } from '../network/clock';
+import { DELIVERIES, SCENARIO } from '../network/mesh';
 
-// §18: R07 is delivered only when the presenter chooses to, never on a timer. Playback stops before it.
-const PRESENTER_GATE = 7;
-const SECONDS_PER_REPORT = 4;
-const SPEEDS = [1, 2, 4];
+// Real-time exercise playback: a scenario clock runs at the chosen speed, teams move, and each report is sent to
+// the desk the moment its simulated packet reaches the command post. Only the window that plays or seeks sends.
+const SPEEDS = [1, 5, 15];
 
 export function ScenarioControls() {
   const { adapter, state } = useDesk();
+  const { t, playing, speed } = useClock(8);
   const [error, setError] = useState<string | null>(null);
-  const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [busy, setBusy] = useState(false);
-  const floor = useRef<number | null>(null); // delivered count at a fresh run: the scrubber's start
   const latest = useRef(state);
   latest.current = state;
+  const busy = useRef(false);
   const scenario = state?.scenario;
   const down = state?.mode === 'LOCAL DEGRADED';
-  const replay = state?.mode === 'LOCAL REPLAY';
   const delivered = scenario?.deliveredCount ?? 0;
   const total = scenario?.totalCount ?? 0;
-  const canSend = scenario?.nextGate === 'SEND_NEXT_REPORT' && !down;
-  const atGate = delivered + 1 === PRESENTER_GATE;
-  if (scenario && floor.current === null) floor.current = delivered;
 
   // Commands read the newest state through a ref; the subscription delivers it asynchronously.
   const settled = async (done: () => boolean) => { for (let i = 0; i < 100 && !done(); i++) await new Promise((r) => setTimeout(r, 20)); };
@@ -35,8 +30,7 @@ export function ScenarioControls() {
     return r.ok;
   }
 
-  async function reset() {
-    setPlaying(false);
+  async function resetRun() {
     const run = latest.current!.runId;
     const r = await adapter!.resetRun({ runId: run, commandId: crypto.randomUUID() });
     setError(r.ok ? null : r.error.message);
@@ -44,49 +38,55 @@ export function ScenarioControls() {
     return r.ok;
   }
 
-  // Scrub (replay only): forward delivers the next reports in order; backward resets and replays up to the point.
-  async function scrubTo(target: number) {
-    if (busy) return;
-    setBusy(true); setPlaying(false);
+  /** Bring the desk in line with the clock: send every report delivered by now, resetting first after a seek back. */
+  async function pump() {
+    if (busy.current || !adapter || down) return;
+    busy.current = true;
     try {
-      if (target < delivered && !(await reset())) return;
-      while ((latest.current?.scenario?.deliveredCount ?? target) < target && (await sendNext()));
-    } finally { setBusy(false); }
+      const due = () => DELIVERIES.filter((d) => d.deliveredAt <= clock.t).length;
+      const count = () => latest.current?.scenario?.deliveredCount ?? 0;
+      if (count() > due() && !(await resetRun())) return;
+      while (count() < Math.min(due(), latest.current?.scenario?.totalCount ?? 0) && (await sendNext()));
+    } finally { busy.current = false; }
   }
 
+  useEffect(() => { if (playing) void pump(); }, [t]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // A window that joins a run already in progress starts its clock at the last delivered report.
   useEffect(() => {
-    if (!playing) return;
-    if (!canSend) { setPlaying(false); return; }
-    if (atGate) { setPlaying(false); return; }
-    const timer = setTimeout(() => { void sendNext(); }, (SECONDS_PER_REPORT * 1000) / speed);
-    return () => clearTimeout(timer);
-  }, [playing, delivered, canSend, atGate, speed]); // eslint-disable-line react-hooks/exhaustive-deps
+    const last = DELIVERIES[delivered - 1];
+    if (!playing && last && clock.t < last.deliveredAt) seek(last.deliveredAt);
+  }, [delivered]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!adapter || !scenario) return null;
-  const start = floor.current ?? 0;
+  const next = DELIVERIES[delivered];
+
+  async function jump(to: number) {
+    setPlaying(false);
+    seek(to);
+    await pump();
+  }
 
   return (
     <span className="scenario-controls">
-      <button type="button" className="play" onClick={() => setPlaying((p) => !p)} disabled={!canSend || atGate || busy}
-        aria-pressed={playing} title={atGate ? 'Playback waits for you to send R07' : undefined}>
+      <button type="button" className="play" onClick={() => setPlaying(!playing)} disabled={down || t >= SCENARIO.durationSeconds}
+        aria-pressed={playing}>
         {playing ? 'Pause' : 'Play'}
-      </button>
-      <button type="button" onClick={() => void sendNext()} disabled={!canSend || busy}>
-        {canSend ? `Send next report (#${delivered + 1})` : 'All reports sent'}
       </button>
       <span className="speed" role="group" aria-label="Playback speed">
         {SPEEDS.map((s) => <button key={s} type="button" aria-pressed={speed === s} onClick={() => setSpeed(s)}>{s}×</button>)}
       </span>
-      {replay ? (
-        <label className="scrubber">
-          <span className="visually-hidden">Timeline</span>
-          <input type="range" min={start} max={total} step={1} value={delivered} disabled={busy}
-            onChange={(e) => void scrubTo(Number(e.target.value))} aria-valuetext={`${delivered} of ${total} reports delivered`} />
-        </label>
-      ) : null}
+      <label className="scrubber">
+        <span className="visually-hidden">Exercise time</span>
+        <input type="range" min={0} max={SCENARIO.durationSeconds} step={1} value={Math.floor(t)} disabled={down}
+          onChange={(e) => void jump(Number(e.target.value))} aria-valuetext={`${mmss(t)} of ${mmss(SCENARIO.durationSeconds)}`} />
+      </label>
+      <span className="clock" aria-label="Exercise time">{mmss(t)} / {mmss(SCENARIO.durationSeconds)}</span>
+      <button type="button" onClick={() => next && void jump(next.deliveredAt)} disabled={down || !next}>
+        {next ? `Next report (#${delivered + 1})` : 'All reports sent'}
+      </button>
       <span aria-live="polite">{delivered} / {total} delivered</span>
-      {atGate && canSend && <span className="gate-hint">Paused before R07 · send it when ready</span>}
-      <button type="button" onClick={() => void reset()} disabled={down || busy}>Reset run</button>
+      <button type="button" onClick={() => { setPlaying(false); seek(0); void resetRun(); }} disabled={down}>Reset run</button>
       {error && <span role="alert">{error}</span>}
     </span>
   );

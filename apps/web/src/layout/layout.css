@@ -64,5 +64,5 @@ html, body, #root { height: 100%; margin: 0; }
 .scenario-controls button[aria-pressed='true'] { background: #f0d48c; color: #17282a; border-color: #f0d48c; }
 .scenario-controls .play { min-width: 4.2rem; }
 .scrubber input { width: 160px; accent-color: #f0d48c; vertical-align: middle; }
-.gate-hint { color: #f0d48c; }
+.scenario-controls .clock { font-variant-numeric: tabular-nums; min-width: 6.5rem; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

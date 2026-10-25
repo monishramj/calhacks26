@@ -7,9 +7,11 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SUNSET } from './georeference';
+import { Network, Teams } from './network';
 import { attentionColor, attentionLabel, densityAt, HEATMAP_HEIGHT_SCALE, PLACES, placePosition, type SceneIncident } from './model';
 
 export type CameraView = 'overview' | 'top' | 'selected';
+export type Layer = 'incidents' | 'network';
 const B = SUNSET.bounds;
 const W = B.maxX - B.minX;
 const D = B.maxZ - B.minZ;
@@ -131,15 +133,15 @@ function buildingGeometry(list: readonly Footprint[]) {
   return { walls, roofs };
 }
 
-function Town() {
+function Town({ dim }: { dim: boolean }) {
   const ground = useMemo(paintGround, []);
   const land = useMemo(landGeometry, []);
   const windows = useMemo(windowTexture, []);
   const { walls, roofs } = useMemo(() => buildingGeometry(SUNSET.buildings), []);
   return <group>
     <mesh geometry={land} receiveShadow><meshStandardMaterial map={ground} roughness={.95} /></mesh>
-    <mesh geometry={walls} castShadow receiveShadow><meshStandardMaterial map={windows} vertexColors roughness={.85} /></mesh>
-    <mesh geometry={roofs} castShadow receiveShadow><meshStandardMaterial vertexColors roughness={.9} /></mesh>
+    <mesh geometry={walls} castShadow receiveShadow><meshStandardMaterial map={windows} vertexColors roughness={.85} transparent opacity={dim ? .35 : 1} /></mesh>
+    <mesh geometry={roofs} castShadow receiveShadow><meshStandardMaterial vertexColors roughness={.9} transparent opacity={dim ? .35 : 1} /></mesh>
     <Trees /><Cars />
   </group>;
 }
@@ -279,7 +281,7 @@ function labelTexture(title: string, detail: string | null, accent: string, sele
 
 function Label({ title, detail, accent, selected, position }: { title: string; detail: string | null; accent: string; selected: boolean; position: [number, number, number] }) {
   const { t, aspect } = useMemo(() => labelTexture(title, detail, accent, selected), [title, detail, accent, selected]);
-  const h = detail ? 15 : 10;
+  const h = detail ? 15 : 7;
   return <sprite position={position} scale={[h * aspect, h, 1]} renderOrder={10}>
     <spriteMaterial map={t} depthTest={false} transparent />
   </sprite>;
@@ -305,8 +307,8 @@ function Beacon({ incident, offset, selected, onSelect }: { incident: SceneIncid
       <ringGeometry args={[.85, 1, 48]} />
       <meshBasicMaterial color={color} transparent depthWrite={false} side={DoubleSide} />
     </mesh>
-    <Label title={place.name} detail={`${attentionLabel(incident.attention)} · ${incident.status.toLowerCase()}`} accent={color} selected={selected}
-      position={[x, site.h + 68, z]} />
+    <Label title={place.name} detail={selected ? `${attentionLabel(incident.attention)} · ${incident.status.toLowerCase()}` : null}
+      accent={color} selected={selected} position={[x, site.h + (selected ? 68 : 48), z]} />
   </group>;
 }
 
@@ -401,13 +403,14 @@ function CameraRig({ view, focus, onFailure }: { view: CameraView; focus: { x: n
   return null;
 }
 
-export function SunsetCanvas({ incidents, selectedIncidentId, onSelectIncident, heatmap, raised, view, onFailure }: {
+export function SunsetCanvas({ incidents, selectedIncidentId, onSelectIncident, heatmap, raised, view, layer, onFailure }: {
   incidents: readonly SceneIncident[];
   selectedIncidentId: string | null;
   onSelectIncident: (incidentId: string | null) => void;
   heatmap: boolean;
   raised: boolean;
   view: CameraView;
+  layer: Layer;
   onFailure: () => void;
 }) {
   const located = incidents.filter((row) => row.status === 'OPEN' && placePosition(row.confirmedPlaceId));
@@ -421,15 +424,15 @@ export function SunsetCanvas({ incidents, selectedIncidentId, onSelectIncident, 
     <directionalLight position={[-500, 650, 350]} intensity={1.6} color="#fff3e0" castShadow
       shadow-mapSize={[4096, 4096]} shadow-camera-left={-800} shadow-camera-right={800} shadow-camera-top={700} shadow-camera-bottom={-700}
       shadow-camera-far={2400} shadow-bias={-.0004} />
-    <Town />
+    <Town dim={layer === 'network'} />
+    <Teams strong={layer === 'network'} />
+    {layer === 'network' && <Network />}
     <Ocean />
     <SiteHighlights />
-    {PLACES.filter((p) => !located.some((row) => row.confirmedPlaceId === p.id)).map((p) =>
-      <Label key={p.id} title={p.name} detail={null} accent="#9fb3b6" selected={false} position={[p.x, p.h + 24, p.z]} />)}
-    {located.map((row, i) => <Beacon key={row.incidentId} incident={row} selected={row.incidentId === selectedIncidentId}
+    {layer === 'incidents' && located.map((row, i) => <Beacon key={row.incidentId} incident={row} selected={row.incidentId === selectedIncidentId}
       offset={located.slice(0, i).filter((prior) => prior.confirmedPlaceId === row.confirmedPlaceId).length}
       onSelect={() => onSelectIncident(row.incidentId)} />)}
-    {heatmap && <Heatmap incidents={incidents} raised={raised} />}
+    {heatmap && layer === 'incidents' && <Heatmap incidents={incidents} raised={raised} />}
     <CameraRig view={view} focus={focus} onFailure={onFailure} />
   </Canvas>;
 }

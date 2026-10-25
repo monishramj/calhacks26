@@ -4,7 +4,9 @@ import { attentionColor, attentionLabel, HEATMAP_HEIGHT_SCALE, HEATMAP_RADIUS,
   PLACES, placePosition, type SceneDataProps, type SceneIncident } from './model';
 import './scene.css';
 import { SUNSET, sceneToGeographic } from './georeference';
-import type { CameraView } from './sunset';
+import type { CameraView, Layer } from './sunset';
+import { mmss, useClock } from '../network/clock';
+import { positionAt, RANGE_M, SCENARIO, statsAt } from '../network/mesh';
 
 const SunsetCanvas = lazy(() => import('./sunset').then((module) => ({ default: module.SunsetCanvas })));
 
@@ -40,6 +42,7 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
   onSelectIncident: SceneProps['onSelectIncident'];
   heatmap: boolean;
 }) {
+  const { t } = useClock(2);
   const located = incidents.filter((row) => row.status === 'OPEN' && placePosition(row.confirmedPlaceId));
   const contributors = [...new Map(located.map((row) => [row.incidentId, row])).values()];
   const base = useMemo(() => <>
@@ -59,6 +62,7 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
         {[1, .75, .5, .25].map((fraction) => <circle key={fraction} cx={point.x} cy={point.z} r={HEATMAP_RADIUS * fraction} fill="#f2994a" opacity=".16" />)}
       </g>;
     })}
+    {SCENARIO.teams.map((team) => { const q = positionAt(team.track, t); return <circle key={team.teamId} cx={q.x} cy={q.z} r="6" fill="#4ea1ff" stroke="#0d1b26" strokeWidth="2" aria-hidden="true" />; })}
     {PLACES.map((place) => <g key={place.id}>
       <rect x={place.x - 34} y={place.z + 18} width="68" height="22" rx="4" fill="#14262ae6" />
       <text x={place.x} y={place.z + 33} textAnchor="middle" fill="#f1efe6" fontSize="13">{place.name}</text>
@@ -82,6 +86,7 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
   const [heatmap, setHeatmap] = useState(false);
   const [raised, setRaised] = useState(true);
   const [view, setView] = useState<CameraView>('overview');
+  const [layer, setLayer] = useState<Layer>('incidents');
   const [webgl, setWebgl] = useState(false);
   const [use2d, setUse2d] = useState(false);
   const rendererFailed = useCallback(() => setWebgl(false), []);
@@ -104,20 +109,25 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
     <div className="scene-viewport">
       {threeD ? <RenderBoundary onFailure={rendererFailed}><Suspense fallback={<p className="scene-empty scene-loading">Loading Outer Sunset…</p>}>
         <SunsetCanvas incidents={unique} selectedIncidentId={selectedIncidentId} onSelectIncident={onSelectIncident}
-          heatmap={heatmap} raised={raised} view={view} onFailure={rendererFailed} />
+          heatmap={heatmap} raised={raised} view={view} layer={layer} onFailure={rendererFailed} />
       </Suspense></RenderBoundary>
         : <TopDown incidents={unique} selectedIncidentId={selectedIncidentId} onSelectIncident={onSelectIncident} heatmap={heatmap} />}
     </div>
     <div className="scene-toolbar" role="toolbar" aria-label="Map controls">
       <span className="scene-place">Outer Sunset · San Francisco</span>
+      <span className="scene-segment" role="group" aria-label="Map layer">
+        <button type="button" className="scene-mode" aria-pressed={layer === 'incidents'} onClick={() => setLayer('incidents')}>Incidents</button>
+        <button type="button" className="scene-mode" aria-pressed={layer === 'network'} onClick={() => setLayer('network')}>LoRa network</button>
+      </span>
       <button type="button" className="scene-mode" aria-pressed={!threeD} disabled={!webgl} onClick={() => setUse2d((value) => !value)}>2D map</button>
       {threeD && VIEWS.map((v) => <button key={v.id} type="button" className="scene-mode" aria-pressed={view === v.id}
         disabled={v.id === 'selected' && !selectedIncidentId} onClick={() => setView(v.id)}>{v.label}</button>)}
-      <button type="button" className="scene-mode" aria-pressed={heatmap} onClick={() => setHeatmap((value) => !value)}>Heatmap {heatmap ? 'on' : 'off'}</button>
-      {threeD && heatmap && <button type="button" className="scene-mode" aria-pressed={raised} onClick={() => setRaised((value) => !value)}>Raised</button>}
+      {layer === 'incidents' && <button type="button" className="scene-mode" aria-pressed={heatmap} onClick={() => setHeatmap((value) => !value)}>Heatmap {heatmap ? 'on' : 'off'}</button>}
+      {threeD && heatmap && layer === 'incidents' && <button type="button" className="scene-mode" aria-pressed={raised} onClick={() => setRaised((value) => !value)}>Raised</button>}
     </div>
     <div className="scene-overlay-bottom">
-      {heatmap && <div className="scene-legend" role="note" aria-label="Heatmap legend">
+      {layer === 'network' && <NetworkStats />}
+      {heatmap && layer === 'incidents' && <div className="scene-legend" role="note" aria-label="Heatmap legend">
         <strong>Confirmed unresolved incident concentration</strong>
         <span className="scene-legend-ramp" /><span className="scene-legend-ticks"><span>0</span><span>1</span><span>2</span><span>3+</span></span>
         <span>One equal contribution per open located incident · fixed radius {HEATMAP_RADIUS} m · fixed height scale {HEATMAP_HEIGHT_SCALE} m per contribution.</span>
@@ -129,5 +139,26 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
       <span className="scene-view-label">{threeD ? '3D · drag to orbit · right-drag to pan · scroll to zoom' : webgl ? '2D map · same coordinates as 3D' : 'WebGL unavailable · 2D map'}</span>
       <footer className="scene-footer">Map data © OpenStreetMap contributors (ODbL) · exercise sites are synthetic overlays on real buildings</footer>
     </div>
+  </div>;
+}
+
+/** Running totals of the simulated mesh, codec packets against the same reports sent as raw text. */
+function NetworkStats() {
+  const { t } = useClock(2);
+  const s = statsAt(t);
+  const pct = (v: number) => `${Math.round(v * 100)}%`;
+  const saved = s.rawBytes ? 1 - s.bytes / s.rawBytes : 0;
+  return <div className="scene-legend network-stats" role="note" aria-label="LoRa network">
+    <strong>LoRa mesh · {mmss(t)}</strong>
+    <span className="stats-grid">
+      <span>Reports delivered</span><b>{s.delivered} / {s.total}</b>
+      <span>Hops relayed</span><b>{s.hops}</b>
+      <span>Bytes on air</span><b>{s.bytes} B <small>vs {s.rawBytes} B raw ({pct(saved)} less)</small></b>
+      <span>Airtime</span><b>{s.airS.toFixed(1)} s <small>vs {s.rawAirS.toFixed(1)} s raw</small></b>
+      <span>Channel use (5 min)</span><b>{pct(s.channelUse)} <small>vs {pct(s.rawChannelUse)} raw</small></b>
+      <span>3-hop delivery at 25% load</span><b>{pct(s.p3)} <small>vs {pct(s.rawP3)} raw</small></b>
+    </span>
+    <span className="legend-row"><i style={{ background: '#4ea1ff' }} />team radio <i style={{ background: '#f2c94c' }} />report waiting for coverage <i style={{ background: '#7cf0c4' }} />packet <i style={{ background: '#f2994a' }} />command post</span>
+    <span>Simulated network · LongFast · {RANGE_M} m range. Codec sizes are estimates from {SCENARIO.codecEstimate.samples} measured packets.</span>
   </div>;
 }
