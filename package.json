@@ -14,6 +14,7 @@
     "test": "npm test --workspaces --if-present",
     "dev:replay": "npm run dev:replay -w @calhacks26/web",
     "build": "npm run build -w @calhacks26/web",
-    "test:e2e": "npm run test:e2e -w @calhacks26/web"
+    "test:e2e": "npm run test:e2e -w @calhacks26/web",
+    "dev:live": "sh scripts/dev-live.sh"
   }
 }
