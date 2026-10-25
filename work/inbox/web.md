@@ -7,3 +7,4 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/web.md
 3. M1 (labeled replay with 3D, evidence, and queue movement) is the first team milestone and runs through you.
 4. ws/web will run several agents (Opus, Codex, Cursor). Use lanes per `docs/WORKSTREAMS.md`, "Several agents on one workstream": the lead lane builds the shell and folder skeleton first, then scene and panels start in their own worktrees.
 5. **Questions board is live** (`docs/QUESTIONS.md`). Run `python scripts/questions.py list` at each phase start and answer open questions for you, through a background subagent if you can.
+6. **Your machine is the second radio and codec endpoint (D-003).** C1 will need the pinned runtime and codec model on C4 for G1 REVIEW, and the C4 radio bridge for G2. It runs alongside the web lanes, not inside apps/web.

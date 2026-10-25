@@ -13,9 +13,13 @@ Follows §11's suggested structure, plus:
 - `work/status/`, `work/inbox/`, `work/BOARD.md`, `work/PREFLIGHT.md` for cross-computer coordination (`docs/ORCHESTRATOR.md`).
 - `apps/coordinator/src/inference/` is owned by `ws/inference` inside a `ws/state` app.
 
-## D-003 · approved · command-post machine
+## D-003 · approved (revised 2026-10-25 01:50 by the C4 human) · command post and radio endpoints
 
-C2's computer runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio. This is logistics, not scope. It changes only if C2's machine can't run that stack.
+C2's computer runs SpacetimeDB, the coordinator, and the Laya worker. The **second radio and second codec endpoint are on C4** (Intel i7-11800H, x86-64 + AVX2, Windows 11). C1 holds the first radio and codec endpoint. Radio intake is a LAN hop: the C4 bridge sends verified `ReportInput` to the C2 coordinator, and G0 must freeze that transport.
+
+## D-005 · approved (2026-10-25 01:50 by the C4 human) · pinned codec runtime binaries in git
+
+ws/codec-radio may commit the pinned codec runtime (about 8 MB: the llama.cpp MinGW cross-build with glibc float math, Unishox2, and the Linux .so files) under `services/codec-radio/runtime/` with SHA-256 sums, because every endpoint must run the identical binary. Model weights and context files still stay outside git.
 
 ## D-004 · proposed · scene geometry source
 
