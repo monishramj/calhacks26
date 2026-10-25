@@ -41,7 +41,7 @@ test('live: approval in one window moves the school to #1 in the other', async (
 
   // Operator-authored incidents from R01-R03 so the school has something to overtake.
   const run = (await sql('SELECT * FROM desk'))[0];
-  const rid = async (m: string) => JSON.parse((await sql(`SELECT * FROM report WHERE message_id = '${m}'`))[0].json).reportId as string;
+  const rid = async (m: string) => JSON.parse((await sql(`SELECT * FROM report WHERE message_id = '${m}' AND run_id = '${run.run_id}'`))[0].json).reportId as string;
   const propose = async (id: string, incidentId: string, base: number, report: string, attention: string, signature: string) => {
     const proposal = {
       runId: run.run_id, proposalId: id, incidentId, baseIncidentVersions: { [incidentId]: base }, inputSignature: signature,
@@ -53,14 +53,14 @@ test('live: approval in one window moves the school to #1 in the other', async (
   };
   for (const [m, inc, att] of [['R01', 'INC-school', 'INFORMATION'], ['R02', 'INC-shelter', 'ACTIVE_NEED'], ['R03', 'INC-residence', 'POSSIBLE_LIFE_SAFETY']]) {
     const sig = (await sql('SELECT * FROM desk'))[0].new_incident_signature;
-    const p = await propose(`op-${m}`, inc, 0, await rid(m), att, sig);
+    const p = await propose(`${run.run_id}-op-${m}`, inc, 0, await rid(m), att, sig);
     await call('approve_proposal', { commandId: crypto.randomUUID(), runId: run.run_id, proposalId: p.proposalId, inputSignature: sig, baseIncidentVersions: p.baseIncidentVersions });
   }
   await expect.poll(() => queueOrder(a)).toEqual(['INC-residence', 'INC-shelter', 'INC-school']);
 
   // R07 as a pending possible-harm proposal on the school.
   const sig = (await sql("SELECT * FROM incident_signature WHERE incident_id = 'INC-school'"))[0].signature;
-  await propose('op-R07', 'INC-school', 1, await rid('R07'), 'POSSIBLE_LIFE_SAFETY', sig);
+  await propose(`${run.run_id}-op-R07`, 'INC-school', 1, await rid('R07'), 'POSSIBLE_LIFE_SAFETY', sig);
   await expect(review(b).getByText('Correction: the school gym is clear', { exact: false })).toBeVisible();
   await expect.poll(() => queueOrder(b)).toEqual(['INC-residence', 'INC-shelter', 'INC-school']);
 
