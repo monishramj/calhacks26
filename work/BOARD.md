@@ -43,7 +43,7 @@ The ground truth already says what happens for every outcome. The orchestrator a
 | Local SpacetimeDB server/client pair | C2 preflight | Pin versions; G3 continues | G3 blocked. The UI continues on the fixture adapter, labeled, never as a silent substitute (§16). |
 | Scope | all of the above | No change | Re-estimate and cut in §23 order, keeping the §14 core (§19). |
 
-**Command post:** C2's computer runs SpacetimeDB, the coordinator, and the Laya worker. The second radio and codec endpoint are on C4, with a LAN hop to C2 (D-003). Runtime binaries may be committed (D-005).
+**Command post: C4** runs SpacetimeDB (Docker), the receiving radio, codec endpoint B, and by default the coordinator. Laya runs natively on a Mac over the LAN. C2 develops and publishes the module to C4 (D-003). Runtime binaries may be committed (D-005). Docker only for SpacetimeDB and optionally the coordinator (D-006).
 
 ## Preflight
 
