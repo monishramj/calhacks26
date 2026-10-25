@@ -35,3 +35,60 @@ services/local-laya/
 - Laya scored at chance on raw JSON in flyby: render state as plain sentences.
 
 Weights stay outside git (`LAYA_MODEL_PATH`).
+
+## Native Mac worker (G4 IMPLEMENT)
+
+Use Python 3.11 or newer. The pins above were measured on C4 Windows; C3 Mac installation and
+inference remain unverified until the real-model check below succeeds.
+
+```bash
+python3 -m venv ../laya-env
+../laya-env/bin/python -m pip install -r services/local-laya/requirements.txt
+export LAYA_MODEL_PATH=../laya-models/laya
+../laya-env/bin/python services/local-laya/tools/setup_laya.py
+../laya-env/bin/python -m pytest services/local-laya/tests -q -rs
+PYTHONPATH=services/local-laya ../laya-env/bin/python -m laya_worker.server --host 0.0.0.0 --port 8091
+```
+
+The server loads once, checks the installed Laya version and pinned weights SHA-256, and serializes
+requests. Set the coordinator's `LOCAL_LAYA_URL` to `http://<worker-host>:8091`. `GET /health`
+returns readiness plus runtime/revision, or 503. `POST /suggest` accepts the v1.0.0 `JobInput` and
+returns the validated `LocalSuggestion` directly. Invalid input is 400, an oversized body is 413,
+and unavailable inference is 503, with contract error codes and no provider internals.
+
+Every original delivered report is included in receive-sequence order. If the complete state cannot
+fit the SDK's measured per-question token room, no model call runs: the result is `REQUEST_REVIEW`,
+null attention, and empty scores, with a truncation warning in the server log. More than ten candidates
+also requires review without inference. These are boundary decisions, not successful model predictions;
+v1 has no reason field. No reports or pending corrections are selected away to fit.
+
+Scores preserve the model's choice probabilities, including candidate choices; SDK entropy confidence
+is never an urgency score. An authored 0.6 winning probability and 0.2 margin gate uncertain choices
+into review/null attention. These thresholds are not calibrated accuracy claims. Lowering the attention
+of an existing open candidate remains unresolved for operator review even with strong model scores.
+Only the backend/operator can confirm state. An unavailable startup stays unavailable until restart.
+
+With the server running, send one **authored development input** (no expectations or future events):
+
+```bash
+PYTHONPATH=services/local-laya/tests ../laya-env/bin/python - <<'PY'
+import json
+import sys
+from time import perf_counter
+from urllib.request import Request, urlopen
+from laya_g4_helpers import clinic_job
+sys.path.insert(0, 'packages/domain/python')
+import domain_contract
+request = Request('http://127.0.0.1:8091/suggest',
+                  data=json.dumps(clinic_job()).encode(),
+                  headers={'Content-Type': 'application/json'})
+start = perf_counter()
+with urlopen(request, timeout=30) as response:
+    suggestion = json.load(response)
+elapsed_ms = (perf_counter() - start) * 1000
+assert domain_contract.validate('LocalSuggestion', suggestion) == []
+assert suggestion['scores'], 'No real inference scores; inspect server review warnings'
+print(json.dumps({'label': 'live local Laya; authored input',
+                  'latency_ms': elapsed_ms, 'suggestion': suggestion}, indent=2))
+PY
+```

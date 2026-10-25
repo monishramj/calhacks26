@@ -1,43 +1,49 @@
-# Status · ws/inference · laya lane (C4, D-008)
+# Status · ws/inference · laya lane (C3 Mac)
 
-_Updated: 2026-10-25 02:30 PDT by the laya lane (Cursor agent on C4)_
+_Updated: 2026-10-25 by the laya lane on C3 Mac, per the current human task._
 
 ## Now
 
-- **Gate / phase:** G4 TEST done (red, recorded), contract v1.0.0 merged and tests rerun against it (81 red on stubs, 4 green, 0 skipped). Stopped before IMPLEMENT.
-- **Branch / worktree:** `ws/inference-laya` at `../calhacks26-inference-laya` (sibling of the main clone) (C4). `origin/main` merged at session start.
-- **Owns:** `services/local-laya/**` only. Evidence is in `work/validation/G4.md` (as instructed; the lead's lane table says `G4-laya.md`, but G4 is laya-only, so there is no collision).
-- **Exact next step:** G4 IMPLEMENT, which is a separate request. Build `laya_worker/suggest.py` and `laya_worker/server.py` until the reviewed tests in `services/local-laya/tests` pass without weakening them. The G4 worker reads a v1.0.0 `JobInput` and validates its output with `domain_contract`.
+- **Gate / phase:** G4 IMPLEMENT code written; full-suite and real-model verification blocked by the execution environment. Do not mark G4 green.
+- **Branch:** `ws/inference-laya`; last commit `30cabac` (existing merge of main). This implementation is uncommitted and unpushed because the required verification has not completed.
+- **Owns:** `services/local-laya/**`, this file, and `work/validation/G4.md`. No other tracked files changed. Existing tests unchanged; no new suite.
+- Implemented `suggest.py` / `server.py`: frozen v1.0.0 contracts, original reports in receive order, exact per-question state budget guard, explicit review for overflow/malformed/uncertain output, probability scores, operator review for lowering open concerns, one verified model load and serialized HTTP requests.
+- **Evidence:** 11 unchanged safety test functions invoked directly pass, plus an in-process Worker smoke, all using the existing **mock** FakeRuntime and real domain validator. AST parsing and diff checks pass. No full pytest result, live inference, or C3 latency measurement. Prior C4 measurements remain historical in `work/validation/G4.md`.
 
-## How to run what exists
+## Exact next step
+
+Resume in an environment that permits the sibling venv/model paths, shared worktree Git metadata, PyPI/Hugging Face/GitHub access and local port binding. Then:
+
+1. Fetch `origin`, inspect inbox/board, and merge main if it advanced.
+2. Run the native setup below, then the **unchanged full suite** with the real checkpoint. Fix any failures within this lane; do not weaken tests.
+3. Start the server and run the README's authored development POST. It validates the output, requires actual model scores, and prints measured latency. Record real results in G4 validation.
+4. Update this status with the results, then commit with `[ws/inference][G4][IMPL][laya] implement validated local suggestion worker` and `git push origin ws/inference-laya`. Do not claim completion before these checks and push succeed.
+
+## Setup and run (from repo root)
 
 ```bash
-export LAYA_MODEL_PATH=../laya-models/laya      # weights outside git
-../laya-env/Scripts/python services/local-laya/tools/laya_smoke.py     # venv at ../laya-env
-../laya-env/Scripts/python -m pytest services/local-laya/tests -q -rs
+python3 -m venv ../laya-env
+../laya-env/bin/python -m pip install -r services/local-laya/requirements.txt
+export LAYA_MODEL_PATH=../laya-models/laya
+../laya-env/bin/python services/local-laya/tools/setup_laya.py
+../laya-env/bin/python -m pytest services/local-laya/tests -q -rs
+PYTHONPATH=services/local-laya ../laya-env/bin/python -m laya_worker.server --host 0.0.0.0 --port 8091
 ```
 
-Setup from scratch: `services/local-laya/README.md`.
-
-## Preflight (§19), measured on C4 CPU
-
-| Item | Result | Evidence |
-|---|---|---|
-| Laya package + checkpoint | `laya==0.3.20`, `convaiinnovations/laya@55cf4c4e…`, SHA-256 `891102d3…8d86c` | `work/validation/G4.md` |
-| Loads locally | yes, CPU. 62.7 s cold first load; ≈13.4 s warm (6.4 s imports + 7.0 s model) | `results/laya_smoke_cpu.json` |
-| Warm latency | 3 questions/call: p50 1,064 / p95 1,322 ms. 1 question: p50 211 / p95 288 ms | same |
-| Output semantics | choice → probabilities over the asked keys (`probability`); score → expected ordinal 0..n-1 (`score`); noul → P(true). The SDK silently right-truncates state past 512 tokens. Choice with 11+ options is uncalibrated. | `work/validation/G4.md` |
-| Claude model ID | not this lane's job (the lead lane does it in the cloud, D-008) | |
+**Port:** 8091. Coordinator URL: `http://<worker-host>:8091`. `GET /health`, `POST /suggest` (JobInput → LocalSuggestion). Errors: 400/413 INVALID_INPUT, 503 SERVICE_UNAVAILABLE. Restart after repairing an unavailable startup. Weights and venv remain outside git. Native setup and the exact POST command are in `services/local-laya/README.md`.
 
 ## Blockers
 
-None. Contract v1.0.0 is merged; tests validate against packages/domain.
+- Sandbox denies `../laya-env` creation and parent worktree `FETCH_HEAD` writes. `../laya-models/laya` is absent. No installed Laya runtime/checkpoint.
+- PyPI DNS/network is unavailable; pytest installation fails. A temporary check environment has real jsonschema from the existing pip cache, but no pytest. The full test command exits with `No module named pytest`.
+- Server startup fails at socket bind with `PermissionError: Operation not permitted`. No running server remains, and no real suggestion was made.
+- Hence real model behavior, C3 latency and full regression results remain **unverified**. No commit/push was attempted before the user's required verification.
 
 ## Needs from others
 
-- ws/state: none open. Answered on the board (`1025-021345-inference-state`): `JobInput.reports` carries exact text, including pending corrections.
-- Lead lane: the coordinator client calls `POST /suggest` with a v1 `JobInput` and reads a `LocalSuggestion`. 503 means SERVICE_UNAVAILABLE and 400 means INVALID_INPUT. Budget about 4 s per job on C4 (3×p95), so ask few questions per call.
+- Execution environment/operator: make the documented setup, network, port and Git worktree paths available for the remaining verification and push.
+- Lead lane: use the URL and request/response above; this lane is not yet validated for integration. Review-only output without scores can mean a context/option-budget guard; v1 has no reason field, so the reason is logged. Do not reuse C4 latency as a C3 measurement.
 
 ## Inbox acknowledged
 
-Items 1–7 in `work/inbox/inference.md`. Item 5 (native Laya, no Docker) is followed on C4 per D-008.
+Items 1–9 from locally available `origin/main:work/inbox/inference.md`; contract v1 and D-009 ship mode followed. Current user explicitly assigns C3 Mac, superseding the older C4 lane handoff for this run. Questions-board check reported no items. No held-out fixtures read.

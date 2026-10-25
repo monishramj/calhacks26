@@ -2,11 +2,13 @@
 
 Ported from flyby server/triage/laya_runtime.py. Acquisition belongs to tools/setup_laya.py.
 """
+import hashlib
+from importlib.metadata import version
 from math import isfinite
 from pathlib import Path
 from time import perf_counter
 
-from .config import Settings, settings as default_settings
+from .config import LAYA_RUNTIME, LAYA_WEIGHTS_SHA256, Settings, settings as default_settings
 
 REQUIRED_FILES = ("model.safetensors", "rl_agent_config.json", "encoder/config.json", "tokenizer/tokenizer.json")
 
@@ -17,27 +19,31 @@ class LayaUnavailable(RuntimeError):
 
 def check_answers(answers: dict, questions: dict) -> dict:
     """Reject anything that is not the typed shape the SDK documents. Raises ValueError."""
-    if set(answers) != set(questions):
+    if not isinstance(answers, dict) or set(answers) != set(questions):
         raise ValueError("Laya returned unexpected answer keys")
     for qid, question in questions.items():
         answer = answers[qid]
+        if not isinstance(answer, dict):
+            raise ValueError(f"{qid}: answer must be an object")
         if question["type"] == "choice":
             probs = answer.get("probabilities", {})
-            if set(probs) != set(question["criteria"]):
+            if not isinstance(probs, dict) or set(probs) != set(question["criteria"]):
                 raise ValueError(f"{qid}: labels differ from the options asked")
-            if any(not isinstance(v, (int, float)) or not isfinite(v) or not 0 <= v <= 1 for v in probs.values()):
+            if any(type(v) not in (int, float) or not 0 <= v <= 1 or not isfinite(v) for v in probs.values()):
                 raise ValueError(f"{qid}: probability outside [0, 1]")
             if abs(sum(probs.values()) - 1) > 1e-3:
                 raise ValueError(f"{qid}: probabilities do not sum to one")
-            if answer.get("choice") not in probs:
+            if not isinstance(answer.get("choice"), str) or answer["choice"] not in probs:
                 raise ValueError(f"{qid}: unknown choice")
+            if probs[answer["choice"]] != max(probs.values()):
+                raise ValueError(f"{qid}: choice does not match probabilities")
         elif question["type"] == "score":
             value, top = answer.get("score"), len(question["criteria"]) - 1
-            if not isinstance(value, (int, float)) or not isfinite(value) or not 0 <= value <= top:
+            if type(value) not in (int, float) or not 0 <= value <= top or not isfinite(value):
                 raise ValueError(f"{qid}: expected ordinal outside [0, {top}]")
         else:
             value = answer.get("noul")
-            if not isinstance(value, (int, float)) or not isfinite(value) or not 0 <= value <= 1:
+            if type(value) not in (int, float) or not 0 <= value <= 1 or not isfinite(value):
                 raise ValueError(f"{qid}: P(true) outside [0, 1]")
     return answers
 
@@ -83,6 +89,16 @@ def load(cfg: Settings | None = None) -> LayaRuntime:
     if missing:
         raise LayaUnavailable("Laya model is not installed at LAYA_MODEL_PATH. Missing: " + ", ".join(missing))
     start = perf_counter()
-    from laya import Agent
-    agent = Agent(str(directory.resolve()), device=cfg.device, compile=False)
+    try:
+        if f"laya=={version('laya')}" != LAYA_RUNTIME:
+            raise LayaUnavailable("Unexpected Laya runtime version")
+        with (directory / "model.safetensors").open("rb") as weights:
+            if hashlib.file_digest(weights, "sha256").hexdigest() != LAYA_WEIGHTS_SHA256:
+                raise LayaUnavailable("Unexpected Laya checkpoint digest")
+        from laya import Agent
+        agent = Agent(str(directory.resolve()), device=cfg.device, compile=False)
+    except LayaUnavailable:
+        raise
+    except Exception as error:
+        raise LayaUnavailable("Local model could not be loaded") from error
     return LayaRuntime(agent, (perf_counter() - start) * 1000)
