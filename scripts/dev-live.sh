@@ -25,7 +25,7 @@ if [ -x "$LAYA_PY" ] && [ -n "${LAYA_MODEL_PATH:-}" ]; then
 else
   echo "unavailable: Laya worker (set LAYA_MODEL_PATH in .env and create ../laya-env); reports stay in manual review"
 fi
-[ -n "${GEMINI_API_KEY:-}${ANTHROPIC_API_KEY:-}" ] || echo "unavailable: summary step (no GEMINI_API_KEY or ANTHROPIC_API_KEY)"
+[ -n "${ANTHROPIC_API_KEY:-}" ] || echo "unavailable: summary step (no ANTHROPIC_API_KEY)"
 npm start -w @calhacks26/coordinator &
 npm run dev:live -w @calhacks26/web &
 wait

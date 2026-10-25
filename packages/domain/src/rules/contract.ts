@@ -19,7 +19,7 @@ import { fail, isId, validateWire } from '../validate';
 
 export const ATTENTIONS = Object.freeze(['POSSIBLE_LIFE_SAFETY', 'ACTIVE_NEED', 'INFORMATION'] as const);
 export const LOCAL_ACTIONS = Object.freeze(['NEW_INCIDENT', 'ATTACH_REPORT', 'FLAG_CORRECTION', 'FLAG_CONFLICT', 'REQUEST_REVIEW'] as const);
-export const PROVIDERS = Object.freeze(['local_laya', 'claude', 'gemini', 'operator', 'recording', 'fixture', 'rule'] as const);
+export const PROVIDERS = Object.freeze(['local_laya', 'claude', 'operator', 'recording', 'fixture', 'rule'] as const);
 export const ERROR_CODES = Object.freeze([
   'STALE_REVISION',
   'INVALID_SOURCE',
@@ -141,14 +141,14 @@ export function authorize(role: string, method: string, ctx?: { origin?: string;
   if (method === 'submitIncidentProposal') {
     const provider = ctx?.provider;
     if (provider === 'operator') return role === 'operator' ? OK : deny;
-    if (provider === 'claude' || provider === 'gemini' || provider === 'recording' || provider === 'fixture') return role === 'worker' ? OK : deny;
+    if (provider === 'claude' || provider === 'recording' || provider === 'fixture') return role === 'worker' ? OK : deny;
     return fail('INVALID_INPUT', 'submitIncidentProposal needs a known provider');
   }
   return ONLY[method as AdapterMethod]!.includes(role as Role) ? OK : deny;
 }
 
 const ALLOWED_PROVIDERS: Record<string, Record<string, readonly string[]>> = {
-  live: { submitLocalSuggestion: ['local_laya', 'recording'], submitIncidentProposal: ['claude', 'gemini', 'operator', 'recording'] },
+  live: { submitLocalSuggestion: ['local_laya', 'recording'], submitIncidentProposal: ['claude', 'operator', 'recording'] },
   replay: { submitLocalSuggestion: ['fixture', 'recording'], submitIncidentProposal: ['fixture', 'recording', 'operator'] },
 };
 

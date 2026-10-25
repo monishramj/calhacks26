@@ -1,7 +1,7 @@
 // Coordinator entry: long-running worker loop on SpacetimeDB (or --fixture: one pass over the in-memory backend).
-//   npm start                # Laya from LOCAL_LAYA_URL while healthy; enrich with INFERENCE_PROVIDER (default gemini) if keyed
+//   npm start                # Laya from LOCAL_LAYA_URL while healthy; enrich with Claude if ANTHROPIC_API_KEY and CLAUDE_MODEL are set
 //   npm start -- --laya-stub # labeled stub instead of Laya
-import { enrichReady, provider } from './inference/claude/enrich';
+import { enrichReady } from './inference/claude/enrich';
 import { createFixtureBackend } from './fixtureBackend';
 import { layaReady, runLoop, runOnce, type LayaMode } from './runner';
 import { connectStdb } from './stdbBackend';
@@ -12,8 +12,7 @@ const getOpts = async (): Promise<{ laya: LayaMode; claude: boolean }> => ({
   claude: enrichReady(),
 });
 const opts = await getOpts();
-const model = provider() === 'claude' ? process.env.CLAUDE_MODEL : process.env.GEMINI_MODEL;
-const info = { provider: provider(), enrich: opts.claude ? model : 'unavailable', laya: opts.laya.kind };
+const info = { provider: 'claude', enrich: opts.claude ? process.env.CLAUDE_MODEL : 'unavailable', laya: opts.laya.kind };
 
 if (process.argv.includes('--fixture')) {
   const backend = createFixtureBackend();

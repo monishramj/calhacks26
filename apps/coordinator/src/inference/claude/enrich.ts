@@ -2,7 +2,6 @@
 // Tools are exactly readIncident, readReports, listCandidateIncidents, submitIncidentProposal.
 // Claude proposes; it never approves, dispatches, or deletes. Every argument is validated here.
 import Anthropic from '@anthropic-ai/sdk';
-import { GoogleGenAI, ThinkingLevel, type Content, type FunctionDeclaration, type Part, type Schema } from '@google/genai';
 import { validateWire, type IncidentProposal, type Job, type JobInput } from '@calhacks26/domain';
 
 // §6 engineering bounds.
@@ -77,7 +76,7 @@ Rules:
 type ToolOut = { result: unknown; isError?: boolean; proposal?: IncidentProposal };
 
 /** Executes one tool call against the job snapshot. Exported so the executor can be exercised without the API. */
-export function executeTool(name: string, args: unknown, input: JobInput, job: Job, state: { readReports: boolean }, provider: 'claude' | 'gemini' = 'claude'): ToolOut {
+export function executeTool(name: string, args: unknown, input: JobInput, job: Job, state: { readReports: boolean }): ToolOut {
   const a = (args && typeof args === 'object' ? args : {}) as Record<string, unknown>;
   const reportIds = new Set(input.reports.map((r) => r.reportId));
   const err = (message: string): ToolOut => ({ result: { error: message }, isError: true });
@@ -113,7 +112,7 @@ export function executeTool(name: string, args: unknown, input: JobInput, job: J
         suggestedSummary: a.suggestedSummary,
         evidenceReportIds: a.evidenceReportIds,
         uncertainties: a.uncertainties,
-        provider,
+        provider: 'claude',
       };
       const v = validateWire<IncidentProposal>('IncidentProposal', proposal);
       if (!v.ok) return err(v.error.message);
@@ -182,76 +181,5 @@ export async function enrichClaude(job: Job, input: JobInput, opts: { client?: A
   return done('bounds', `no proposal within ${MAX_RESPONSES} model responses`);
 }
 
-// ---- Gemini path: same tools, limits, deadline and executeTool validation ------------------------
-
-/** Gemini's Schema rejects additionalProperties, type arrays and null enum members; map to its nullable form. */
-export function toGeminiSchema(s: any): Schema {
-  if (Array.isArray(s)) return s.map(toGeminiSchema) as any;
-  if (!s || typeof s !== 'object') return s;
-  const { additionalProperties: _a, ...rest } = s;
-  const out: any = {};
-  for (const [k, v] of Object.entries(rest)) out[k] = k === 'properties' ? Object.fromEntries(Object.entries(v as object).map(([n, p]) => [n, toGeminiSchema(p)])) : k === 'items' ? toGeminiSchema(v) : v;
-  if (Array.isArray(out.type)) { out.nullable = out.type.includes('null'); out.type = out.type.find((t: string) => t !== 'null'); }
-  if (Array.isArray(out.enum)) {
-    if (out.enum.includes(null)) { out.nullable = true; out.enum = out.enum.filter((v: unknown) => v !== null); }
-    out.type ??= 'string';
-  }
-  if (out.type) out.type = String(out.type).toUpperCase();
-  return out;
-}
-
-const GEMINI_TOOLS: FunctionDeclaration[] = TOOLS.map((t) => ({ name: t.name, description: t.description, parameters: toGeminiSchema(t.input_schema) }));
-
-const geminiTransient = (e: unknown) => [429, 500, 502, 503, 504].includes((e as { status?: number }).status ?? 0) || (e as Error).name === 'TypeError';
-
-export async function enrichGemini(job: Job, input: JobInput, opts: { client?: GoogleGenAI; model?: string } = {}): Promise<EnrichResult> {
-  const t0 = Date.now();
-  let responses = 0;
-  let toolExecutions = 0;
-  const done = (reason: Exclude<EnrichResult, { ok: true }>['reason'], detail: string): EnrichResult => ({ ok: false, reason, detail, responses, toolExecutions, ms: Date.now() - t0 });
-
-  const model = opts.model ?? process.env.GEMINI_MODEL;
-  if (!model || (!opts.client && !process.env.GEMINI_API_KEY)) return done('unavailable', 'GEMINI_API_KEY and GEMINI_MODEL must be set in the coordinator .env');
-  if (input.kind !== 'INCIDENT_PROPOSAL' || !input.incidentId) return done('no_proposal', 'not an INCIDENT_PROPOSAL job');
-  const client = opts.client ?? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-  const deadline = AbortSignal.timeout(DEADLINE_MS);
-  const state = { readReports: false };
-  let retried = false;
-  const contents: Content[] = [
-    { role: 'user', parts: [{ text: `Job ${input.jobId}: reassess incident ${input.incidentId} against the ${input.reports.length} received reports and submit one proposal.` }] },
-  ];
-
-  while (responses < MAX_RESPONSES) {
-    let res;
-    try {
-      res = await client.models.generateContent({ model, contents, config: { systemInstruction: SYSTEM, tools: [{ functionDeclarations: GEMINI_TOOLS }], maxOutputTokens: 4000, thinkingConfig: { thinkingLevel: ThinkingLevel.LOW }, abortSignal: deadline } });
-    } catch (e) {
-      if (deadline.aborted) return done('deadline', `no proposal within ${DEADLINE_MS} ms`);
-      if (geminiTransient(e) && !retried) { retried = true; continue; }
-      return done('api_error', `${(e as { status?: number }).status ?? ''} ${(e as Error).name}`.trim()); // never echo provider bodies
-    }
-    responses += 1;
-    if (res.promptFeedback?.blockReason || res.candidates?.[0]?.finishReason === 'SAFETY') return done('refusal', 'model refused');
-    const content = res.candidates?.[0]?.content;
-    const calls = res.functionCalls ?? [];
-    if (!content || calls.length === 0) return done('no_proposal', `stopped (${res.candidates?.[0]?.finishReason}) without submitIncidentProposal`);
-    contents.push(content);
-
-    const parts: Part[] = [];
-    for (const call of calls) {
-      if (toolExecutions >= MAX_TOOL_EXECUTIONS) return done('bounds', `over ${MAX_TOOL_EXECUTIONS} tool executions`);
-      toolExecutions += 1;
-      const out = executeTool(call.name ?? '', call.args, input, job, state, 'gemini');
-      if (out.proposal) return { ok: true, proposal: out.proposal, model: res.modelVersion ?? model, responses, toolExecutions, ms: Date.now() - t0 };
-      parts.push({ functionResponse: { id: call.id, name: call.name, response: out.isError ? { error: out.result } : { output: out.result } } });
-    }
-    contents.push({ role: 'user', parts });
-  }
-  return done('bounds', `no proposal within ${MAX_RESPONSES} model responses`);
-}
-
-/** INFERENCE_PROVIDER=gemini|claude (default gemini). */
-export const provider = (): 'gemini' | 'claude' => (process.env.INFERENCE_PROVIDER === 'claude' ? 'claude' : 'gemini');
-export const enrichReady = () => (provider() === 'claude' ? Boolean(process.env.ANTHROPIC_API_KEY && process.env.CLAUDE_MODEL) : Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_MODEL));
-export const enrich = (job: Job, input: JobInput) => (provider() === 'claude' ? enrichClaude(job, input) : enrichGemini(job, input));
+export const enrichReady = () => Boolean(process.env.ANTHROPIC_API_KEY && process.env.CLAUDE_MODEL);
+export const enrich = (job: Job, input: JobInput) => enrichClaude(job, input);

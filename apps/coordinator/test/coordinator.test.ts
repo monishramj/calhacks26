@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createFixtureBackend } from '../src/fixtureBackend';
-import { enrichGemini, toGeminiSchema, TOOLS } from '../src/inference/claude/enrich';
+import { enrichClaude } from '../src/inference/claude/enrich';
 import { runLoop, runOnce } from '../src/runner';
 
 const quiet = () => {};
@@ -36,24 +36,15 @@ describe('runner against the fixture backend', () => {
   });
 });
 
-describe('gemini schema', () => {
-  it('strips what Gemini rejects', () => {
-    const s = JSON.stringify(TOOLS.map((t) => toGeminiSchema(t.input_schema)));
-    expect(s).not.toContain('additionalProperties');
-    expect(s).not.toContain('null,');
-    expect(s).not.toContain('["string","null"]');
-  });
-});
-
-const key = process.env.GEMINI_API_KEY;
-describe.skipIf(!key || !process.env.GEMINI_MODEL)('real Gemini call', () => {
+const key = process.env.ANTHROPIC_API_KEY;
+describe.skipIf(!key || !process.env.CLAUDE_MODEL)('real Claude call', () => {
   it('produces a validated proposal citing known reports', async () => {
     const b = createFixtureBackend();
     const e = b.jobs.find((j) => j.job.kind === 'INCIDENT_PROPOSAL')!;
-    const res = await enrichGemini(e.job, e.input);
+    const res = await enrichClaude(e.job, e.input);
     expect(res, JSON.stringify(res)).toMatchObject({ ok: true });
     if (res.ok) {
-      expect(res.proposal.provider).toBe('gemini');
+      expect(res.proposal.provider).toBe('claude');
       expect(res.proposal.evidenceReportIds.length).toBeGreaterThan(0);
     }
   }, 30_000);

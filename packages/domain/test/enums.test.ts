@@ -25,7 +25,7 @@ describe('§17 enums', () => {
     );
   });
   it('Provider', () => {
-    expect([...PROVIDERS].sort()).toEqual(['claude', 'fixture', 'gemini', 'local_laya', 'operator', 'recording', 'rule'].sort());
+    expect([...PROVIDERS].sort()).toEqual(['claude', 'fixture', 'local_laya', 'operator', 'recording', 'rule'].sort());
   });
   it('typed errors are exactly the six §17 codes', () => {
     expect([...ERROR_CODES].sort()).toEqual(

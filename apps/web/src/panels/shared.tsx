@@ -20,7 +20,6 @@ export function ProvenanceTag({ provider }: { provider: Provider }) {
   const text: Record<Provider, string> = {
     local_laya: 'Local Laya (model output)',
     claude: 'Claude (model output)',
-    gemini: 'Gemini (model output)',
     operator: 'Operator',
     recording: 'Recording',
     fixture: 'Fixture (authored)',
