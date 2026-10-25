@@ -6,11 +6,20 @@ _Maintained by the orchestrator on `main`. Status comes from validation files, n
 
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
+## Open items at handoff (keep current)
+
+- **G0:** TEST red on ws/state (87bfcc8). Review the `[contract] v1` PR when it opens (C2 targets ~03:30), then post "merge main, contract v1" to every inbox.
+- **C1:** G1 IMPLEMENT green. G1 REVIEW needs a 15–20 min slot on C4 for the cross-machine decode (model copied, fingerprint `422ac23fca10`).
+- **C3:** replacement agents (D-008) not started yet. Their prompts are in KICKOFF ("C3 replacement"). The Laya worker runs on C4.
+- **Web:** scene lane baked the SF map (D-004 guardrails: markers off landmarks, no third-party node data). Panels G6 IMPL and scene G7 IMPL are on lanes. Check that the lead merges the lanes and opens gate PRs.
+- **PRs:** #1 merged (d66d711). Review every new PR per docs/ORCHESTRATOR.md "Loop".
+- **Docker:** installed on C4, engine not running. C2 owns `docker-compose.yml` (D-006).
+
 ## Gates
 
 | Gate | Pri | Workstream | Status | Evidence | Notes |
 |---|---|---|---|---|---|
-| G0 contracts | P0 | ws/state | not started | `work/validation/G0.md` | Blocks everyone. First. |
+| G0 contracts | P0 | ws/state | TEST red (87bfcc8) | `work/validation/G0.md` | Blocks everyone. First. |
 | G1 codec quality | P0 | ws/codec-radio | IMPL green (104 passed, real model) | `work/validation/G1.md` | Can start beside G0. |
 | G2 radio path | P0 | ws/codec-radio | not started | `work/validation/G2.md` | After G1 + frozen intake contract. |
 | G3 incident state | P0 | ws/state | not started | `work/validation/G3.md` | Real local SpacetimeDB. |

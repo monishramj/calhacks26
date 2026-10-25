@@ -1,0 +1,261 @@
+{
+  "type": "ProposalRecord",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "pending Claude proposal",
+      "payload": {
+        "jobId": "job-0002",
+        "submittedByRole": "worker",
+        "reviewState": "PENDING",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-0001",
+          "incidentId": "inc-school",
+          "baseIncidentVersions": {
+            "inc-school": 2,
+            "inc-residence": 1
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [
+            {
+              "reportId": "rep-000007",
+              "targetReportId": "rep-000001",
+              "kind": "CORRECTION"
+            }
+          ],
+          "suggestedStatus": null,
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": "Gym reported clear; someone may still be upstairs in the main building (unconfirmed).",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "uncertainties": [
+            "No one has confirmed a person in the main building."
+          ],
+          "provider": "claude"
+        }
+      }
+    },
+    {
+      "name": "approved",
+      "payload": {
+        "jobId": "job-0002",
+        "submittedByRole": "worker",
+        "reviewState": "APPROVED",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-0001",
+          "incidentId": "inc-school",
+          "baseIncidentVersions": {
+            "inc-school": 2,
+            "inc-residence": 1
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [
+            {
+              "reportId": "rep-000007",
+              "targetReportId": "rep-000001",
+              "kind": "CORRECTION"
+            }
+          ],
+          "suggestedStatus": null,
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": "Gym reported clear; someone may still be upstairs in the main building (unconfirmed).",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "uncertainties": [
+            "No one has confirmed a person in the main building."
+          ],
+          "provider": "claude"
+        }
+      }
+    },
+    {
+      "name": "operator-authored, no job",
+      "payload": {
+        "jobId": null,
+        "submittedByRole": "operator",
+        "reviewState": "PENDING",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-op-0001",
+          "incidentId": "inc-new-1",
+          "baseIncidentVersions": {
+            "inc-new-1": 0
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [],
+          "suggestedStatus": "OPEN",
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": null,
+          "evidenceReportIds": [
+            "rep-000007"
+          ],
+          "uncertainties": [],
+          "provider": "operator"
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "worker submits an operator-provider proposal",
+      "payload": {
+        "jobId": "job-0002",
+        "submittedByRole": "worker",
+        "reviewState": "PENDING",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-op-0001",
+          "incidentId": "inc-new-1",
+          "baseIncidentVersions": {
+            "inc-new-1": 0
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [],
+          "suggestedStatus": "OPEN",
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": null,
+          "evidenceReportIds": [
+            "rep-000007"
+          ],
+          "uncertainties": [],
+          "provider": "operator"
+        }
+      }
+    },
+    {
+      "name": "operator submits a claude-provider proposal",
+      "payload": {
+        "jobId": "job-0002",
+        "submittedByRole": "operator",
+        "reviewState": "PENDING",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-0001",
+          "incidentId": "inc-school",
+          "baseIncidentVersions": {
+            "inc-school": 2,
+            "inc-residence": 1
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [
+            {
+              "reportId": "rep-000007",
+              "targetReportId": "rep-000001",
+              "kind": "CORRECTION"
+            }
+          ],
+          "suggestedStatus": null,
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": "Gym reported clear; someone may still be upstairs in the main building (unconfirmed).",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "uncertainties": [
+            "No one has confirmed a person in the main building."
+          ],
+          "provider": "claude"
+        }
+      }
+    },
+    {
+      "name": "auto-approved",
+      "payload": {
+        "jobId": "job-0002",
+        "submittedByRole": "worker",
+        "reviewState": "AUTO_APPROVED",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-0001",
+          "incidentId": "inc-school",
+          "baseIncidentVersions": {
+            "inc-school": 2,
+            "inc-residence": 1
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [
+            {
+              "reportId": "rep-000007",
+              "targetReportId": "rep-000001",
+              "kind": "CORRECTION"
+            }
+          ],
+          "suggestedStatus": null,
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": "Gym reported clear; someone may still be upstairs in the main building (unconfirmed).",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "uncertainties": [
+            "No one has confirmed a person in the main building."
+          ],
+          "provider": "claude"
+        }
+      }
+    },
+    {
+      "name": "unknown submitter role",
+      "payload": {
+        "jobId": "job-0002",
+        "submittedByRole": "claude",
+        "reviewState": "PENDING",
+        "proposal": {
+          "runId": "run-001",
+          "proposalId": "prop-0001",
+          "incidentId": "inc-school",
+          "baseIncidentVersions": {
+            "inc-school": 2,
+            "inc-residence": 1
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "addReportIds": [
+            "rep-000007"
+          ],
+          "relations": [
+            {
+              "reportId": "rep-000007",
+              "targetReportId": "rep-000001",
+              "kind": "CORRECTION"
+            }
+          ],
+          "suggestedStatus": null,
+          "suggestedAttention": "POSSIBLE_LIFE_SAFETY",
+          "suggestedSummary": "Gym reported clear; someone may still be upstairs in the main building (unconfirmed).",
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "uncertainties": [
+            "No one has confirmed a person in the main building."
+          ],
+          "provider": "claude"
+        }
+      }
+    }
+  ]
+}

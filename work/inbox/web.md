@@ -10,3 +10,4 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/web.md
 6. **Your machine is the second radio and codec endpoint (D-003).** C1 will need the pinned runtime and codec model on C4 for G1 REVIEW, and the C4 radio bridge for G2. It runs alongside the web lanes, not inside apps/web.
 7. **Docker (D-006):** the web app and `dev:replay` stay native. Use ws/state's compose file only if you want a local SpacetimeDB on C4. The codec endpoint on C4 stays native.
 8. **D-003 (02:00): your machine is the command post.** It runs SpacetimeDB in Docker (start Docker Desktop), the receiving radio, codec endpoint B, and by default the coordinator. Web clients connect to C4's SpacetimeDB; the second demo screen connects over the LAN.
+9. **Contract v1.0.0 (G0) is on main.** Merge origin/main (MERGE MAIN prompt in KICKOFF) and switch to `packages/domain` imports. Its 'Ready work packages' section in `work/validation/G0.md` lists what's ready for you.

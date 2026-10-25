@@ -1,0 +1,144 @@
+{
+  "type": "SubmitLocalSuggestionCommand",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "submit for a job",
+      "payload": {
+        "jobId": "job-0001",
+        "suggestion": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "FLAG_CORRECTION",
+          "candidateIncidentId": "inc-school",
+          "attention": "POSSIBLE_LIFE_SAFETY",
+          "scores": [
+            {
+              "label": "POSSIBLE_LIFE_SAFETY",
+              "value": 0.61,
+              "kind": "probability"
+            },
+            {
+              "label": "INFORMATION",
+              "value": 0.39,
+              "kind": "probability"
+            }
+          ],
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "provider": "local_laya"
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing jobId",
+      "payload": {
+        "suggestion": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "FLAG_CORRECTION",
+          "candidateIncidentId": "inc-school",
+          "attention": "POSSIBLE_LIFE_SAFETY",
+          "scores": [
+            {
+              "label": "POSSIBLE_LIFE_SAFETY",
+              "value": 0.61,
+              "kind": "probability"
+            },
+            {
+              "label": "INFORMATION",
+              "value": 0.39,
+              "kind": "probability"
+            }
+          ],
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "provider": "local_laya"
+        }
+      }
+    },
+    {
+      "name": "invalid suggestion",
+      "payload": {
+        "jobId": "job-0001",
+        "suggestion": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "FLAG_CORRECTION",
+          "candidateIncidentId": "inc-school",
+          "attention": "POSSIBLE_LIFE_SAFETY",
+          "scores": [
+            {
+              "label": "POSSIBLE_LIFE_SAFETY",
+              "value": 0.61,
+              "kind": "probability"
+            },
+            {
+              "label": "INFORMATION",
+              "value": 0.39,
+              "kind": "probability"
+            }
+          ],
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "provider": "claude"
+        }
+      }
+    },
+    {
+      "name": "self-approval",
+      "payload": {
+        "jobId": "job-0001",
+        "suggestion": {
+          "runId": "run-001",
+          "reportId": "rep-000007",
+          "action": "FLAG_CORRECTION",
+          "candidateIncidentId": "inc-school",
+          "attention": "POSSIBLE_LIFE_SAFETY",
+          "scores": [
+            {
+              "label": "POSSIBLE_LIFE_SAFETY",
+              "value": 0.61,
+              "kind": "probability"
+            },
+            {
+              "label": "INFORMATION",
+              "value": 0.39,
+              "kind": "probability"
+            }
+          ],
+          "evidenceReportIds": [
+            "rep-000007",
+            "rep-000001"
+          ],
+          "baseIncidentVersions": {
+            "inc-school": 2
+          },
+          "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+          "provider": "local_laya"
+        },
+        "approve": true
+      }
+    }
+  ]
+}
