@@ -98,3 +98,58 @@ npm run test:py -w @calhacks26/domain     # 486 passed
 
 - Replaying with older and duplicate arrivals reordered, a stale approval from a second window, and mutation checks on the rules.
 - Settling choices 1–6 above with ws/web (panels lane) before they swap `derived.ts` for these exports.
+
+## REVIEW · 2026-10-25 02:38–02:48 PDT · David's Claude Code session (C2)
+
+- **Contract version:** 1.0.0, unchanged. `src/rules/views.ts` unchanged in REVIEW: no defects found in it.
+- **Added:** `packages/domain/test/g6/review.test.ts` (51 tests).
+
+### What was attempted (§20 G6 REVIEW)
+
+| Check | How | Result |
+|---|---|---|
+| Independent replay with older/duplicate arrivals reordered | 40 seeded orders: R01–R06 shuffled before the authored start, R07–R12 shuffled, plus a repeat of R08 with a new message ID at a random point. After every arrival, check invariants, queue, and reassessment. | Pass. 13 originals in receive order with exact text. Late-older marks match an independent oracle. Every unconfirmed report is in the band exactly once. |
+| Only confirmed updates change the rank | Same 40 orders: the queue stays at the authored order through all arrivals, a 0.99 INFORMATION hint for R11, and a 0.03 life-safety hint for R07. Only the operator-confirmed change moves the school, by open-cycle age. | Pass |
+| Unreviewed possible harm stays prominent | The low-score R07 hint leads the band in every order | Pass |
+| R11 vs R07 | R11 is late-older whether it arrives before or after R07 (it's older than R06 too). The school keeps its confirmed concern after R11 in every order. | Pass |
+| Sent times across offsets | `02:35-07:00` vs `09:33Z`: compared by instant, not by string | Pass |
+| Stale approval from a second window | Window A approves the school change (rev 1 → 2). Window B's approval with base 1 and the old signature → `checkFreshness` STALE_REVISION. Also new evidence (R08) with the revision unchanged → STALE_REVISION via the signature. Replaying A's change on rev 2 → INVALID_INPUT, no second bump. | Pass |
+| Reopen keeps history with explicit cycle age | Confirm R07–R11, resolve, then reopen on R12: same ID, revision 4, cycle = R12's sequence, timeline still R01, R05, R07–R12, ranks behind the residence | Pass |
+| Resolved place, new report | A new shelter report after the shelter is resolved flags it for reassessment and shows in the band (IMPLEMENT choice 1) | Pass |
+| Source-backed change descriptions | Every flag names its own message ID, cites itself first, and cites only existing reports. REPEAT cites its target R07. No flag text claims a confirmed person or a headcount. | Pass |
+| Queue stability | 10 shuffles of the incident and report arrays → identical queue, band, and timeline | Pass |
+
+### Mutation check
+
+24 deliberate breaks of `views.ts` were applied one at a time, each run against `test/g6`, and the file restored after each (script kept out of the repo).
+- **First pass:** 23 caught. One survived: treating REJECTED/STALE **suggestions** as still linking. The same check for proposals was already covered.
+- **Fix:** added "reviewed suggestions stop counting" (REJECTED and STALE). That mutation is now caught: **24/24 caught.**
+- **Caught:** queue ignores cycle age, ignores run, or keeps resolved incidents; unknown attention ranked first; band drops the possible-harm kind or gates it on score; rejected proposals or suggestions still link; no named-place match; late-older inverted or compared as strings; timeline in stored order; reopen keeps the old cycle or resolve resets it; no revision bump; no-op accepted; wrong run accepted; adds drop old reports; invariants skip reviewer, retransmission, or cycle start; flags skip late-older or drop the REPEAT citation; reassessment misses new evidence.
+
+### Commands
+
+```bash
+npx tsc --noEmit -p packages/domain       # clean
+npm test                                  # 897/897 (G6 120: 69 TEST + 51 REVIEW; G0 777)
+npm run test:py -w @calhacks26/domain     # 486 passed
+(cd spacetimedb && npx tsc --noEmit)      # clean
+```
+
+**Real providers exercised:** none. These are pure functions; there is no real DB path to run until G3. The "second window" is two views of one in-memory state through the shared `checkFreshness`. The real two-client race is G3/G8.
+
+### Connected code: ws/web swap (`apps/web/src/adapters/derived.ts` → `@calhacks26/domain`)
+
+Read from `origin/ws/web` and `origin/ws/web-panels`. Our API differs in four places the panels must handle:
+1. `confirmedQueue(state)` takes the `DeskState`, not `state.incidents` (`ConfirmedQueue.tsx:13`).
+2. `timeline()` returns `TimelineEntry {report, standing, incidentId, lateOlder, relations}`, not bare reports (`IncidentHistory.tsx`, `IncomingFeed.tsx`). Use `lateOlder` to label R11.
+3. `ReviewItem` has no `proposal` field, and `reportId` is **null** for incident-level unknowns. `ReviewBand.tsx:26` keys rows by `item.reportId`; key by `kind + (reportId ?? incidentId)` instead, and look up the pending proposal from `state.proposals`.
+4. The interim band counts suggestions whatever their review state. The shared one ignores reviewed ones; the swap fixes that.
+
+IMPLEMENT choices 1–6 stand; none was contradicted by review.
+
+### For G3 (not G6 defects)
+
+- `applyIncidentChange` validates the incident row only. The approve/edit reducer must also check that each added report exists in the run, isn't confirmed in another incident (`checkSourceOwnership`), and passes `checkFreshness`. Then it should run `deskInvariants` in its tests after every reducer.
+- Call `applyIncidentChange` only when the incident row changes. Relation-only approvals skip it, because a no-op change is INVALID_INPUT.
+
+**G6 rules slice: REVIEW passed.**
