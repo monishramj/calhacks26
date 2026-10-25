@@ -113,3 +113,10 @@ Next: lead merges ws/web-scene and runs verify; scene continues independently on
 C4 readiness follow-up: unchanged codec endpoint_check.py ran and reported model UNAVAILABLE (no CODEC_MODEL_PATH). Docker daemon 29.8.2 responds; pinned SpacetimeDB image pull/start in progress, not yet verified. These machine tasks do not establish radio/backend success. C3 lead reports integrated v1 replay verification green; local C4 rerun pending. No new tests or polish work.
 
 C4 v1 integration rerun: npm run verify PASS (70 tests,3 replay browser tests). Actual SpacetimeDB2.13.0 startup verified after initializing ownership of empty named volume; /v1/ping200 locally and via10.253.1.187:3000 from C4. Remote client/module/identity persistence not tested. State owner notified of compose provisioning defect; no shared-code edits.
+
+
+## C4 live Laya result - 2026-10-25
+
+- Existing real-model suite against unchanged9065817: 19 passed,1 FAILED,65 deselected in47.66s. Safety test test_real_uncertain_possible_harm_never_vanishes[low-confidence-harm] returns attention INFORMATION where POSSIBLE_LIFE_SAFETY or null is required. Inference notified1025-025910; orchestrator request1025-025419 answered. No safety pass claimed; no worker code edits.
+- Native worker is running in exec session66118, from isolated calhacks26-c4-laya, port8091 host0.0.0.0, persistent Documents/laya-env and laya-models. Health200 on localhost and10.253.1.187:8091 from C4, actual Laya0.3.20 revision55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851. Authored clinic_job POST returned schema-valid real scores in1390ms: REQUEST_REVIEW, attention null, provider local_laya. Remote clients unverified. SDK temperature11+ clamp warning remains; no accuracy/calibration claim.
+- Docker ready at10.253.1.187:3000. Codec environment installed but endpoint model still unavailable pending1025-024812. Next: inference owner fixes safety regression; fetch its commit and restart worker without editing their code. Run C1 endpoint once pinned model supplied; monitor server processes and integration requests.
