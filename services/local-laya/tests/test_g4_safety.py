@@ -91,3 +91,15 @@ def test_attention_output_only_uses_section5_labels():
     out = suggest(clinic_job(), FakeRuntime(prefs={"ATTACH_REPORT": 0.9, "inc-clinic": 0.9,
                                                    "ACTIVE_NEED": 0.95}))
     assert out["attention"] in (*ATTENTION, None)
+
+
+def test_new_incident_with_plausible_harm_never_gets_confident_information():
+    prefs = {"NEW_INCIDENT": 0.9, "INFORMATION": 0.7, "POSSIBLE_LIFE_SAFETY": 0.2, "ACTIVE_NEED": 0.1}
+    out = suggest(make_job("Someone said the old bridge looked odd."), FakeRuntime(prefs=prefs))
+    assert out["action"] == "NEW_INCIDENT" and out["attention"] in ("POSSIBLE_LIFE_SAFETY", None)
+
+
+def test_open_candidate_with_unknown_attention_blocks_lowering():
+    job = make_job("Clinic status update.", candidates=[incident("inc-clinic", None, ["rep-1"], revision=2)])
+    prefs = {"ATTACH_REPORT": 0.9, "INFORMATION": 0.9, "POSSIBLE_LIFE_SAFETY": 0.02, "ACTIVE_NEED": 0.02}
+    assert suggest(job, FakeRuntime(prefs=prefs))["attention"] is None

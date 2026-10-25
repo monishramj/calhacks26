@@ -131,8 +131,12 @@ def suggest(job: dict, runtime) -> dict:
     order = list(ATTENTION["criteria"])
     relevant = [c for c in candidates if c["incidentId"] == result["candidateIncidentId"]
                 or result["action"] == "REQUEST_REVIEW"]
-    if attention and any(c["status"] == "OPEN" and c["attention"] is not None
-                         and order.index(c["attention"]) < order.index(attention) for c in relevant):
+    # Harm is plausible when the model gives it real mass, with or without a candidate (NEW_INCIDENT has none).
+    # shortcut: authored 0.15 plausibility floor, uncalibrated.
+    plausible = answers["attention"]["probabilities"].get("POSSIBLE_LIFE_SAFETY", 0) >= 0.15
+    if attention and attention != order[0] and (plausible or any(
+            c["status"] == "OPEN" and (c["attention"] is None or order.index(c["attention"]) < order.index(attention))
+            for c in relevant)):
         attention = None
     result["attention"] = attention
     return finish()
