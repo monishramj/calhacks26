@@ -4,12 +4,13 @@ import type { ProposalRecord } from '../adapters/contract';
 import { useDesk } from '../adapters/DeskContext';
 import { needsReassessment, timeline } from '../adapters/derived';
 import type { PanelProps } from './index';
-import { AttentionTag, ProvenanceTag, TimeField, messageLabel } from './shared';
+import { AttentionTag, ProvenanceTag, ReportProvenanceTag, TimeField, messageLabel } from './shared';
 
 const REVIEW_STATE_LABEL: Record<ProposalRecord['reviewState'], string> = {
   PENDING: 'Pending review',
   APPROVED: 'Approved by operator',
   REJECTED: 'Rejected by operator',
+  STALE: 'Stale · incident changed since',
 };
 
 export function IncidentHistory({ selectedIncidentId }: PanelProps) {
@@ -22,7 +23,7 @@ export function IncidentHistory({ selectedIncidentId }: PanelProps) {
   const confirmed = new Set(incident.confirmedReportIds);
   const entries = timeline(state, id);
   const events = state.reviewEvents.filter((e) => e.incidentId === id).sort((a, b) => a.sequence - b.sequence);
-  const proposals = state.proposals.filter((p) => p.incidentId === id);
+  const proposals = state.proposals.filter((p) => p.proposal.incidentId === id);
   const msgId = (reportId: string) => state.reports.find((r) => r.reportId === reportId)?.input.messageId ?? reportId;
 
   return (
@@ -44,7 +45,7 @@ export function IncidentHistory({ selectedIncidentId }: PanelProps) {
           <li key={r.reportId} className="panel-card">
             <div>
               <strong>{messageLabel(r)}</strong> · <span>Source: {r.input.sourceId}</span>{' '}
-              <ProvenanceTag provider={r.provenance} /> ·{' '}
+              <ReportProvenanceTag provenance={r.provenance} /> ·{' '}
               <span>{confirmed.has(r.reportId) ? 'Confirmed' : 'Pending review'}</span>
             </div>
             <p className="original-text">{r.input.text}</p>
@@ -58,6 +59,18 @@ export function IncidentHistory({ selectedIncidentId }: PanelProps) {
       </ol>
 
       <h3>Review history</h3>
+      {!events.some((e) => e.priorRevision === 0) && (
+        <p className="muted" data-testid="starting-state">
+          Rev 0 → 1 was not an operator review:{' '}
+          {state.mode === 'LOCAL REPLAY' ? (
+            <>
+              authored §18 starting state <span className="tag tag-provenance">Fixture (authored)</span>
+            </>
+          ) : (
+            'created before this run'
+          )}
+        </p>
+      )}
       {events.length === 0 ? (
         <p className="muted">No review events.</p>
       ) : (
@@ -65,9 +78,10 @@ export function IncidentHistory({ selectedIncidentId }: PanelProps) {
           {events.map((e) => (
             <li key={e.sequence} className="panel-card">
               <div>
-                Review #{e.sequence} · Actor: <ProvenanceTag provider={e.actor} /> · Rev {e.priorRevision} → {e.newRevision}
+                Review #{e.sequence} · Actor: {e.actorRole} ({e.actorIdentity}) · Rev {e.priorRevision} → {e.newRevision}
               </div>
-              <p>Changes: {e.changes.join('; ')}</p>
+              <p>Changes: {e.acceptedChanges.length ? e.acceptedChanges.join(', ') : 'none (rejected; originals kept)'}</p>
+              {e.sourceReportIds.length > 0 && <p>Sources: {e.sourceReportIds.map(msgId).join(', ')}</p>}
               {e.reason && <p>Reason: {e.reason}</p>}
               {e.proposalId && <p>Proposal: {e.proposalId}</p>}
             </li>
@@ -80,12 +94,12 @@ export function IncidentHistory({ selectedIncidentId }: PanelProps) {
         <p className="muted">No proposals.</p>
       ) : (
         <ul className="panel-list" aria-label={`Proposals for ${id}`}>
-          {proposals.map((p) => (
+          {proposals.map(({ reviewState, proposal: p }) => (
             <li key={p.proposalId} className="panel-card">
               <div>
                 <strong>{p.proposalId}</strong> ·{' '}
                 <span>
-                  {p.reviewState}: {REVIEW_STATE_LABEL[p.reviewState]}
+                  {reviewState}: {REVIEW_STATE_LABEL[reviewState]}
                 </span>{' '}
                 <ProvenanceTag provider={p.provider} />
               </div>

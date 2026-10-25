@@ -5,26 +5,30 @@ import { useDesk } from '../adapters/DeskContext';
 export function ScenarioControls() {
   const { adapter, state } = useDesk();
   const [error, setError] = useState<string | null>(null);
-  if (!adapter || !state) return null;
-  const { delivered, total, nextMessageId } = state.scenario;
+  if (!adapter || !state?.scenario) return null;
+  const { deliveredCount, totalCount, nextGate } = state.scenario;
 
   async function sendNext() {
-    const r = await adapter!.advanceScenario({ runId: state!.runId, commandId: crypto.randomUUID() });
+    const r = await adapter!.advanceScenario({
+      runId: state!.runId,
+      commandId: crypto.randomUUID(),
+      expectedDeliveredCount: deliveredCount,
+    });
     setError(r.ok ? null : r.error.message);
   }
 
   async function reset() {
-    const r = await adapter!.resetRun();
+    const r = await adapter!.resetRun({ runId: state!.runId, commandId: crypto.randomUUID() });
     setError(r.ok ? null : r.error.message);
   }
 
   return (
     <span className="scenario-controls">
-      <button type="button" onClick={sendNext} disabled={!nextMessageId}>
-        {nextMessageId ? `Send next report (${nextMessageId})` : 'All reports sent'}
+      <button type="button" onClick={sendNext} disabled={nextGate !== 'SEND_NEXT_REPORT'}>
+        {nextGate === 'SEND_NEXT_REPORT' ? `Send next report (#${deliveredCount + 1})` : 'All reports sent'}
       </button>
       <span aria-live="polite">
-        {delivered} / {total} delivered
+        {deliveredCount} / {totalCount} delivered
       </span>
       <button type="button" onClick={reset}>
         Reset run

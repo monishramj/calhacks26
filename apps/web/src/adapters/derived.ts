@@ -1,8 +1,9 @@
-// INTERIM derived views (G6) until ws/state ships `packages/domain/src/rules`.
-// Panels and scene import these, never their own ordering, so the swap is one file.
+// INTERIM derived views (G6) on contract v1 types. ws/state's G6 rules
+// (packages/domain/src/rules/views.ts) are on ws/state, not yet on main; swap this
+// file for them when they merge. Panels and scene import these, never their own ordering.
 // Policy is §5: confirmed queue sorts by operator-confirmed category, then oldest
 // unresolved cycle sequence, then stable incident ID. Confidence never enters it.
-import type { Attention, DeskState, IncidentView, ProposalRecord, ReportRecord } from './contract';
+import type { Attention, DeskState, IncidentView, ProposalRecord, Report } from './contract';
 
 const ATTENTION_RANK: Record<Attention, number> = {
   POSSIBLE_LIFE_SAFETY: 0,
@@ -15,8 +16,8 @@ function rank(attention: Attention | null): number {
 }
 
 /** Open confirmed incidents in queue order. Resolved incidents are not in the queue. */
-export function confirmedQueue(incidents: IncidentView[]): IncidentView[] {
-  return incidents
+export function confirmedQueue(state: DeskState): IncidentView[] {
+  return state.incidents
     .filter((i) => i.status === 'OPEN')
     .slice()
     .sort(
@@ -51,18 +52,18 @@ export function reviewBand(state: DeskState): ReviewItem[] {
   const items: ReviewItem[] = [];
   const pendingByReport = new Map<string, ProposalRecord>();
   for (const p of state.proposals) {
-    if (p.reviewState === 'PENDING') for (const r of p.addReportIds) pendingByReport.set(r, p);
+    if (p.reviewState === 'PENDING') for (const r of p.proposal.addReportIds) pendingByReport.set(r, p);
   }
   const confirmed = new Set(state.incidents.flatMap((i) => i.confirmedReportIds));
   for (const report of state.reports) {
     if (confirmed.has(report.reportId)) continue;
     const proposal = pendingByReport.get(report.reportId) ?? null;
-    const suggestion = state.suggestions.find((s) => s.reportId === report.reportId) ?? null;
-    const incidentId = proposal?.incidentId ?? suggestion?.candidateIncidentId ?? null;
+    const suggestion = state.suggestions.find((s) => s.suggestion.reportId === report.reportId)?.suggestion ?? null;
+    const incidentId = proposal?.proposal.incidentId ?? suggestion?.candidateIncidentId ?? null;
     const hasConflict =
-      suggestion?.action === 'FLAG_CONFLICT' || proposal?.relations.some((r) => r.kind === 'CONFLICT') === true;
+      suggestion?.action === 'FLAG_CONFLICT' || proposal?.proposal.relations.some((r) => r.kind === 'CONFLICT') === true;
     const possibleHarm =
-      suggestion?.attention === 'POSSIBLE_LIFE_SAFETY' || proposal?.suggestedAttention === 'POSSIBLE_LIFE_SAFETY';
+      suggestion?.attention === 'POSSIBLE_LIFE_SAFETY' || proposal?.proposal.suggestedAttention === 'POSSIBLE_LIFE_SAFETY';
     let kind: ReviewItem['kind'];
     if (possibleHarm) kind = 'POSSIBLE_LIFE_SAFETY';
     else if (hasConflict) kind = 'CONTRADICTION';
@@ -91,7 +92,7 @@ export function needsReassessment(state: DeskState): Set<string> {
 }
 
 /** Immutable chronology: every original, in receive order, for one incident or all. */
-export function timeline(state: DeskState, incidentId?: string): ReportRecord[] {
+export function timeline(state: DeskState, incidentId?: string): Report[] {
   let reports = state.reports;
   if (incidentId) {
     const incident = state.incidents.find((i) => i.incidentId === incidentId);
@@ -100,6 +101,20 @@ export function timeline(state: DeskState, incidentId?: string): ReportRecord[] 
     reports = reports.filter((r) => related.has(r.reportId));
   }
   return reports.slice().sort((a, b) => a.receiveSequence - b.receiveSequence);
+}
+
+/** Source label from what was actually received (v1 has no state-level provenance). */
+export function sourceLabel(state: DeskState): string {
+  const kinds = [...new Set(state.reports.map((r) => r.provenance))];
+  return kinds.length ? kinds.join(' + ') : 'none';
+}
+
+/** Inference label from the providers of stored suggestions and proposals. */
+export function inferenceLabel(state: DeskState): string {
+  const providers = [
+    ...new Set([...state.suggestions.map((s) => s.suggestion.provider), ...state.proposals.map((p) => p.proposal.provider)]),
+  ];
+  return providers.length ? providers.join(' + ') : 'none yet';
 }
 
 export const ATTENTION_LABEL: Record<Attention, string> = {

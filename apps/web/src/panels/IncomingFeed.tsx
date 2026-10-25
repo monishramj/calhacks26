@@ -1,10 +1,10 @@
 // Incoming feed (§5, §9): every original, newest first, verbatim, with sent / event /
 // receive times kept separate and labeled. Read-only; selection is the only action.
-import type { DeskState, ReportRecord } from '../adapters/contract';
+import type { DeskState, Report } from '../adapters/contract';
 import { useDesk } from '../adapters/DeskContext';
 import { reviewBand, timeline } from '../adapters/derived';
 import type { PanelProps } from './index';
-import { ProvenanceTag, TimeField, messageLabel } from './shared';
+import { ReportProvenanceTag, TimeField, messageLabel } from './shared';
 
 const LOCATION_SOURCE: Record<'sender_explicit' | 'operator', string> = {
   sender_explicit: 'sender stated',
@@ -12,7 +12,7 @@ const LOCATION_SOURCE: Record<'sender_explicit' | 'operator', string> = {
 };
 
 /** True when an earlier-received report was sent later than this one (R11-style late arrival). */
-function arrivedLate(report: ReportRecord, all: ReportRecord[]): boolean {
+function arrivedLate(report: Report, all: Report[]): boolean {
   const sent = report.input.sentAt;
   if (!sent) return false;
   const t = Date.parse(sent);
@@ -50,7 +50,7 @@ function FeedCard({
   selectedIncidentId,
   onSelectIncident,
 }: {
-  report: ReportRecord;
+  report: Report;
   state: DeskState;
   candidateIncidentId: string | null;
 } & PanelProps) {
@@ -62,7 +62,7 @@ function FeedCard({
     <li className="panel-card" aria-current={target !== null && target === selectedIncidentId ? 'true' : undefined}>
       <div>
         <strong>{label}</strong> · <span>Source: {input.sourceId}</span> · <span>Origin: {input.origin}</span>{' '}
-        <ProvenanceTag provider={report.provenance} />
+        <ReportProvenanceTag provenance={report.provenance} />
       </div>
       <p className="original-text">{input.text}</p>
       <div>

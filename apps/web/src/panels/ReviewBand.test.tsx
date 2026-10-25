@@ -20,10 +20,16 @@ function setup() {
   return { adapter, get: () => state, onSelect };
 }
 
+const delivered = (a: DeskAdapter) => {
+  let c = 0;
+  a.subscribeState((s) => (c = s.scenario!.deliveredCount))();
+  return c;
+};
+
 let n = 0;
 async function advance(adapter: DeskAdapter, runId: string) {
   await act(async () => {
-    await adapter.advanceScenario({ runId, commandId: `t-${++n}` });
+    await adapter.advanceScenario({ runId, commandId: `t-${++n}`, expectedDeliveredCount: delivered(adapter) });
   });
 }
 

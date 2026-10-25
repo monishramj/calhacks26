@@ -1,24 +1,25 @@
 # Status · ws/web (C4)
 
-_Updated: 2026-10-25 by lead lane (Claude Code, C4)_
+_Updated: 2026-10-25 by lead lane (Claude Code, running from C3)_
 
 ## Now
 
-- **Gate / phase:** shell, replay adapter + §18 fixture, panels (G6 UI IMPL, merged from ws/web-panels), e2e browser story on replay (3/3 green). Scene (G7) in progress on ws/web-scene (Codex).
-- **Last commit:** `[ws/web][G8][TEST] e2e replay story + verify script`
-- **Exact next step (lead):** merge `origin/ws/web-scene` when Codex pushes, then `npm run verify`. When `[contract] v1` merges, replace `src/adapters/contract.ts` with `packages/domain` imports and `src/adapters/derived.ts` with `packages/domain/src/rules`. Then G6 panels REVIEW and the live adapter wiring.
-- **Automation on C4:** PAUSED (02:20, usage limits). When it was on, the lead's Claude session ran a 6-minute tick (answer board items for `web`, merge lane branches if `npm run verify` stays green, watch `main` for the contract) plus `python scripts/questions.py watch --ws web --every 60`. To resume by hand, do those same steps.
-- **Installing in apps/web:** the root workspace now exists (ws/state), so use `npm install --workspaces=false --package-lock=false` inside `apps/web`. A plain `npm install` rewrites the root lockfile and creates a root `node_modules` with a second Playwright copy, which breaks e2e.
-- **Scene:** Codex's G7 IMPL is merged; D-004 is approved (SF Embarcadero BLOSM bake, guardrails in `work/DECISIONS.md`). The bake is still on `ws/web-scene`.
+- **Lead runs from C3** (Claude Code session, since 03:00; C4 automation paused). If C4 resumes, read this file first so two leads don't run.
+- **Gate / phase:** G7 REVIEW (scene + panels merged) and the web app on contract v1. PR `[G7 REVIEW] Scene + panels on contract v1` to main.
+- **Last commit:** `[ws/web][G7][REVIEW] Scene + panels on contract v1`
+- **Exact next step (lead):** when ws/state's G6 rules (`packages/domain/src/rules/views.ts`) reach main, replace `src/adapters/derived.ts` with them (`confirmedQueue(state)` already matches; `reviewBand`/`timeline` return shapes differ, adjust panels). Then wire the live SpacetimeDB adapter in `App.tsx` `createAdapter()` once ws/state ships it (G3), and run two browsers.
+- **Installing in apps/web:** use `npm install --workspaces=false --package-lock=false` inside `apps/web`. A plain `npm install` rewrites the root lockfile and creates a root `node_modules` with a second Playwright copy, which breaks e2e.
+- **e2e on a Mac without bundled Chromium:** `E2E_CHANNEL=chrome npm run verify`.
+- **Scene:** done (D-004 SF BLOSM bake + CC0 textures). No more polish (D-009).
 
 ## For the lanes: how to get data (read this)
 
 - `import { useDesk } from '../adapters/DeskContext'` → `{ state, adapter }`. `state` is null when nothing is connected; show an honest empty state.
-- Types: `../adapters/contract` (interim §17 copy; swaps to `packages/domain` after G0).
-- Derived views: `../adapters/derived` → `confirmedQueue(incidents)`, `reviewBand(state)`, `needsReassessment(state)`, `timeline(state, incidentId?)`, `ATTENTION_LABEL`. Don't write your own ordering.
-- Commands: `adapter.approveProposal({ runId, commandId: crypto.randomUUID(), proposalId })`, `rejectProposal({..., reason})`, `operatorEdit({ runId, commandId, incidentId, baseRevision, attention?, status?, reason })`, `submitIncidentProposal(...)` with `provider: 'operator'`. Each returns `{ ok, value } | { ok: false, error: { code, message } }`; show `STALE_REVISION` and friends visibly.
+- Types: `../adapters/contract` (type-only re-export of `packages/domain` v1).
+- Derived views: `../adapters/derived` (interim until G6 rules merge) → `confirmedQueue(state)`, `reviewBand(state)`, `needsReassessment(state)`, `timeline(state, incidentId?)`, `ATTENTION_LABEL`. Don't write your own ordering.
+- Commands (v1): `approveProposal({ runId, commandId, proposalId, inputSignature, baseIncidentVersions })` (copy both from the proposal shown), `rejectProposal({..., reason})`, `operatorEdit({ runId, commandId, incidentId, baseRevision, changes: { attention?, status? }, reason, sourceReportIds })`, `submitIncidentProposal({ jobId: null, proposal })` with `provider: 'operator'` and `inputSignature` from `state.inputSignatures`. Each returns `{ ok, value } | { ok: false, error: { code, message } }`; show `STALE_REVISION` and friends visibly.
 - Places (scene): reports carry `input.reportedLocation.placeId`, incidents carry `confirmedPlaceId`. Map `school (0,0)`, `residence (80,20)`, `shelter (-120,40)` inside `src/scene/`.
-- Demo flow: `npm run dev:replay`, start state R01–R06 with three authored incidents; "Send next report" delivers R07…R12. R07 shows up in the review band with a pending fixture proposal; approving it moves the school to the top of the queue.
+- Demo flow: `npm run dev:replay`, start state R01–R06 with three authored incidents; "Send next report (#7)" delivers R07…R12. R07 shows up in the review band with a pending fixture proposal; approving it moves the school to the top of the queue.
 
 ## How to run what exists
 
@@ -62,9 +63,9 @@ None.
 
 ## Needs from others
 
-- ws/state: G0 contracts and the adapter interface. G6 rules in `packages/domain/src/rules` for the replay.
+- ws/state: G6 rules (`packages/domain/src/rules/views.ts`) on main, and the live adapter (G3).
 - ws/state: when the root `package.json` lands, add `apps/web` as a workspace and root scripts `dev:replay` → `npm -w apps/web run dev:replay`, `build` → `npm -w apps/web run build`.
 
 ## Inbox acknowledged
 
-1, 2, 3, 4, 5.
+1, 2, 3, 4, 5, 9, 10, 12 (both). 6, 8, 11 are C4 hardware/radio items, not doable from C3.

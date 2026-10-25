@@ -17,11 +17,17 @@ function setup(onSelectIncident = vi.fn()) {
   return { adapter, runId: () => state.runId, onSelectIncident };
 }
 
+const delivered = (a: DeskAdapter) => {
+  let c = 0;
+  a.subscribeState((s) => (c = s.scenario!.deliveredCount))();
+  return c;
+};
+
 let n = 0;
 async function advanceTo(adapter: DeskAdapter, runId: string, count: number) {
   for (let i = 0; i < count; i++) {
     await act(async () => {
-      const r = await adapter.advanceScenario({ runId, commandId: `feed-${++n}` });
+      const r = await adapter.advanceScenario({ runId, commandId: `feed-${++n}`, expectedDeliveredCount: delivered(adapter) });
       if (!r.ok) throw new Error(r.error.message);
     });
   }

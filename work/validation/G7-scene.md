@@ -103,3 +103,8 @@ Next: lead merges ws/web-scene and runs verify; scene continues independently on
 - npm run verify: 70 unit/component/asset tests and 3 replay browser tests pass. Scene suite: 5 tests pass. Production build passes (existing lazy Three chunk-size advisory remains). Screenshot visually checked with textured building walls; no live backend/radio/model or laptop FPS evidence added.
 - Parallel browser runs exposed the lead suite clearing nested scene artifacts. Scene output now uses scene-artifacts/test-results, outside the lead output tree and covered by the existing test-results ignore pattern. An artifact-path failure was rerun after isolation; it was not a scene behavior failure.
 - Exact next step: lead merges ws/web-scene and reruns whole-web verify; Codex continues actionable scene fixes independently. Sources/tool packs remain in the persistent sibling asset cache, outside git.
+
+## Lead merge on C3 · 2026-10-25
+
+- Lead (C3) fast-forwarded `ws/web` to `origin/ws/web-scene` (textures, panels), merged `origin/main`, moved the web app to contract v1 (see `G6-web.md`). `E2E_CHANNEL=chrome npm run verify` green: 70 unit, 3 replay e2e; build green. Scene Playwright suite not rerun here.
+- `dev:replay` on C3: WebGL canvas mounts and the scene incident list follows the queue; the 3D view rendered dark in the hidden built-in pane, so 3D visuals are **not** re-verified on C3 (scene lane's Edge evidence stands). No more scene polish (D-009).

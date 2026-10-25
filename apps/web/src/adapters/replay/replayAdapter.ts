@@ -3,18 +3,18 @@
 // `fixture`, operator commands are labeled `operator`, and each reset starts a new
 // run ID so nothing from a replay run can be mistaken for, or written into, live state.
 import type {
-  AdapterError,
   Attention,
+  ChangeField,
+  ContractError,
   DeskAdapter,
   DeskState,
   ErrorCode,
   IncidentProposal,
   IncidentView,
   LocalAction,
-  ProposalRecord,
   RelationKind,
+  Report,
   ReportInput,
-  ReportRecord,
   Result,
   ReviewEvent,
 } from '../contract';
@@ -44,12 +44,15 @@ export type ReplayFixture = {
 type Options = { now?: () => string };
 
 const ok = <T>(value: T): Result<T> => ({ ok: true, value });
-const fail = (code: ErrorCode, message: string): { ok: false; error: AdapterError } => ({
+const fail = (code: ErrorCode, message: string): { ok: false; error: ContractError } => ({
   ok: false,
   error: { code, message },
 });
 
 let runCounter = 0;
+
+/** Replay identity for operator commands; there is no SpacetimeDB identity in the browser. */
+const REPLAY_OPERATOR = 'replay-operator';
 
 export function createReplayAdapter(fixture: ReplayFixture, options: Options = {}): DeskAdapter {
   const now = options.now ?? (() => new Date().toISOString());
@@ -65,7 +68,7 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     for (const l of listeners) l(snapshot);
   }
 
-  function deliver(messageId: string): ReportRecord {
+  function deliver(messageId: string): Report {
     const src = fixture.reports[messageId];
     const seq = state.reports.length + 1;
     const input: ReportInput = {
@@ -85,7 +88,7 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
         applicationPacketBytes: null,
       },
     };
-    const record: ReportRecord = {
+    const record: Report = {
       reportId: `rpt-${String(seq).padStart(3, '0')}`,
       receiveSequence: seq,
       receivedAt: now(),
@@ -96,11 +99,17 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     return record;
   }
 
-  function signature(incident: IncidentView, extraReportIds: string[]): string {
-    return `${[...incident.confirmedReportIds, ...extraReportIds].join(',')}|${incident.incidentId}@${incident.revision}`;
+  // ponytail: replay signature is the incident revision, not the backend's sha256 over
+  // the job input; the live adapter supplies real ones in state.inputSignatures.
+  function signature(incident: IncidentView): string {
+    return `replay:${incident.incidentId}@r${incident.revision}`;
   }
 
-  function attachAuthored(report: ReportRecord) {
+  function refreshSignatures() {
+    state.inputSignatures = Object.fromEntries(state.incidents.map((i) => [i.incidentId, signature(i)]));
+  }
+
+  function attachAuthored(report: Report) {
     const authored = fixture.authored[report.input.messageId];
     if (!authored) return; // no authored output: the report stays an unknown for manual review
     const ids = byMessageId();
@@ -108,6 +117,10 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     if (s) {
       const incident = state.incidents.find((i) => i.incidentId === s.candidateIncidentId);
       state.suggestions.push({
+        suggestionId: `sug-${report.reportId}`,
+        jobId: `job-${report.reportId}`,
+        reviewState: 'PENDING',
+        suggestion: {
         runId: state.runId,
         reportId: report.reportId,
         action: s.action,
@@ -116,20 +129,26 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
         scores: [], // no model ran in replay; never fabricate scores
         evidenceReportIds: [report.reportId],
         baseIncidentVersions: incident ? { [incident.incidentId]: incident.revision } : {},
-        inputSignature: incident ? signature(incident, [report.reportId]) : report.reportId,
+        inputSignature: incident ? signature(incident) : `replay:${report.reportId}`,
         provider: 'fixture',
+        },
       });
     }
     const p = authored.proposal;
     if (p) {
       const incident = state.incidents.find((i) => i.incidentId === p.incidentId)!;
       const relations = p.relations.map((r) => ({ reportId: report.reportId, targetReportId: ids.get(r.target)!, kind: r.kind }));
+      const proposalId = `prop-${report.reportId}`;
       state.proposals.push({
+        jobId: `job-${report.reportId}`,
+        submittedByRole: 'worker',
+        reviewState: 'PENDING',
+        proposal: {
         runId: state.runId,
-        proposalId: `prop-${report.reportId}`,
+        proposalId,
         incidentId: incident.incidentId,
         baseIncidentVersions: { [incident.incidentId]: incident.revision },
-        inputSignature: signature(incident, [report.reportId]),
+        inputSignature: signature(incident),
         addReportIds: [report.reportId],
         relations,
         suggestedStatus: null,
@@ -138,13 +157,34 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
         evidenceReportIds: [report.reportId, ...relations.map((r) => r.targetReportId)],
         uncertainties: p.uncertainties,
         provider: 'fixture',
-        reviewState: 'PENDING',
+        },
       });
+      addProvisionalRelations(state.proposals.at(-1)!.proposal);
     }
   }
 
-  function pushEvent(e: Omit<ReviewEvent, 'sequence'>) {
-    state.reviewEvents.push({ ...e, sequence: state.reviewEvents.length + 1 });
+  function addProvisionalRelations(proposal: IncidentProposal) {
+    proposal.relations.forEach((r, i) =>
+      state.relations.push({
+        runId: state.runId,
+        relationId: `rel-${proposal.proposalId}-${i}`,
+        ...r,
+        incidentId: proposal.incidentId,
+        state: 'PROVISIONAL',
+        proposalId: proposal.proposalId,
+        reviewer: null,
+      }),
+    );
+  }
+
+  function pushEvent(e: Omit<ReviewEvent, 'sequence' | 'runId' | 'actorRole' | 'actorIdentity'>) {
+    state.reviewEvents.push({
+      ...e,
+      runId: state.runId,
+      actorRole: 'operator',
+      actorIdentity: REPLAY_OPERATOR,
+      sequence: state.reviewEvents.length + 1,
+    });
   }
 
   function start() {
@@ -153,14 +193,14 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     state = {
       runId,
       mode: 'LOCAL REPLAY',
-      sourceProvenance: `fixture · §18 exercise ${fixture.exerciseVersion}`,
-      inferenceProvenance: 'fixture · authored outputs, no model ran',
       reports: [],
       incidents: [],
+      relations: [],
       suggestions: [],
       proposals: [],
       reviewEvents: [],
-      scenario: { delivered: 0, total: 0, nextMessageId: null },
+      scenario: null,
+      inputSignatures: {},
     };
     commandResults = new Map();
     scriptPosition = 0;
@@ -180,26 +220,22 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
         summary: inc.summary,
         openCycleStartSequence: firstSeq,
       });
-      pushEvent({
-        commandId: `seed-${inc.incidentId}`,
-        actor: 'fixture',
-        incidentId: inc.incidentId,
-        proposalId: null,
-        priorRevision: 0,
-        newRevision: 1,
-        changes: [`authored starting state: ${inc.attention ?? 'unknown'}, reports ${inc.messageIds.join(', ')}`],
-        reason: 'Authored §18 starting condition (fixture), not a model output',
-      });
     }
     updateScenario();
   }
 
   function updateScenario() {
-    const total = fixture.initial.deliver.length + fixture.script.length;
+    refreshSignatures();
+    const done = scriptPosition >= fixture.script.length;
     state.scenario = {
-      delivered: fixture.initial.deliver.length + scriptPosition,
-      total,
-      nextMessageId: fixture.script[scriptPosition] ?? null,
+      runId: state.runId,
+      exerciseVersion: fixture.exerciseVersion,
+      seed: 'none · fixed authored order',
+      logicalClock: scriptPosition,
+      deliveredCount: fixture.initial.deliver.length + scriptPosition,
+      totalCount: fixture.initial.deliver.length + fixture.script.length,
+      awaitingPresenter: !done,
+      nextGate: done ? null : 'SEND_NEXT_REPORT',
     };
   }
 
@@ -235,21 +271,24 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     },
 
     receiveReport(input) {
+      const dup = state.reports.find((r) => r.input.sourceId === input.sourceId && r.input.messageId === input.messageId);
+      if (dup) return Promise.resolve(ok({ reportId: dup.reportId, duplicate: true }));
       if (input.runId !== state.runId) return Promise.resolve(fail('WRONG_RUN', 'Report is for another run'));
       if (input.origin === 'radio')
         return Promise.resolve(fail('UNAUTHORIZED', 'Replay has no authorized radio bridge identity'));
       if (!input.text) return Promise.resolve(fail('INVALID_INPUT', 'Report text is empty'));
       const seq = state.reports.length + 1;
-      const record: ReportRecord = {
+      const record: Report = {
         reportId: `rpt-${String(seq).padStart(3, '0')}`,
         receiveSequence: seq,
         receivedAt: now(),
         input: structuredClone(input),
-        provenance: input.origin === 'operator' ? 'operator' : 'fixture',
+        // Typed into a browser replay, not received live.
+        provenance: input.origin === 'operator' ? 'simulated' : 'fixture',
       };
       state.reports.push(record);
       emit();
-      return Promise.resolve(ok({ reportId: record.reportId }));
+      return Promise.resolve(ok({ reportId: record.reportId, duplicate: false }));
     },
 
     submitLocalSuggestion() {
@@ -260,7 +299,7 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
       return Promise.resolve(fail('SERVICE_UNAVAILABLE', 'No jobs in browser replay'));
     },
 
-    submitIncidentProposal(proposal: IncidentProposal) {
+    submitIncidentProposal({ proposal }) {
       if (proposal.runId !== state.runId) return Promise.resolve(fail('WRONG_RUN', 'Proposal is for another run'));
       if (proposal.provider !== 'operator')
         return Promise.resolve(fail('UNAUTHORIZED', 'Only operator-authored proposals are accepted in replay'));
@@ -269,34 +308,46 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
       const known = new Set(state.reports.map((r) => r.reportId));
       if (proposal.addReportIds.some((id) => !known.has(id)))
         return Promise.resolve(fail('INVALID_SOURCE', 'Proposal references an unknown report'));
-      if (state.proposals.some((p) => p.proposalId === proposal.proposalId))
+      if (proposal.inputSignature !== state.inputSignatures[proposal.incidentId])
+        return Promise.resolve(fail('STALE_REVISION', 'Proposal signature does not match the current incident'));
+      if (state.proposals.some((p) => p.proposal.proposalId === proposal.proposalId))
         return Promise.resolve(ok({ proposalId: proposal.proposalId }));
-      state.proposals.push({ ...structuredClone(proposal), reviewState: 'PENDING' });
+      state.proposals.push({ jobId: null, submittedByRole: 'operator', reviewState: 'PENDING', proposal: structuredClone(proposal) });
+      addProvisionalRelations(proposal);
       emit();
       return Promise.resolve(ok({ proposalId: proposal.proposalId }));
     },
 
-    approveProposal({ runId, commandId, proposalId }) {
+    approveProposal({ runId, commandId, proposalId, inputSignature, baseIncidentVersions }) {
       return once(runId, commandId, () => {
-        const proposal = state.proposals.find((p) => p.proposalId === proposalId);
-        if (!proposal) return fail('INVALID_INPUT', `Unknown proposal ${proposalId}`);
-        if (proposal.reviewState !== 'PENDING') return fail('INVALID_INPUT', `Proposal is already ${proposal.reviewState}`);
-        const stale = staleCheck(proposal.baseIncidentVersions);
+        const record = state.proposals.find((p) => p.proposal.proposalId === proposalId);
+        if (!record) return fail('INVALID_INPUT', `Unknown proposal ${proposalId}`);
+        if (record.reviewState !== 'PENDING') return fail('INVALID_INPUT', `Proposal is already ${record.reviewState}`);
+        const proposal = record.proposal;
+        // Re-validate what the operator saw and what the proposal was made against.
+        const stale = staleCheck(baseIncidentVersions);
         if (!stale.ok) return stale;
+        const staleProposal = staleCheck(proposal.baseIncidentVersions);
+        if (!staleProposal.ok) return staleProposal;
+        if (inputSignature !== state.inputSignatures[proposal.incidentId])
+          return fail('STALE_REVISION', `${proposal.incidentId} changed since this proposal was shown`);
         const incident = state.incidents.find((i) => i.incidentId === proposal.incidentId)!;
-        const changes = applyProposal(incident, proposal);
+        const acceptedChanges = applyProposal(incident, proposal);
         const prior = incident.revision;
         incident.revision += 1;
-        proposal.reviewState = 'APPROVED';
+        record.reviewState = 'APPROVED';
+        for (const rel of state.relations)
+          if (rel.proposalId === proposalId) Object.assign(rel, { state: 'CONFIRMED', reviewer: REPLAY_OPERATOR });
+        refreshSignatures();
         pushEvent({
           commandId,
-          actor: 'operator',
           incidentId: incident.incidentId,
           proposalId,
           priorRevision: prior,
           newRevision: incident.revision,
-          changes,
+          acceptedChanges,
           reason: null,
+          sourceReportIds: proposal.evidenceReportIds,
         });
         return ok({ incidentId: incident.incidentId, revision: incident.revision });
       });
@@ -304,57 +355,60 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
 
     rejectProposal({ runId, commandId, proposalId, reason }) {
       return once(runId, commandId, () => {
-        const proposal = state.proposals.find((p) => p.proposalId === proposalId);
-        if (!proposal) return fail('INVALID_INPUT', `Unknown proposal ${proposalId}`);
-        if (proposal.reviewState !== 'PENDING') return fail('INVALID_INPUT', `Proposal is already ${proposal.reviewState}`);
+        const record = state.proposals.find((p) => p.proposal.proposalId === proposalId);
+        if (!record) return fail('INVALID_INPUT', `Unknown proposal ${proposalId}`);
+        if (record.reviewState !== 'PENDING') return fail('INVALID_INPUT', `Proposal is already ${record.reviewState}`);
         if (!reason.trim()) return fail('INVALID_INPUT', 'A rejection needs a reason');
-        proposal.reviewState = 'REJECTED';
-        const incident = state.incidents.find((i) => i.incidentId === proposal.incidentId);
+        record.reviewState = 'REJECTED';
+        // Provisional links from a rejected proposal go away; the originals stay.
+        state.relations = state.relations.filter((rel) => rel.proposalId !== proposalId);
+        const incident = state.incidents.find((i) => i.incidentId === record.proposal.incidentId);
         pushEvent({
           commandId,
-          actor: 'operator',
-          incidentId: proposal.incidentId,
+          incidentId: record.proposal.incidentId,
           proposalId,
           priorRevision: incident?.revision ?? 0,
           newRevision: incident?.revision ?? 0,
-          changes: ['proposal rejected; originals kept'],
+          acceptedChanges: [],
           reason,
+          sourceReportIds: [],
         });
         return ok(null);
       });
     },
 
-    operatorEdit({ runId, commandId, incidentId, baseRevision, attention, status, reason }) {
+    operatorEdit({ runId, commandId, incidentId, baseRevision, changes: edit, reason, sourceReportIds }) {
       return once(runId, commandId, () => {
-        if (!reason.trim()) return fail('INVALID_INPUT', 'An override needs a reason');
+        if (!reason?.trim() && sourceReportIds.length === 0) return fail('INVALID_INPUT', 'An override needs a reason');
+        const { attention, status } = edit;
         const incident = state.incidents.find((i) => i.incidentId === incidentId);
         if (!incident) return fail('INVALID_INPUT', `Unknown incident ${incidentId}`);
         if (incident.revision !== baseRevision)
           return fail('STALE_REVISION', `${incidentId} is at revision ${incident.revision}, edit was made against ${baseRevision}`);
-        const changes: string[] = [];
+        const acceptedChanges: ChangeField[] = [];
         if (attention !== undefined && attention !== incident.attention) {
-          changes.push(`attention ${incident.attention ?? 'unknown'} → ${attention ?? 'unknown'}`);
+          acceptedChanges.push('attention');
           incident.attention = attention;
         }
         if (status && status !== incident.status) {
-          changes.push(`status ${incident.status} → ${status}`);
-          if (status === 'OPEN') {
-            // Reopening keeps the ID and history but starts a new unresolved cycle (§17).
-            incident.openCycleStartSequence = state.reports.length;
-            changes.push(`new open cycle from sequence ${incident.openCycleStartSequence}`);
-          }
+          acceptedChanges.push('status');
+          // Reopening keeps the ID and history but starts a new unresolved cycle (§17).
+          if (status === 'OPEN') incident.openCycleStartSequence = state.reports.length;
           incident.status = status;
         }
-        if (changes.length === 0) return fail('INVALID_INPUT', 'Edit changes nothing');
+        if (acceptedChanges.length === 0) return fail('INVALID_INPUT', 'Edit changes nothing');
         const prior = incident.revision;
         incident.revision += 1;
-        pushEvent({ commandId, actor: 'operator', incidentId, proposalId: null, priorRevision: prior, newRevision: incident.revision, changes, reason });
+        refreshSignatures();
+        pushEvent({ commandId, incidentId, proposalId: null, priorRevision: prior, newRevision: incident.revision, acceptedChanges, reason, sourceReportIds });
         return ok({ incidentId, revision: incident.revision });
       });
     },
 
-    advanceScenario({ runId, commandId }) {
+    advanceScenario({ runId, commandId, expectedDeliveredCount }) {
       return once(runId, commandId, () => {
+        if (expectedDeliveredCount !== state.scenario!.deliveredCount)
+          return fail('STALE_REVISION', `Scenario is at ${state.scenario!.deliveredCount} delivered, not ${expectedDeliveredCount}`);
         const messageId = fixture.script[scriptPosition];
         if (!messageId) return ok(null);
         const report = deliver(messageId);
@@ -365,36 +419,33 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
       });
     },
 
-    resetRun() {
+    resetRun({ runId }) {
+      if (runId !== state.runId) return Promise.resolve(fail('WRONG_RUN', `Run ${runId} is not the active replay run`));
       start();
       emit();
       return Promise.resolve(ok({ runId: state.runId }));
     },
   };
 
-  function applyProposal(incident: IncidentView, proposal: ProposalRecord): string[] {
-    const changes: string[] = [];
-    const messageOf = new Map(state.reports.map((r) => [r.reportId, r.input.messageId]));
-    for (const id of proposal.addReportIds) {
-      if (!incident.confirmedReportIds.includes(id)) {
-        incident.confirmedReportIds.push(id);
-        changes.push(`linked ${messageOf.get(id)}`);
-      }
+  function applyProposal(incident: IncidentView, proposal: IncidentProposal): ChangeField[] {
+    const changes: ChangeField[] = [];
+    const added = proposal.addReportIds.filter((id) => !incident.confirmedReportIds.includes(id));
+    if (added.length) {
+      incident.confirmedReportIds.push(...added);
+      changes.push('addReportIds');
     }
-    for (const r of proposal.relations) {
-      changes.push(`${messageOf.get(r.reportId)} ${r.kind.toLowerCase()} of ${messageOf.get(r.targetReportId)}`);
-    }
+    if (proposal.relations.length) changes.push('relations');
     if (proposal.suggestedAttention && proposal.suggestedAttention !== incident.attention) {
-      changes.push(`attention ${incident.attention ?? 'unknown'} → ${proposal.suggestedAttention}`);
+      changes.push('attention');
       incident.attention = proposal.suggestedAttention;
     }
     if (proposal.suggestedStatus && proposal.suggestedStatus !== incident.status) {
-      changes.push(`status ${incident.status} → ${proposal.suggestedStatus}`);
+      changes.push('status');
       incident.status = proposal.suggestedStatus;
     }
     if (proposal.suggestedSummary) {
       incident.summary = proposal.suggestedSummary;
-      changes.push('summary updated');
+      changes.push('summary');
     }
     return changes;
   }

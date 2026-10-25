@@ -22,7 +22,7 @@ test('labeled replay: R07 needs review, approval moves the school up', async ({ 
   await expect.poll(() => queueOrder(page)).toEqual(['INC-residence', 'INC-shelter', 'INC-school']);
   await expect(review(page).getByText('Nothing needs review.')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Send next report (R07)' }).click();
+  await page.getByRole('button', { name: 'Send next report (#7)' }).click();
   await expect(page.getByText('7 / 12 delivered')).toBeVisible();
   const r07 = 'Correction: the school gym is clear, but someone may still be upstairs in the main building.';
   await expect(review(page).getByText(r07)).toBeVisible();
@@ -37,10 +37,10 @@ test('labeled replay: R07 needs review, approval moves the school up', async ({ 
 
 test('every original stays inspectable through R12, and R11 does not erase R07', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Send next report (R07)' }).click();
+  await page.getByRole('button', { name: 'Send next report (#7)' }).click();
   await review(page).getByRole('button', { name: 'Approve' }).click();
-  for (const id of ['R08', 'R09', 'R10', 'R11', 'R12']) {
-    await page.getByRole('button', { name: `Send next report (${id})` }).click();
+  for (const n of [8, 9, 10, 11, 12]) {
+    await page.getByRole('button', { name: `Send next report (#${n})` }).click();
   }
   await expect(page.getByRole('button', { name: 'All reports sent' })).toBeDisabled();
   await expect.poll(() => queueOrder(page)).toEqual(['INC-school', 'INC-residence', 'INC-shelter']);
@@ -52,7 +52,7 @@ test('every original stays inspectable through R12, and R11 does not erase R07',
 
 test('reset starts a fresh replay run', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Send next report (R07)' }).click();
+  await page.getByRole('button', { name: 'Send next report (#7)' }).click();
   await page.getByRole('button', { name: 'Reset run' }).click();
   await expect(page.getByText('6 / 12 delivered')).toBeVisible();
   await expect(review(page).getByText('Nothing needs review.')).toBeVisible();

@@ -1,6 +1,6 @@
 // Shared bits for the panels lane. Every color comes with a written label (§7).
 import { useState } from 'react';
-import type { Attention, DeskAdapter, Provider, ReportRecord, Result } from '../adapters/contract';
+import type { Attention, DeskAdapter, Provider, Report, ReportProvenance, Result } from '../adapters/contract';
 import { ATTENTION_LABEL } from '../adapters/derived';
 import { useDesk } from '../adapters/DeskContext';
 
@@ -28,6 +28,17 @@ export function ProvenanceTag({ provider }: { provider: Provider }) {
   return <span className="tag tag-provenance">{text[provider]}</span>;
 }
 
+/** Where a stored report came from in this run (§10 labels). */
+export function ReportProvenanceTag({ provenance }: { provenance: ReportProvenance }) {
+  const text: Record<ReportProvenance, string> = {
+    live: 'Live',
+    simulated: 'Simulated',
+    recorded: 'Recorded',
+    fixture: 'Fixture (authored)',
+  };
+  return <span className="tag tag-provenance">{text[provenance]}</span>;
+}
+
 /** Shows a time with its meaning; null stays visibly "not given", never filled in. */
 export function TimeField({ label, value }: { label: string; value: string | null }) {
   return (
@@ -42,7 +53,7 @@ export function formatTime(iso: string): string {
   return Number.isNaN(d.getTime()) ? iso : d.toISOString().slice(11, 19) + 'Z';
 }
 
-export function messageLabel(report: ReportRecord): string {
+export function messageLabel(report: Report): string {
   return `${report.input.messageId} · #${report.receiveSequence}`;
 }
 
