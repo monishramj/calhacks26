@@ -1,0 +1,45 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+playwright-report/
+test-results/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Model weights and large assets (keep outside git; record hashes instead)
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+/models/
+/weights/
+
+# Blender sources (commit only optimized .glb exports)
+*.blend
+*.blend1
+
+# SpacetimeDB / Rust build output
+target/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
