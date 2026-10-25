@@ -86,18 +86,20 @@ export async function runOnce(backend: Backend, runId: string, opts: { laya: Lay
   }
 }
 
-/** Long-running loop: run when the active run has queued jobs for a provider that is up, else wait for a table change or the tick. */
+/** Long-running loop (one per provider, see `only`): run when the active run has queued jobs for a provider that is up, else wait for a table change or the tick. */
 export async function runLoop(
   backend: Backend & { runId(): string | null; queued(kinds: string[]): number; onChange(cb: () => void): void },
   getOpts: () => Promise<{ laya: LayaMode; claude: boolean }>,
-  { tickMs = 3000, signal }: { tickMs?: number; signal?: AbortSignal } = {},
+  { tickMs = 3000, signal, only }: { tickMs?: number; signal?: AbortSignal; only?: 'laya' | 'claude' } = {},
 ) {
   let wake = () => {};
   let lastChange = 0;
   backend.onChange(() => ((lastChange = Date.now()), wake()));
   while (!signal?.aborted) {
     const runId = backend.runId(); // jobs of old runs are never claimed: claim is always for the active run
-    const opts = await getOpts();
+    const all = await getOpts();
+    // `only` makes this an independent loop for one provider, so a slow Claude job never queues behind Laya (or the reverse).
+    const opts: { laya: LayaMode; claude: boolean } = { laya: only === 'claude' ? { kind: 'off' } : all.laya, claude: only === 'laya' ? false : all.claude };
     const kinds = [...(opts.laya.kind !== 'off' ? ['LOCAL_SUGGESTION'] : []), ...(opts.claude ? ['INCIDENT_PROPOSAL'] : [])];
     if (runId && kinds.length && backend.queued(kinds) > 0) {
       if (kinds.includes('INCIDENT_PROPOSAL')) {

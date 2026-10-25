@@ -24,4 +24,4 @@ if (process.argv.includes('--fixture')) {
 
 const backend = await connectStdb(process.env.SPACETIMEDB_URI || 'http://127.0.0.1:3000', process.env.SPACETIMEDB_DATABASE || 'incident-desk');
 console.log(JSON.stringify({ event: 'start', backend: 'spacetimedb', identity: backend.identityHex, ...info }));
-await runLoop(backend, getOpts);
+await Promise.all([runLoop(backend, getOpts, { only: 'laya' }), runLoop(backend, getOpts, { only: 'claude' })]);
