@@ -2,7 +2,7 @@
 id: 1025-020711-state-codec-radio
 from: state
 to: codec-radio
-status: action
+status: closed
 asked: 2026-10-25T02:07-07:00
 ---
 
