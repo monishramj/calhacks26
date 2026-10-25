@@ -1,0 +1,184 @@
+{
+  "type": "OperatorEditCommand",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "attention override with reason and sources",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "attention": "POSSIBLE_LIFE_SAFETY"
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "resolve with reason only",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "status": "RESOLVED"
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": []
+      }
+    },
+    {
+      "name": "attach a report citing it",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "addReportIds": [
+            "rep-000008"
+          ]
+        },
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000008"
+        ]
+      }
+    },
+    {
+      "name": "set summary and place",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "summary": "Main building search not complete.",
+          "confirmedPlaceId": "school"
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "no changes",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {},
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "no reason and no sources",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "attention": "POSSIBLE_LIFE_SAFETY"
+        },
+        "reason": null,
+        "sourceReportIds": []
+      }
+    },
+    {
+      "name": "attention CRITICAL",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "attention": "CRITICAL"
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "numeric priority",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "priority": 1
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "delete reports",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "deleteReportIds": [
+            "rep-000008"
+          ]
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "negative baseRevision",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": -1,
+        "changes": {
+          "attention": "POSSIBLE_LIFE_SAFETY"
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "free-text operator name",
+      "payload": {
+        "commandId": "cmd-0003",
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "baseRevision": 3,
+        "changes": {
+          "attention": "POSSIBLE_LIFE_SAFETY"
+        },
+        "reason": "Possible person upstairs in the main building (R07).",
+        "sourceReportIds": [
+          "rep-000007"
+        ],
+        "operatorName": "Dana"
+      }
+    }
+  ]
+}

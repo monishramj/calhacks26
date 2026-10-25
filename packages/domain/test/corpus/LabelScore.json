@@ -1,0 +1,79 @@
+{
+  "type": "LabelScore",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "probability",
+      "payload": {
+        "label": "POSSIBLE_LIFE_SAFETY",
+        "value": 0.82,
+        "kind": "probability"
+      }
+    },
+    {
+      "name": "probability bounds",
+      "payload": {
+        "label": "INFORMATION",
+        "value": 0,
+        "kind": "probability"
+      }
+    },
+    {
+      "name": "raw logit kept as score, not a percentage",
+      "payload": {
+        "label": "ATTACH_REPORT",
+        "value": -3.2,
+        "kind": "score"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "probability above 1",
+      "payload": {
+        "label": "ACTIVE_NEED",
+        "value": 1.2,
+        "kind": "probability"
+      }
+    },
+    {
+      "name": "probability below 0",
+      "payload": {
+        "label": "ACTIVE_NEED",
+        "value": -0.1,
+        "kind": "probability"
+      }
+    },
+    {
+      "name": "kind percent",
+      "payload": {
+        "label": "ACTIVE_NEED",
+        "value": 82,
+        "kind": "percent"
+      }
+    },
+    {
+      "name": "value as string",
+      "payload": {
+        "label": "ACTIVE_NEED",
+        "value": "0.8",
+        "kind": "probability"
+      }
+    },
+    {
+      "name": "empty label",
+      "payload": {
+        "label": "",
+        "value": 0.5,
+        "kind": "probability"
+      }
+    },
+    {
+      "name": "missing kind",
+      "payload": {
+        "label": "ACTIVE_NEED",
+        "value": 0.5
+      }
+    }
+  ]
+}

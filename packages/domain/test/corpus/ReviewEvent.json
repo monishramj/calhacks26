@@ -1,0 +1,253 @@
+{
+  "type": "ReviewEvent",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "approval of a proposal",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "manual override with a reason",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": null,
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": "Presenter confirmed possible person upstairs.",
+        "sourceReportIds": []
+      }
+    },
+    {
+      "name": "manual override citing sources only",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": null,
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "incident creation from revision 0",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 0,
+        "newRevision": 1,
+        "acceptedChanges": [
+          "status",
+          "addReportIds"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "worker actor",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "worker",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "claude actor",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "claude",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "manual override without reason or sources",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": null,
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": []
+      }
+    },
+    {
+      "name": "empty reason string",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": null,
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": "",
+        "sourceReportIds": []
+      }
+    },
+    {
+      "name": "sequence 0",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 0,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "unknown accepted change",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "deleteReport"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "free-text actor name",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "operator",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ],
+        "actorName": "Dana"
+      }
+    }
+  ]
+}
