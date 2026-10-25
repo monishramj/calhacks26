@@ -2,7 +2,7 @@
 
 _Maintained by the orchestrator on `main`. Status comes from validation files, never from claims alone._
 
-**Last orchestrator pass:** 2026-10-25 00:26 PDT. No workstream or lane branch has pushed yet. Team reports: the radios exchange messages, SpacetimeDB is being set up on C2, and the Claude key is being set up.
+**Last orchestrator pass:** 2026-10-25 01:45 PDT. C3 split into lead (Claude) + laya (Codex) lanes and keeps G5. ws/web: replay adapter over §18 (interim §17 types, labeled fixture outputs); scene lane G7 TEST. Earlier, 01:35: C1: kit imported, G1 TEST red, radios and the C1 codec runtime verified. C2 lane `ws/state-spacetimedb`: SpacetimeDB 2.13 toolchain + placeholder TS module. C4: shell and lane skeleton pushed. C3: nothing pushed yet. G0 not started on any branch. Open questions to state and inference are unanswered.
 
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
@@ -11,13 +11,13 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | Gate | Pri | Workstream | Status | Evidence | Notes |
 |---|---|---|---|---|---|
 | G0 contracts | P0 | ws/state | not started | `work/validation/G0.md` | Blocks everyone. First. |
-| G1 codec quality | P0 | ws/codec-radio | not started | `work/validation/G1.md` | Can start beside G0. |
+| G1 codec quality | P0 | ws/codec-radio | TEST red | `work/validation/G1.md` | Can start beside G0. |
 | G2 radio path | P0 | ws/codec-radio | not started | `work/validation/G2.md` | After G1 + frozen intake contract. |
 | G3 incident state | P0 | ws/state | not started | `work/validation/G3.md` | Real local SpacetimeDB. |
 | G4 local Laya | P0 | ws/inference | not started | `work/validation/G4.md` | Needs a loadable Laya. |
 | G5 Claude enrichment | P1 | ws/inference | not started | `work/validation/G5.md` | Fixture tools first, live after G3. |
 | G6 queue and history | P0 | ws/state + ws/web (panels lane) | not started | `G6-state.md`, `G6-panels.md` | Rules in `packages/domain/src/rules`. |
-| G7 scene and heatmap | P0 | ws/web (scene lane) | not started | `G7-scene.md` | Fixture adapter first. |
+| G7 scene and heatmap | P0 | ws/web (scene lane) | TEST red | `G7-scene.md` | Fixture adapter first. |
 | G8 resilience | P0 | all | not started | `G8-state.md`, `G8-inference.md`, `G8-web.md` | After the G3–G7 real paths. |
 | G9 end-to-end | P0 | all | not started | `G9-radio.md`, `G9-integration.md` | Every pitched feature. |
 
@@ -43,7 +43,7 @@ The ground truth already says what happens for every outcome. The orchestrator a
 | Local SpacetimeDB server/client pair | C2 preflight | Pin versions; G3 continues | G3 blocked. The UI continues on the fixture adapter, labeled, never as a silent substitute (§16). |
 | Scope | all of the above | No change | Re-estimate and cut in §23 order, keeping the §14 core (§19). |
 
-**Command post:** C2's computer runs SpacetimeDB, the coordinator, the Laya worker, and the receiving radio (D-003).
+**Command post:** C2's computer runs SpacetimeDB, the coordinator, and the Laya worker. The second radio and codec endpoint are on C4, with a LAN hop to C2 (D-003). Runtime binaries may be committed (D-005).
 
 ## Preflight
 
