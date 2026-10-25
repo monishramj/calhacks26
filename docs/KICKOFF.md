@@ -173,7 +173,13 @@ Record the phase in work/validation/G4.md and work/status/inference-laya.md, com
 
 ## Manager prompts (reuse on any computer or lane; replace NAME)
 
-### NEXT
+### SHIP (use this instead of NEXT, D-009)
+
+```text
+Continue workstream ws/NAME in ship mode (D-009). git fetch origin && git merge origin/main. Read work/status/NAME.md and the newest items in `git show origin/main:work/inbox/NAME.md`. Build the next feature on the demo path for your workstream: implement it, run it for real once, and don't write new tests (keep existing ones passing). Label anything stubbed or fixture-backed. Write 3–5 lines in work/validation, set the next step in your status file, commit, push, and open a PR to main if main stays green. Report in 5 lines.
+```
+
+### NEXT (suspended by D-009)
 
 ```text
 Continue workstream ws/NAME. First: git fetch origin && git merge origin/main (stop and tell me if a conflict touches files you don't own). Read work/status/NAME.md and any new items in `git show origin/main:work/inbox/NAME.md`. Run `python scripts/questions.py list`; hand open questions for you to a background subagent and fold `action` items into this phase. Then run exactly the ONE phase your status file names as the next step, treating the §20 common context and that gate's phase prompt in docs/GROUND_TRUTH.md as pasted here. When the phase ends: update work/validation, set the exact next step in your status file, commit with the prefix from AGENTS.md, and push. If it was a REVIEW that passed, open a PR to main titled "[Gx REVIEW] ..." that lists real / mocked / unavailable / still failing (use gh, or give me the compare URL). Stop and report in 8 lines or fewer.
