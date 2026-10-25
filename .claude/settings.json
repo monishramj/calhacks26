@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/scripts/questions.py\" notify 2>/dev/null || python3 \"$CLAUDE_PROJECT_DIR/scripts/questions.py\" notify 2>/dev/null || true",
+            "timeout": 20,
+            "statusMessage": "Checking the questions board"
+          }
+        ]
+      }
+    ]
+  }
+}
