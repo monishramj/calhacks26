@@ -24,7 +24,8 @@ Needs Node, Docker, and (for Laya) the Python venv at `../laya-env`.
 ```bash
 npm install
 npm run dev:live      # full live demo, dashboard at http://localhost:5173
-npm run dev:replay    # offline, scripted sample data, no services
+npm run dev:replay    # offline; plays the recorded live run (fixtures/replay/claude-run.json) if it matches the exercise
+npx tsx scripts/record_run.ts   # with dev:live up: re-record that run (all 190 reports through Laya + Claude, scripted operator)
 npm run preflight     # check readiness; add -- --smoke for one small real Claude call
 npm run evaluate      # writes evaluation/report-<date>.md and .json
 npm test

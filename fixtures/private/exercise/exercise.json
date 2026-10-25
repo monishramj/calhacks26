@@ -1,5 +1,5 @@
 {
- "exerciseVersion": "sunset-1",
+ "exerciseVersion": "sunset-2",
  "about": "Synthetic Outer Sunset storm-flood exercise. Fictional; every report is authored. What the live run receives, in transmit order.",
  "places": [
   {
@@ -378,8 +378,33 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-05",
+    "sourceId": "team-04",
     "messageId": "S05",
+    "text": "North shelter: 24 people now, two with small kids.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:03:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 6,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S06",
     "text": "Apartment block on Judah: power out, elevator stuck between floors, nobody inside it.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:03:40Z",
@@ -398,13 +423,13 @@
    }
   },
   {
-   "position": 6,
+   "position": 7,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-06",
-    "messageId": "S06",
+    "messageId": "S07",
     "text": "House on 43rd near Lawton: elderly man alone, no heat, needs blankets.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:04:30Z",
@@ -423,13 +448,38 @@
    }
   },
   {
-   "position": 7,
+   "position": 8,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S08",
+    "text": "44th and Judah: kids trying to get close to the wire. We are holding them back.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:05:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 9,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-02",
-    "messageId": "S07",
+    "messageId": "S09",
     "text": "School sports hall checked. Our search of that area is complete.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:05:15Z",
@@ -448,13 +498,38 @@
    }
   },
   {
-   "position": 8,
+   "position": 10,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S10",
+    "text": "47th and Judah: water at the second step of the stairs now.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:05:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-47-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 11,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-07",
-    "messageId": "S08",
+    "messageId": "S11",
     "text": "Strong smell of gas at 41st and Moraga. We told neighbors to stay out.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:06:00Z",
@@ -473,13 +548,38 @@
    }
   },
   {
-   "position": 9,
+   "position": 12,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S12",
+    "text": "Corner store: front window smashed by the wind, glass all over the sidewalk.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:06:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 13,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-04",
-    "messageId": "S09",
+    "messageId": "S13",
     "text": "Repeating: north shelter still needs blankets tonight.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:06:45Z",
@@ -498,13 +598,38 @@
    }
   },
   {
-   "position": 10,
+   "position": 14,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-02",
+    "messageId": "S14",
+    "text": "Parents gathering at the school gate asking about their kids. About 20 adults here.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:07:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 15,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-14",
-    "messageId": "S10",
+    "messageId": "S15",
     "text": "Grocery store at 45th and Judah is open, giving out bottled water.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:07:30Z",
@@ -523,13 +648,63 @@
    }
   },
   {
-   "position": 11,
+   "position": 16,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S16",
+    "text": "41st and Moraga: we can hear hissing by the meter. Smell is stronger.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:07:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-41-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 17,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S17",
+    "text": "Apartment block: stairwell lights out, residents using phone lights.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:07:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 18,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-08",
-    "messageId": "S11",
+    "messageId": "S18",
     "text": "46th and Lawton: basement flooding, family pumping water, they need sandbags.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:08:20Z",
@@ -548,13 +723,38 @@
    }
   },
   {
-   "position": 12,
+   "position": 19,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S19",
+    "text": "46th and Lawton: their pump is too small, water still coming in.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:08:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 20,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-03",
-    "messageId": "S12",
+    "messageId": "S20",
     "text": "47th and Judah: the people upstairs have asked for help, water still rising.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:09:00Z",
@@ -573,13 +773,63 @@
    }
   },
   {
-   "position": 13,
+   "position": 21,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S21",
+    "text": "43rd and Lawton: the elderly man says he is out of his heart pills.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:09:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-43-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 22,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S22",
+    "text": "44th and Judah: taped off the corner around the wire.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:09:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 23,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-10",
-    "messageId": "S13",
+    "messageId": "S23",
     "text": "House on 48th near Kirkham: dog trapped in the flooded garage. Owner is safe.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:09:50Z",
@@ -598,263 +848,16 @@
    }
   },
   {
-   "position": 14,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-13",
-    "messageId": "S14",
-    "text": "Hardware store at 43rd and Lawton has sandbags. We need a truck to move them.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:10:40Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "hardware-store",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 15,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-05",
-    "messageId": "S15",
-    "text": "Apartment block: two residents on the 4th floor use oxygen machines, batteries running low.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:11:30Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "apartments",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 16,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-09",
-    "messageId": "S16",
-    "text": "Beach cafe staff are staying. We can serve hot food to about 30 people.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:12:15Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "cafe",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 17,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-01",
-    "messageId": "S17",
-    "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:13:00Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "school",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 18,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-16",
-    "messageId": "S18",
-    "text": "Repeating 44th and Judah: live wire on the sidewalk, still sparking.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:13:40Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "house-44-judah",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 19,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-10",
-    "messageId": "S19",
-    "text": "Someone is shouting for help near the dunes. We cannot see where.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:14:30Z",
-    "reportedEventAt": null,
-    "reportedLocation": null,
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 20,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-12",
-    "messageId": "S20",
-    "text": "South shelter open at the church hall on Moraga. 25 people, we need cots.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:15:10Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "south-shelter",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 21,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-02",
-    "messageId": "S21",
-    "text": "Repeating the school report: possible person upstairs in the main building.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:15:50Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "school",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 22,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-05",
-    "messageId": "S22",
-    "text": "42nd and Judah: neighbor not answering her door, lights off since this morning.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:16:40Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "house-42-judah",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
-   "position": 23,
-   "gate": null,
-   "gateRequiresIncident": null,
-   "radioCandidate": false,
-   "input": {
-    "sourceId": "team-11",
-    "messageId": "S23",
-    "text": "45th and Kirkham: tree fell on the roof. Family is safe, roof leaking.",
-    "origin": "scenario",
-    "sentAt": "2026-10-25T18:17:20Z",
-    "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "house-45-kirkham",
-     "source": "sender_explicit"
-    },
-    "transport": {
-     "verification": "not_applicable",
-     "encoding": "not_applicable",
-     "measurementSource": "not_applicable",
-     "originalBytes": null,
-     "applicationPacketBytes": null
-    }
-   }
-  },
-  {
    "position": 24,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-14",
+    "sourceId": "team-04",
     "messageId": "S24",
-    "text": "Truck delivered 40 bottles of water to the north shelter.",
+    "text": "North shelter: a woman here needs her insulin, it is still at home on 45th.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:18:00Z",
+    "sentAt": "2026-10-25T18:10:05Z",
     "reportedEventAt": null,
     "reportedLocation": {
      "placeId": "north-shelter",
@@ -877,12 +880,12 @@
    "input": {
     "sourceId": "team-07",
     "messageId": "S25",
-    "text": "40th and Moraga: car stuck in the flooded intersection, water at the doors, driver still inside.",
+    "text": "41st and Moraga: gas meter is on the side of the yellow house.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:18:45Z",
+    "sentAt": "2026-10-25T18:10:25Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-40-moraga",
+     "placeId": "house-41-moraga",
      "source": "sender_explicit"
     },
     "transport": {
@@ -900,14 +903,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-15",
+    "sourceId": "team-13",
     "messageId": "S26",
-    "text": "Medic team at the apartment block. Oxygen users stable for now, need batteries within two hours.",
+    "text": "Hardware store at 43rd and Lawton has sandbags. We need a truck to move them.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:19:30Z",
+    "sentAt": "2026-10-25T18:10:40Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "apartments",
+     "placeId": "hardware-store",
      "source": "sender_explicit"
     },
     "transport": {
@@ -927,9 +930,9 @@
    "input": {
     "sourceId": "team-01",
     "messageId": "S27",
-    "text": "School report refers to the main building beside the gym.",
+    "text": "School office says 212 students were on site today. Teachers have the roster outside.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:20:15Z",
+    "sentAt": "2026-10-25T18:11:05Z",
     "reportedEventAt": null,
     "reportedLocation": {
      "placeId": "school",
@@ -950,11 +953,11 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-13",
+    "sourceId": "team-08",
     "messageId": "S28",
-    "text": "Sandbags delivered to 46th and Lawton. Basement water holding.",
+    "text": "46th and Lawton: family asks if they should turn off the power, water near the outlets.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:21:00Z",
+    "sentAt": "2026-10-25T18:11:25Z",
     "reportedEventAt": null,
     "reportedLocation": {
      "placeId": "house-46-lawton",
@@ -975,14 +978,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-06",
+    "sourceId": "team-05",
     "messageId": "S29",
-    "text": "Hardware store: 60 sandbags left, truck can take more.",
+    "text": "Apartment block: two residents on the 4th floor use oxygen machines, batteries running low.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:21:40Z",
+    "sentAt": "2026-10-25T18:11:30Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "hardware-store",
+     "placeId": "apartments",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1002,12 +1005,12 @@
    "input": {
     "sourceId": "team-03",
     "messageId": "S30",
-    "text": "Beach motel: ground floor flooded, guests moved upstairs, all accounted for.",
+    "text": "47th and Judah: we need a boat or high truck, street water too deep to walk.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:22:30Z",
+    "sentAt": "2026-10-25T18:11:55Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "motel",
+     "placeId": "house-47-judah",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1025,13 +1028,16 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-10",
+    "sourceId": "team-09",
     "messageId": "S31",
-    "text": "Repeating: shouting for help near the dunes, south of the beach parking lot.",
+    "text": "Beach cafe staff are staying. We can serve hot food to about 30 people.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:23:10Z",
+    "sentAt": "2026-10-25T18:12:15Z",
     "reportedEventAt": null,
-    "reportedLocation": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
     "transport": {
      "verification": "not_applicable",
      "encoding": "not_applicable",
@@ -1047,14 +1053,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-08",
+    "sourceId": "team-07",
     "messageId": "S32",
-    "text": "South shelter: 12 more people arrived, now 37. Still need cots and water.",
+    "text": "41st and Moraga: moved 8 neighbors to the end of the block.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:24:00Z",
+    "sentAt": "2026-10-25T18:12:35Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "south-shelter",
+     "placeId": "house-41-moraga",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1072,14 +1078,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-02",
+    "sourceId": "team-14",
     "messageId": "S33",
-    "text": "Has everyone at the school been rescued?",
+    "text": "Grocery store at 45th and Judah: long line for water, about 60 people.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:24:40Z",
+    "sentAt": "2026-10-25T18:12:55Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "school",
+     "placeId": "grocery",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1097,14 +1103,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-16",
+    "sourceId": "team-01",
     "messageId": "S34",
-    "text": "41st and Moraga: gas company crew is here, the gas is shut off. Neighbors can go back.",
+    "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:25:20Z",
+    "sentAt": "2026-10-25T18:13:00Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-41-moraga",
+     "placeId": "school",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1124,12 +1130,12 @@
    "input": {
     "sourceId": "team-11",
     "messageId": "S35",
-    "text": "Earlier school gym report: all people our team checked were outside.",
+    "text": "Repeating corner store: broken glass on the sidewalk.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:09:30Z",
+    "sentAt": "2026-10-25T18:13:25Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "school",
+     "placeId": "corner-store",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1147,14 +1153,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-12",
+    "sourceId": "team-16",
     "messageId": "S36",
-    "text": "46th and Moraga: checked the whole block, everyone is fine.",
+    "text": "Repeating 44th and Judah: live wire on the sidewalk, still sparking.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:26:40Z",
+    "sentAt": "2026-10-25T18:13:40Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-46-moraga",
+     "placeId": "house-44-judah",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1172,14 +1178,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-07",
+    "sourceId": "team-10",
     "messageId": "S37",
-    "text": "40th and Moraga: driver is out of the car and safe. Car still in the water.",
+    "text": "48th and Kirkham: garage water about waist deep, we can hear the dog barking.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:27:20Z",
+    "sentAt": "2026-10-25T18:13:55Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-40-moraga",
+     "placeId": "house-48-kirkham",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1197,14 +1203,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-05",
+    "sourceId": "team-11",
     "messageId": "S38",
-    "text": "Correction for 42nd and Judah: the neighbor answered. She is fine, her phone was dead.",
+    "text": "School main building: stairwell door jammed, we cannot get to the second floor yet.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:28:00Z",
+    "sentAt": "2026-10-25T18:14:05Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-42-judah",
+     "placeId": "school",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1222,16 +1228,13 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-15",
+    "sourceId": "team-10",
     "messageId": "S39",
-    "text": "Medic team at 47th and Judah. Both residents out, in our truck, mild cold.",
+    "text": "Someone is shouting for help near the dunes. We cannot see where.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:28:45Z",
+    "sentAt": "2026-10-25T18:14:30Z",
     "reportedEventAt": null,
-    "reportedLocation": {
-     "placeId": "house-47-judah",
-     "source": "sender_explicit"
-    },
+    "reportedLocation": null,
     "transport": {
      "verification": "not_applicable",
      "encoding": "not_applicable",
@@ -1247,14 +1250,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-09",
+    "sourceId": "team-08",
     "messageId": "S40",
-    "text": "Beach cafe: hot soup ready, can send to the shelters.",
+    "text": "46th and Lawton: we helped them turn off the main breaker.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:29:30Z",
+    "sentAt": "2026-10-25T18:14:35Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "cafe",
+     "placeId": "house-46-lawton",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1272,14 +1275,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-03",
+    "sourceId": "team-05",
     "messageId": "S41",
-    "text": "Correction from the beach motel: one guest from room 12 is missing. Was not upstairs.",
+    "text": "Apartment block 6th floor: elderly woman cannot walk down the stairs, wants to stay.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:30:10Z",
+    "sentAt": "2026-10-25T18:14:55Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "motel",
+     "placeId": "apartments",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1297,14 +1300,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-10",
+    "sourceId": "team-09",
     "messageId": "S42",
-    "text": "48th and Kirkham: dog is out of the garage, owner has it.",
+    "text": "44th and Judah: sparks getting bigger, small fire in the hedge.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:30:50Z",
+    "sentAt": "2026-10-25T18:15:05Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-48-kirkham",
+     "placeId": "house-44-judah",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1322,14 +1325,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-04",
+    "sourceId": "team-12",
     "messageId": "S43",
-    "text": "Grocery store: water running low, about 50 bottles left.",
+    "text": "South shelter open at the church hall on Moraga. 25 people, we need cots.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:31:30Z",
+    "sentAt": "2026-10-25T18:15:10Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "grocery",
+     "placeId": "south-shelter",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1347,14 +1350,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-08",
+    "sourceId": "team-06",
     "messageId": "S44",
-    "text": "Repeating 46th and Lawton: basement water holding with sandbags.",
+    "text": "Hardware store: people lining up for sandbags, about 25.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:32:10Z",
+    "sentAt": "2026-10-25T18:15:35Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-46-lawton",
+     "placeId": "hardware-store",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1372,11 +1375,11 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-11",
+    "sourceId": "team-02",
     "messageId": "S45",
-    "text": "School main building search is not complete. We cannot give an all-clear.",
+    "text": "Repeating the school report: possible person upstairs in the main building.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:32:50Z",
+    "sentAt": "2026-10-25T18:15:50Z",
     "reportedEventAt": null,
     "reportedLocation": {
      "placeId": "school",
@@ -1397,14 +1400,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-06",
+    "sourceId": "team-04",
     "messageId": "S46",
-    "text": "43rd and Lawton: elderly man moved to the south shelter with blankets.",
+    "text": "Repeating: insulin needed at the north shelter.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:33:30Z",
+    "sentAt": "2026-10-25T18:16:05Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-43-lawton",
+     "placeId": "north-shelter",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1422,14 +1425,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-16",
+    "sourceId": "team-03",
     "messageId": "S47",
-    "text": "44th and Judah: utility crew has cut power to the line. Area is safe.",
+    "text": "Repeating: 47th and Judah, two people upstairs, need a high truck.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:34:10Z",
+    "sentAt": "2026-10-25T18:16:25Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "house-44-judah",
+     "placeId": "house-47-judah",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1447,14 +1450,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-12",
+    "sourceId": "team-05",
     "messageId": "S48",
-    "text": "South shelter received 20 cots. Still need water for 37 people.",
+    "text": "42nd and Judah: neighbor not answering her door, lights off since this morning.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:34:50Z",
+    "sentAt": "2026-10-25T18:16:40Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "south-shelter",
+     "placeId": "house-42-judah",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1472,13 +1475,16 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-10",
+    "sourceId": "team-09",
     "messageId": "S49",
-    "text": "Found the person near the dunes: a surfer with a hurt ankle, walking him to the parking lot.",
+    "text": "44th and Judah: hedge fire went out in the rain. Wire still live.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:35:30Z",
+    "sentAt": "2026-10-25T18:16:55Z",
     "reportedEventAt": null,
-    "reportedLocation": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
     "transport": {
      "verification": "not_applicable",
      "encoding": "not_applicable",
@@ -1494,14 +1500,14 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-05",
+    "sourceId": "team-07",
     "messageId": "S50",
-    "text": "Apartment block: batteries arrived for the oxygen machines.",
+    "text": "Repeating: gas smell at 41st and Moraga.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:36:10Z",
+    "sentAt": "2026-10-25T18:17:05Z",
     "reportedEventAt": null,
     "reportedLocation": {
-     "placeId": "apartments",
+     "placeId": "house-41-moraga",
      "source": "sender_explicit"
     },
     "transport": {
@@ -1521,9 +1527,9 @@
    "input": {
     "sourceId": "team-11",
     "messageId": "S51",
-    "text": "45th and Kirkham: tarp on the roof, leak stopped.",
+    "text": "45th and Kirkham: tree fell on the roof. Family is safe, roof leaking.",
     "origin": "scenario",
-    "sentAt": "2026-10-25T18:36:50Z",
+    "sentAt": "2026-10-25T18:17:20Z",
     "reportedEventAt": null,
     "reportedLocation": {
      "placeId": "house-45-kirkham",
@@ -1544,8 +1550,1771 @@
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
-    "sourceId": "team-03",
+    "sourceId": "team-10",
     "messageId": "S52",
+    "text": "Beach patrol walking the dunes south of the parking lot, still hearing shouts.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:17:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": null,
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 53,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S53",
+    "text": "South shelter: a child here has a high fever. Parents want a medic.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:17:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 54,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-14",
+    "messageId": "S54",
+    "text": "Truck delivered 40 bottles of water to the north shelter.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:18:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 55,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S55",
+    "text": "Medic team brought heart pills to 43rd and Lawton. He has taken them.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:18:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-43-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 56,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S56",
+    "text": "40th and Moraga: car stuck in the flooded intersection, water at the doors, driver still inside.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:18:45Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 57,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S57",
+    "text": "Repeating: dog trapped in garage at 48th and Kirkham.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:18:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-48-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 58,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-01",
+    "messageId": "S58",
+    "text": "School roster check: 210 of 212 students counted outside. Two not found yet.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:19:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 59,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S59",
+    "text": "40th and Moraga: intersection water about two feet deep, rising.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:19:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 60,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S60",
+    "text": "Medic team at the apartment block. Oxygen users stable for now, need batteries within two hours.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:19:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 61,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-14",
+    "messageId": "S61",
+    "text": "Grocery store: an older man slipped in the line and hit his head. He is awake.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:19:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 62,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S62",
+    "text": "Beach cafe running on gas stove, no power. Still cooking.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:20:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 63,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-01",
+    "messageId": "S63",
+    "text": "School report refers to the main building beside the gym.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:20:15Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 64,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-14",
+    "messageId": "S64",
+    "text": "Truck dropped 30 blankets at the north shelter.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:20:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 65,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S65",
+    "text": "Repeating: 42nd and Judah neighbor not answering her door.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:20:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-42-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 66,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S66",
+    "text": "Sandbags delivered to 46th and Lawton. Basement water holding.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:21:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 67,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S67",
+    "text": "Corner store owner is here, sweeping glass. Says nobody was hurt.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:21:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 68,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S68",
+    "text": "Hardware store: 60 sandbags left, truck can take more.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:21:40Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "hardware-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 69,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-04",
+    "messageId": "S69",
+    "text": "Grocery store running on a generator, freezers on.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:21:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 70,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-02",
+    "messageId": "S70",
+    "text": "Repeating: school is missing two students on the roster.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:22:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 71,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S71",
+    "text": "Beach motel: ground floor flooded, guests moved upstairs, all accounted for.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:22:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 72,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S72",
+    "text": "Repeating: 45th and Kirkham, tree on the roof, leaking.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:22:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-45-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 73,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S73",
+    "text": "Medic at the south shelter checked the child with fever. Stable, gave medicine, will check again in an hour.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:22:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 74,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S74",
+    "text": "40th and Moraga: threw a rope to the driver, he is holding on, trying to get out.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:23:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 75,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S75",
+    "text": "Repeating: shouting for help near the dunes, south of the beach parking lot.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:23:10Z",
+    "reportedEventAt": null,
+    "reportedLocation": null,
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 76,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S76",
+    "text": "Medic team at the grocery store, checked the man who fell. Small cut, no other injury.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:23:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 77,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S77",
+    "text": "South shelter: 12 more people arrived, now 37. Still need cots and water.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:24:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 78,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S78",
+    "text": "Apartment block: water coming into the parking garage, about knee deep.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:24:15Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 79,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-02",
+    "messageId": "S79",
+    "text": "Has everyone at the school been rescued?",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:24:40Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 80,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S80",
+    "text": "42nd and Judah: looked in the window, no one in the front room. Car is gone.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:24:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-42-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 81,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S81",
+    "text": "Utility crew on the way to 44th and Judah, 10 minutes.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:25:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 82,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S82",
+    "text": "41st and Moraga: gas company crew is here, the gas is shut off. Neighbors can go back.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:25:20Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-41-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 83,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S83",
+    "text": "Medic team brought insulin to the north shelter. She has taken it, doing fine.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:25:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 84,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S84",
+    "text": "Earlier school gym report: all people our team checked were outside.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:09:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 85,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S85",
+    "text": "Repeating: south shelter needs cots.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:26:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 86,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S86",
+    "text": "Supply truck 1 loaded 80 sandbags at the hardware store.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:26:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "hardware-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 87,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S87",
+    "text": "46th and Moraga: checked the whole block, everyone is fine.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:26:40Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 88,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S88",
+    "text": "Repeating: 43rd and Lawton, elderly man needs blankets and heat.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:26:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-43-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 89,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-01",
+    "messageId": "S89",
+    "text": "School: one of the two missing students was picked up early by a parent. One still not found.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:27:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 90,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S90",
+    "text": "40th and Moraga: driver is out of the car and safe. Car still in the water.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:27:20Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 91,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S91",
+    "text": "Dunes: shouting stopped. We keep searching.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:27:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": null,
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 92,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S92",
+    "text": "Correction for 42nd and Judah: the neighbor answered. She is fine, her phone was dead.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:28:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-42-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 93,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S93",
+    "text": "Corner store giving out batteries and flashlights.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:28:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 94,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S94",
+    "text": "Medic team at 47th and Judah. Both residents out, in our truck, mild cold.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:28:45Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-47-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 95,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-14",
+    "messageId": "S95",
+    "text": "Truck brought 60 bottles of water to the south shelter.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:29:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 96,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S96",
+    "text": "Beach cafe: hot soup ready, can send to the shelters.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:29:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 97,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S97",
+    "text": "45th and Kirkham: the tree also pulled the phone line down, it is lying in the yard.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:29:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-45-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 98,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S98",
+    "text": "Correction from the beach motel: one guest from room 12 is missing. Was not upstairs.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:30:10Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 99,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S99",
+    "text": "48th and Kirkham: dog is out of the garage, owner has it.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:30:50Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-48-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 100,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S100",
+    "text": "Apartment garage: someone may be sleeping in a car down there, residents saw him earlier.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:31:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 101,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S101",
+    "text": "47th and Judah house is empty now, door locked.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:31:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-47-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 102,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-04",
+    "messageId": "S102",
+    "text": "Grocery store: water running low, about 50 bottles left.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:31:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 103,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S103",
+    "text": "Beach motel: searching the ground floor rooms for the missing guest from room 12.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:31:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 104,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S104",
+    "text": "Repeating 46th and Lawton: basement water holding with sandbags.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:32:10Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 105,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S105",
+    "text": "40th and Moraga: put cones out, cars turning around.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:32:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 106,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S106",
+    "text": "School main building search is not complete. We cannot give an all-clear.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:32:50Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 107,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-04",
+    "messageId": "S107",
+    "text": "North shelter: 41 people, the hall is getting full. We can take about 10 more.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:33:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 108,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S108",
+    "text": "Repeating: motel room 12 guest missing, beach patrol told.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:33:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 109,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S109",
+    "text": "43rd and Lawton: elderly man moved to the south shelter with blankets.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:33:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-43-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 110,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S110",
+    "text": "Apartment garage checked. The car was empty, man had already left on foot.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:33:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 111,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S111",
+    "text": "44th and Judah: utility crew has cut power to the line. Area is safe.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:34:10Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 112,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S112",
+    "text": "Corner store sidewalk swept, glass gone.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:34:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 113,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S113",
+    "text": "Beach cafe: 5 volunteers here, can drive food to the shelters.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:34:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 114,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S114",
+    "text": "South shelter received 20 cots. Still need water for 37 people.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:34:50Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 115,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S115",
+    "text": "Beach motel: the car of the room 12 guest is still in the lot.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:35:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 116,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S116",
+    "text": "Found the person near the dunes: a surfer with a hurt ankle, walking him to the parking lot.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:35:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": null,
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 117,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S117",
+    "text": "The neighbor from 42nd and Judah is at the south shelter, charging her phone.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:35:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-42-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 118,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S118",
+    "text": "Apartment block: batteries arrived for the oxygen machines.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:36:10Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 119,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S119",
+    "text": "46th and Lawton: two neighbor basements on the block flooding too.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:36:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 120,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S120",
+    "text": "45th and Kirkham: tarp on the roof, leak stopped.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:36:50Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-45-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 121,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S121",
+    "text": "40th and Moraga driver checked by medic, cold but no injury.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:36:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 122,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S122",
+    "text": "South shelter: the elderly man from 43rd and Lawton arrived, warm now.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:37:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 123,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S123",
     "text": "Repeating: motel guest from room 12 still missing.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:37:30Z",
@@ -1564,13 +3333,60 @@
    }
   },
   {
-   "position": 53,
+   "position": 124,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S124",
+    "text": "46th and Moraga: water starting to come up the driveways now.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:37:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 125,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S125",
+    "text": "Medic team met the beach patrol at the parking lot. Surfer ankle likely broken, taking him to the clinic.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:38:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": null,
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 126,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-14",
-    "messageId": "S53",
+    "messageId": "S126",
     "text": "Repeating grocery store: about 50 bottles of water left.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:38:10Z",
@@ -1589,13 +3405,38 @@
    }
   },
   {
-   "position": 54,
+   "position": 127,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S127",
+    "text": "Corner store out of batteries.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:38:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 128,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-07",
-    "messageId": "S54",
+    "messageId": "S128",
     "text": "41st and Moraga all clear, gas off, residents back home.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:38:50Z",
@@ -1614,19 +3455,1541 @@
    }
   },
   {
-   "position": 55,
+   "position": 129,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S129",
+    "text": "Utility team set up a generator at the apartment block lobby for charging.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:39:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 130,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S130",
+    "text": "Beach cafe sent soup to the south shelter with a volunteer driver.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:39:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 131,
    "gate": null,
    "gateRequiresIncident": null,
    "radioCandidate": false,
    "input": {
     "sourceId": "team-13",
-    "messageId": "S55",
+    "messageId": "S131",
     "text": "Hardware store: out of sandbags now.",
     "origin": "scenario",
     "sentAt": "2026-10-25T18:39:30Z",
     "reportedEventAt": null,
     "reportedLocation": {
      "placeId": "hardware-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 132,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S132",
+    "text": "44th and Judah: tape taken down, sidewalk open.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:39:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 133,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S133",
+    "text": "40th and Moraga: second car drove into the water and stalled. Two people inside, water at the windows.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:40:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 134,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-04",
+    "messageId": "S134",
+    "text": "North shelter heater stopped working. It is cold in the hall.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:40:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 135,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S135",
+    "text": "Man at the beach cafe says he is staying at the motel, room 12. He went out for food before the flood.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:40:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 136,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S136",
+    "text": "School main building: fire crew opened the jammed stairwell door. Going upstairs now.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:41:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 137,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S137",
+    "text": "40th and Moraga: both people from the second car climbed out onto the roof. We are getting them a ladder.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:41:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 138,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S138",
+    "text": "Supply truck 1 dropped 200 bottles of water at the grocery store.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:41:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 139,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S139",
+    "text": "South shelter count: 52 people. Cots for 20, rest on mats.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:42:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 140,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S140",
+    "text": "48th and Kirkham: dog has a cut paw, owner wants a vet.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:42:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-48-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 141,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S141",
+    "text": "Hardware store: 200 more sandbags coming from the city yard in 30 minutes.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:42:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "hardware-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 142,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S142",
+    "text": "Beach motel manager confirmed: the man at the cafe is our room 12 guest. Everyone accounted for.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:43:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 143,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S143",
+    "text": "School main building second floor: found one student hiding in a classroom, scared but not hurt.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:43:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 144,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S144",
+    "text": "Sandbags dropped at 46th and Moraga.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:43:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 145,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S145",
+    "text": "Apartment block 6th floor: checked the elderly woman, she has food and water, fine to stay.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:44:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 146,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S146",
+    "text": "41st and Moraga: gas crew checked all houses on the block, no leaks found.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:44:15Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-41-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 147,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-01",
+    "messageId": "S147",
+    "text": "School roster: the student found upstairs is the one we were missing. All 212 now accounted for.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:44:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 148,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S148",
+    "text": "Both residents from 47th and Judah dropped at the north shelter, warm.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:44:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-47-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 149,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S149",
+    "text": "Utility team fixed the north shelter heater, hall warming up.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:45:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 150,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S150",
+    "text": "40th and Moraga: both people from the second car are on dry ground with the medic team. Cold but fine.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:45:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 151,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S151",
+    "text": "Corner store: water coming in the back door now.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:45:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 152,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S152",
+    "text": "Beach cafe: a volunteer burned her hand on the stove, needs first aid.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:46:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 153,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S153",
+    "text": "South shelter: three families arrived with dogs, we need a spot for the animals.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:46:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 154,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S154",
+    "text": "More sandbags dropped on 46th and Lawton for the neighbors.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:46:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 155,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S155",
+    "text": "School main building fully searched, all floors. Nobody else inside.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:47:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 156,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S156",
+    "text": "42nd and Judah neighbor is back home, thanked the team.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:47:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-42-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 157,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-14",
+    "messageId": "S157",
+    "text": "Grocery store closing at dark. Water handout moving to the north shelter.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:47:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 158,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S158",
+    "text": "Medic treated the burn at the beach cafe. Minor, she is back to work.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:48:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 159,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S159",
+    "text": "Apartment block: one oxygen machine stopped again, generator cable too short to reach the 4th floor.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:48:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 160,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S160",
+    "text": "Beach patrol: tide coming up into the dunes, keeping people off the beach.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:48:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": null,
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 161,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S161",
+    "text": "Beach motel: ground floor water going down slowly.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:49:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 162,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-02",
+    "messageId": "S162",
+    "text": "School: two students still missing from the roster, please send help.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:23:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 163,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S163",
+    "text": "46th and Moraga: one house has water inside, older couple on the ground floor wants to leave.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:50:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 164,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-04",
+    "messageId": "S164",
+    "text": "North shelter: running out of food, 45 people for dinner.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:50:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 165,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S165",
+    "text": "Apartment block: ran a longer cable to the 4th floor. Both oxygen machines running.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:50:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 166,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S166",
+    "text": "South shelter: child fever is down, doing well.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:51:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 167,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-16",
+    "messageId": "S167",
+    "text": "44th and Judah: second pole leaning badly next to the first one. No wire down yet.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:51:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-44-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 168,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S168",
+    "text": "Hardware store: city sandbags arrived, 200 ready.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:51:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "hardware-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 169,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-02",
+    "messageId": "S169",
+    "text": "School gate: all parents have picked up their kids or are with the teachers.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:52:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 170,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S170",
+    "text": "43rd and Lawton: elderly man alone with no heat, please check on him.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:05:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-43-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 171,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S171",
+    "text": "Supply truck brought a pump to the corner store. Water going down.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:52:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "corner-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 172,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-14",
+    "messageId": "S172",
+    "text": "Grocery store closed for the night.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:53:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "grocery",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 173,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S173",
+    "text": "45th and Kirkham: new crack in the ceiling under the tree. Family moved to the back room.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:53:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-45-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 174,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S174",
+    "text": "Beach cafe: out of soup, will make more in an hour.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:53:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "cafe",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 175,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S175",
+    "text": "42nd and Judah: neighbor still not answering, we are worried.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:22:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-42-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 176,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-13",
+    "messageId": "S176",
+    "text": "Supply truck 1 delivered 30 more cots to the south shelter.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:54:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 177,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S177",
+    "text": "46th and Moraga: helped the older couple out, they are going to the south shelter.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:54:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 178,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-09",
+    "messageId": "S178",
+    "text": "Beach cafe soup delivered to the north shelter, enough for everyone tonight.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:55:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 179,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-08",
+    "messageId": "S179",
+    "text": "46th and Lawton: all three basements holding, pumps running.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:55:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-46-lawton",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 180,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-10",
+    "messageId": "S180",
+    "text": "Motel guest from room 12 still missing, beach patrol searching the sand.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:36:00Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "motel",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 181,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S181",
+    "text": "Repeating: apartment oxygen machines running on generator.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:56:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 182,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-15",
+    "messageId": "S182",
+    "text": "Medic team wrapped the dog paw at 48th and Kirkham, it is fine.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:56:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-48-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 183,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-06",
+    "messageId": "S183",
+    "text": "Repeating: 200 sandbags at the hardware store.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:57:05Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "hardware-store",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 184,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-12",
+    "messageId": "S184",
+    "text": "Repeating: south shelter has 52 people.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:57:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "south-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 185,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-11",
+    "messageId": "S185",
+    "text": "45th and Kirkham: family left for the south shelter until an inspector comes.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:57:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-45-kirkham",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 186,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-03",
+    "messageId": "S186",
+    "text": "47th and Judah: water still rising, people upstairs, hurry.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:12:30Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-47-judah",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 187,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-04",
+    "messageId": "S187",
+    "text": "Repeating: north shelter almost full, about 45 people.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:58:25Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "north-shelter",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 188,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-07",
+    "messageId": "S188",
+    "text": "40th and Moraga: tow truck asked for both cars, water going down.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:58:55Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "house-40-moraga",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 189,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-01",
+    "messageId": "S189",
+    "text": "School: teachers and staff leaving, building locked.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:59:15Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "school",
+     "source": "sender_explicit"
+    },
+    "transport": {
+     "verification": "not_applicable",
+     "encoding": "not_applicable",
+     "measurementSource": "not_applicable",
+     "originalBytes": null,
+     "applicationPacketBytes": null
+    }
+   }
+  },
+  {
+   "position": 190,
+   "gate": null,
+   "gateRequiresIncident": null,
+   "radioCandidate": false,
+   "input": {
+    "sourceId": "team-05",
+    "messageId": "S190",
+    "text": "Apartment block: residents settling in for the night, generator on.",
+    "origin": "scenario",
+    "sentAt": "2026-10-25T18:59:35Z",
+    "reportedEventAt": null,
+    "reportedLocation": {
+     "placeId": "apartments",
      "source": "sender_explicit"
     },
     "transport": {

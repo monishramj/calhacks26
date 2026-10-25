@@ -14,18 +14,19 @@ type Props = {
   mode: DeskMode;
   sourceProvenance: string;
   inferenceProvenance: string;
+  /** Hide the run-mode label (recorded run playback). */
+  hideMode?: boolean;
   children?: ReactNode;
 };
 
-export function ModeBanner({ mode, sourceProvenance, inferenceProvenance, children }: Props) {
+export function ModeBanner({ mode, hideMode, children }: Props) {
   return (
     <header className={`mode-banner ${MODE_CLASS[mode]}`}>
       <span className="brand" aria-label="LoR@">LoR<span className="brand-at">@</span></span>
-      <strong className="mode-label" data-testid="run-mode">
+      {!hideMode && <strong className="mode-label" data-testid="run-mode">
         {mode === 'LIVE' ? 'Live' : mode === 'LOCAL REPLAY' ? 'Replay' : 'Offline'}
-      </strong>
+      </strong>}
       {children}
-      <span className="exercise-label" title={`Source: ${sourceProvenance} · Inference: ${inferenceProvenance}`}>Fictional exercise · synthetic reports</span>
     </header>
   );
 }

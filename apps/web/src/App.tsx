@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DeskProvider, useDesk } from './adapters/DeskContext';
-import { createExerciseReplay, exerciseFixture } from './adapters/replay';
+import { createExerciseReplay, exerciseFixture, hasRecording } from './adapters/replay';
+import { ClaudeHierarchy } from './hierarchy/ClaudeHierarchy';
 import { createLiveAdapter } from './adapters/live/liveAdapter';
 import { ModeBanner } from './layout/ModeBanner';
 import { FailureNotices } from './layout/FailureNotices';
@@ -38,9 +39,11 @@ export function App({ adapter }: { adapter?: DeskAdapter | null }) {
   );
 }
 
-// Replay never runs a model: say so up front instead of waiting for the first fixture output.
+// The authored replay never runs a model: say so up front instead of waiting for the first fixture output.
+// A recorded run carries the real providers (Laya, Claude) in its rows.
+const recorded = import.meta.env.MODE === 'replay' && hasRecording;
 function inferenceText(state: DeskState): string {
-  return state.mode === 'LOCAL REPLAY' ? 'fixture · authored outputs, no model ran' : inferenceLabel(state);
+  return state.mode === 'LOCAL REPLAY' && !recorded ? 'fixture · authored outputs, no model ran' : inferenceLabel(state);
 }
 
 function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () => void }) {
@@ -48,6 +51,7 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
   // Selection is the only UI state shared between the scene and the panels.
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const selection = { selectedIncidentId, onSelectIncident: setSelectedIncidentId };
+  const [tab, setTab] = useState<'desk' | 'hierarchy'>('desk');
 
   return (
     <div className="app">
@@ -55,11 +59,17 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
         mode={state?.mode ?? 'NOT CONNECTED'}
         sourceProvenance={state ? sourceLabel(state) : 'none'}
         inferenceProvenance={state ? inferenceText(state) : 'none'}
+        hideMode={recorded}
       >
+        <span className="tabs" role="tablist" aria-label="View">
+          <button type="button" role="tab" aria-selected={tab === 'desk'} onClick={() => setTab('desk')}>Desk</button>
+          <button type="button" role="tab" aria-selected={tab === 'hierarchy'} onClick={() => setTab('hierarchy')}>Hierarchy</button>
+        </span>
         <ScenarioControls />
         {state && <FailureNotices state={state} {...replayControls} />}
       </ModeBanner>
-      <main className="workspace">
+      {tab === 'hierarchy' && <ClaudeHierarchy {...selection} onOpenDesk={() => setTab('desk')} />}
+      <main className="workspace" hidden={tab !== 'desk'}>
         <section className="scene-pane" aria-label="Exercise scene">
           <Scene {...selection} />
         </section>
@@ -67,14 +77,14 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
           <Section id="review" title="Needs review" pinned count={state ? reviewBand(state).length : 0}>
             <ReviewBand {...selection} />
           </Section>
+          <Section id="incoming" title="Incoming by place" count={state ? new Set(state.reports.map((r) => r.input.reportedLocation?.placeId ?? null)).size : 0}>
+            <IncomingFeed {...selection} />
+          </Section>
           <Section id="queue" title="Confirmed" count={state ? confirmedQueue(state).length : 0}>
             <ConfirmedQueue {...selection} />
           </Section>
           <Section id="picture" title="What Claude thinks">
             <PicturePanel {...selection} />
-          </Section>
-          <Section id="incoming" title="Incoming reports" defaultOpen={false}>
-            <IncomingFeed {...selection} />
           </Section>
           <Section id="history" title="Report history">
             <IncidentHistory {...selection} />

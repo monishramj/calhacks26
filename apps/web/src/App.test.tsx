@@ -15,7 +15,7 @@ describe('App shell', () => {
     toggle.focus();
     await userEvent.keyboard('{Enter}');
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    for (const name of [/Incoming reports/, /^Confirmed/, /Report history/]) {
+    for (const name of [/Incoming by place/, /^Confirmed/, /Report history/]) {
       expect(screen.getByRole('button', { name })).toBeInTheDocument();
     }
   });
@@ -23,13 +23,12 @@ describe('App shell', () => {
   it('labels the replay run and jumps the exercise clock to the next delivered report', async () => {
     render(<App adapter={createSunsetReplay()} />);
     expect(screen.getByTestId('run-mode')).toHaveTextContent('Replay');
-    expect(screen.getByText('Fictional exercise · synthetic reports')).toHaveAttribute('title', expect.stringContaining('Inference: fixture'));
-    expect(screen.getByText('0/55 delivered')).toBeInTheDocument();
+    expect(screen.getByText('0/190 delivered')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Next report (#1)' }));
-    expect(await screen.findByText('1/55 delivered')).toBeInTheDocument();
+    expect(await screen.findByText('1/190 delivered')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Next report (#2)' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Reset run' }));
-    expect(await screen.findByText('0/55 delivered')).toBeInTheDocument();
+    expect(await screen.findByText('0/190 delivered')).toBeInTheDocument();
   });
 
   it('on database loss disables writes, then starts an isolated replay on request', async () => {

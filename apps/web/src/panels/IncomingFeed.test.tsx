@@ -33,6 +33,8 @@ async function advanceTo(adapter: DeskAdapter, runId: string, count: number) {
   }
 }
 
+const schoolCard = () => screen.getByText('School', { selector: 'strong' }).closest('li')!;
+
 describe('IncomingFeed', () => {
   it('shows an honest empty state with no source', () => {
     render(
@@ -43,28 +45,20 @@ describe('IncomingFeed', () => {
     expect(screen.getByText('No source connected.')).toBeInTheDocument();
   });
 
-  it('shows all six originals verbatim, newest first, without metadata', async () => {
+  it('groups the six originals into one card per place, and lists them verbatim when expanded', async () => {
     setup();
-    const list = await screen.findByRole('list', { name: 'Incoming reports, newest first' });
-    const items = Array.from(list.children) as HTMLElement[];
-    expect(items).toHaveLength(6);
-    const ids = ['R06', 'R05', 'R04', 'R03', 'R02', 'R01'];
-    items.forEach((item, i) => {
-      const id = ids[i];
-      expect(item).not.toHaveTextContent(id);
-      expect(item).not.toHaveTextContent('#');
-      expect(within(item).getByText(exerciseFixture.reports[id].text)).toHaveClass('original-text');
-      expect(item).not.toHaveTextContent(/Fixture \(authored\)|Source:|Origin:/);
-      expect(item).not.toHaveTextContent(/sent (\d\d:\d\d|not given)/);
-      expect(item).not.toHaveTextContent(/Event:|Received|Receive #|sender stated/);
-    });
-    expect(items[0]).toHaveTextContent('Confirmed');
+    const list = await screen.findByRole('list', { name: 'Incoming reports by place, most recent first' });
+    expect(list.children).toHaveLength(3); // school, shelter, residence
+    expect(schoolCard()).toHaveTextContent('2 reports grouped into 1 incident');
+    await userEvent.click(within(schoolCard()).getAllByRole('button')[0]);
+    const originals = within(schoolCard()).getAllByText((_, el) => el?.classList.contains('original-text') ?? false);
+    expect(originals.map((el) => el.textContent)).toEqual([exerciseFixture.reports.R05.text, exerciseFixture.reports.R01.text]);
   });
 
   it('selects the incident by keyboard', async () => {
     const { onSelectIncident } = setup();
-    const button = await screen.findByRole('button', { name: 'Select INC-school (R05 · #5)' });
-    button.focus();
+    await screen.findByRole('list', { name: /by place/ });
+    within(schoolCard()).getAllByRole('button')[0].focus();
     await userEvent.keyboard('{Enter}');
     expect(onSelectIncident).toHaveBeenCalledWith('INC-school');
   });
@@ -72,22 +66,19 @@ describe('IncomingFeed', () => {
   it('shows a null sent time as "not given" (R10)', async () => {
     const { adapter, runId } = setup();
     await advanceTo(adapter, runId(), 4); // R07..R10
-    const r10 = (await screen.findByText(exerciseFixture.reports.R10.text)).closest('li')!;
-    await userEvent.click(within(r10).getByRole('button'));
+    await userEvent.click(within(schoolCard()).getAllByRole('button')[0]);
+    const r10 = within(schoolCard()).getByText(exerciseFixture.reports.R10.text).closest('li')!;
     await userEvent.click(within(r10).getByText('Details'));
     expect(r10).toHaveTextContent('Sent: not given');
-    expect(r10).toHaveTextContent('Unconfirmed');
+    expect(schoolCard()).toHaveTextContent('waiting');
   });
 
   it('flags R11 as sent earlier but arrived late', async () => {
     const { adapter, runId } = setup();
     await advanceTo(adapter, runId(), 5); // R07..R11
-    const r11 = (await screen.findByText(exerciseFixture.reports.R11.text)).closest('li')!;
-    await userEvent.click(within(r11).getByRole('button'));
-    await userEvent.click(within(r11).getByText('Details'));
-    expect(within(r11).getByText('Arrived late · sent before a report already received')).toHaveClass(
-      'change-flag',
-    );
+    await userEvent.click(within(schoolCard()).getAllByRole('button')[0]);
+    const r11 = within(schoolCard()).getByText(exerciseFixture.reports.R11.text).closest('li')!;
+    expect(within(r11).getByText('Arrived late · sent before a report already received')).toHaveClass('change-flag');
     expect(screen.getAllByText(/Arrived late/)).toHaveLength(1);
   });
 });

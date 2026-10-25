@@ -1,0 +1,35 @@
+.hierarchy { flex: 1; min-height: 0; overflow: auto; padding: 24px; }
+.tree { width: max-content; }
+.branch { display: flex; align-items: flex-start; }
+/* Connectors, aligned to each node's title row: node → children, then a spine with one stub per child. */
+.children { display: flex; flex-direction: column; position: relative; margin-left: 24px; }
+.children::before { content: ''; position: absolute; left: -24px; top: 24px; width: 24px; border-top: 1px solid var(--border); }
+.children > .branch { position: relative; padding: 0 0 8px 24px; }
+.children > .branch::before { content: ''; position: absolute; left: 0; top: 24px; width: 24px; border-top: 1px solid var(--border); }
+.children > .branch::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1px solid var(--border); }
+.children > .branch:first-child::after { top: 24px; }
+.children > .branch:last-child::after { bottom: auto; height: 24px; }
+.children > .branch:only-child::after { display: none; }
+
+.node {
+  display: flex; flex-direction: column; gap: 4px; min-width: 180px; max-width: 280px; padding: 10px 12px;
+  background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--border-left, var(--border));
+  border-radius: 6px; color: var(--text); font: inherit; font-size: 13px; text-align: left;
+  animation: node-in 600ms ease-out;
+}
+button.node { cursor: pointer; }
+button.node:hover, .node.selected { background: var(--selected); }
+.node.root { border-left-color: var(--accent); min-width: 200px; }
+.node.subarea { max-width: 360px; }
+.node .kind { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+.node-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.sev-possible-life-safety { --border-left: var(--life-safety); }
+.sev-active-need { --border-left: var(--active-need); }
+.sev-information { --border-left: var(--information); }
+.claims { margin: 4px 0 0; padding-left: 16px; color: var(--text); font-size: 12px; line-height: 1.45; }
+.cites { color: var(--accent); font-size: 11px; white-space: nowrap; }
+.uncertain { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.updating { color: var(--accent); font-size: 11px; animation: pulse 1.2s ease-in-out infinite; }
+@keyframes node-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes pulse { 50% { opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) { .node, .updating { animation: none; } }

@@ -1,8 +1,8 @@
-# Mesh Codec + Incident Desk
+# LoR@ — Mesh Codec + Incident Desk
 
 This project helps disaster teams that use LoRa radios. Teams can send detailed reports. The desk keeps the most important unresolved incidents visible as new information arrives. It is a fictional exercise inspired by Hurricane Helene. All incident messages are synthetic.
 
-**Status:** working live demo on branch `review`. See `docs/HANDOFF.md`.
+**Status:** working live demo on `main`. See `docs/HANDOFF.md`.
 
 ## Start here
 
@@ -20,7 +20,7 @@ cd calhacks26
 ```bash
 npm install
 npm run dev:live     # SpacetimeDB, Laya worker, coordinator, dashboard at http://localhost:5173
-npm run dev:replay   # offline with sample data, no services
+npm run dev:replay   # offline: plays a recorded real run (Laya + Claude) of the 190-report exercise, no services
 npm run preflight    # readiness check; add -- --smoke for one small real Claude call
 npm run evaluate     # held-out Laya cases and codec size comparison; writes evaluation/report-<date>.md and .json
 npm test
