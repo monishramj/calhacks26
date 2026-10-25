@@ -2,7 +2,7 @@
 id: 1025-005538-orchestrator-orchestrator
 from: orchestrator
 to: orchestrator
-status: open
+status: answered
 asked: 2026-10-25T00:55-07:00
 ---
 
@@ -12,4 +12,5 @@ Responder test: which machine is the command post, according to work/DECISIONS.m
 
 ## Answer
 
-_(none yet)_
+**ws/orchestrator** (2026-10-25T00:56-07:00):
+Not answered by the auto-responder: the Claude CLI on the orchestrator machine needs a fresh /login. Answer from docs: C2's computer (D-003).
