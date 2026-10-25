@@ -1,19 +1,13 @@
 # Status · ws/state (C2)
 
-_Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
+_Updated: 2026-10-25 02:48 PDT by David's Claude Code session (C2)_
 
 ## Now
 
-- **Gate / phase:** G0 / **REVIEW passed, merged to main as v1.0.0** (PR #2). Since then: Windows test-harness fix (inbox 10), a chore PR to main. vitest 777/777, pytest 486/486 on macOS. **Not yet run on Windows.**
-- **Last commit:** `[ws/state][G0][REVIEW] ...` on `ws/state`
-- **Exact next step:** G6 rules TEST (§20 common context + G6 TEST prompt, ws/state slice). Write pure-function tests in `packages/domain/src/rules/` for:
-  - confirmed queue order (attention category, then earlier open-cycle sequence; no numeric score; duplicates never raise severity)
-  - review band
-  - timeline (sent/event/receive kept apart; late old reports never erase newer concerns)
-  - change flags (new unconfirmed evidence flags reassessment)
-
-  C1 accepted the intake transport and the 1000-byte bound (board 1025-020711, closed). Inbox 10 says "then G3" while inbox 3 says G6 rules before G3. Following inbox 3 (and KICKOFF 1:00–2:30) unless the orchestrator says otherwise.
-- **G0 ETA posted on the board (1025-005903):** PR ~03:30 PDT, merged ~03:45. The PR is open on time.
+- **Gate / phase:** G6 rules / **REVIEW passed** (`work/validation/G6-state.md`). vitest 897/897 (G6 120), pytest 486/486. Mutation check 24/24 caught. Ready to PR `[G6 REVIEW] rules slice` to main.
+- **Last commit:** `[ws/state][G6][REVIEW] ...` on `ws/state`
+- **Exact next step:** open the `[G6 REVIEW] rules slice` PR to main (body: link G6-state.md; real = pure functions; mocked = none; unavailable = live DB until G3). Then **G3 TEST** (§20 common context + G3 TEST prompt). Read G6-state.md REVIEW "For G3" first.
+- **G0:** merged as v1.0.0 (PR #2); Windows fix merged (PR #3).
 
 ## How to run what exists
 
@@ -43,11 +37,14 @@ None. Coordinator ownership is settled by **D-007**: ws/inference owns `apps/coo
 - ws/codec-radio: agree on the radio-intake transport during G0. C2 proposal: the C4 bridge calls the `receiveReport` reducer through SpacetimeDB's HTTP reducer-call API with its own identity (unverified in 2.13, checked in G0). Fallback: HTTP POST of `ReportInput` to the coordinator, host/port from env.
 - ws/inference: `apps/coordinator/**` is yours (D-007), including `package.json`. ws/state regenerates the root lockfile on merge.
 - ws/web, ws/inference, ws/codec-radio: adopt contract v1.0.0 once the PR merges. Per-workstream ready packages and the ws/web diff list are in `work/validation/G0.md` (REVIEW → "Ready work packages").
+- ws/web (panels lane): swap `apps/web/src/adapters/derived.ts` for `@calhacks26/domain` once the G6 PR merges. The four API differences are in `work/validation/G6-state.md` REVIEW, "Connected code". Key `ReviewBand` rows by kind + (reportId ?? incidentId): incident-level unknowns have a null reportId.
 - ws/web: when `apps/web` merges, its lockfile folds into the root `package-lock.json`. ws/state resolves that conflict.
 
 ## Inbox acknowledged
 
-1–10 (1–8 read 01:40, 9 read 01:52, 10 read 03:20).
+- 10, 11 (read 02:31): Windows fix done (PR #3); order is G6 rules (done 02:48), then G3.
+
+1–10 (1–8 read 01:40, 9 read 01:52, 10 read 03:20). Orchestrator confirmed G6 rules, then G3.
 - 1–3: G0 TEST → IMPL → REVIEW next, then G6 rules before G3. The intake transport and adapter interface get frozen in G0.
 - 4: questions board checked. 1025-005903 answered (needs-human), 1025-011817 answered.
 - 5: will review ws/web's `contract.ts` in G0. Root `package.json` landed for C3.
