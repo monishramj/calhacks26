@@ -1,0 +1,12 @@
+# Codec endpoint Python dependencies (C1 and C4 must install the same versions).
+# llama.cpp and Unishox2 are NOT here: they are the pinned binaries in runtime/<platform>/ (D-005).
+# diskcache, jinja2 (+ markupsafe) and typing_extensions are imported by the vendored third_party/llama_cpp.
+numpy==2.4.6
+diskcache==5.6.3
+jinja2==3.1.6
+markupsafe==3.0.4
+typing_extensions==4.16.0
+pytest>=8
+# Radio tools (tools/radio_test.py, the G2 bridge). Same version C1 verified on the bench.
+meshtastic==2.7.11
+jsonschema==4.26.0   # G0 contract validation (packages/domain/python/domain_contract.py)
