@@ -4,9 +4,18 @@ _Updated: 2026-10-25 by lead lane (Claude Code, C4)_
 
 ## Now
 
-- **Gate / phase:** hour-0 shell done. Lanes start: scene (G7 TEST) and panels (G6 UI TEST).
-- **Last commit:** `[ws/web][chore] App shell and lane skeleton`
-- **Exact next step (lead):** once lanes push, merge `origin/ws/web-scene` and `origin/ws/web-panels` into `ws/web`; then build the replay adapter in `src/adapters/replay/` against the §18 fixture (R01–R12) so `npm run dev:replay` plays M1. Bind `packages/domain` types when `[contract] v1` merges.
+- **Gate / phase:** shell done; replay adapter + §18 fixture done (M1 data path). Lanes: scene (G7) and panels (G6 UI) render it.
+- **Last commit:** `[ws/web][G8][IMPL] Replay adapter over the §18 exercise`
+- **Exact next step (lead):** merge `origin/ws/web-scene` and `origin/ws/web-panels` into `ws/web` as they push. When `[contract] v1` merges, replace `src/adapters/contract.ts` with `packages/domain` imports and `src/adapters/derived.ts` with `packages/domain/src/rules`.
+
+## For the lanes: how to get data (read this)
+
+- `import { useDesk } from '../adapters/DeskContext'` → `{ state, adapter }`. `state` is null when nothing is connected; show an honest empty state.
+- Types: `../adapters/contract` (interim §17 copy; swaps to `packages/domain` after G0).
+- Derived views: `../adapters/derived` → `confirmedQueue(incidents)`, `reviewBand(state)`, `needsReassessment(state)`, `timeline(state, incidentId?)`, `ATTENTION_LABEL`. Don't write your own ordering.
+- Commands: `adapter.approveProposal({ runId, commandId: crypto.randomUUID(), proposalId })`, `rejectProposal({..., reason})`, `operatorEdit({ runId, commandId, incidentId, baseRevision, attention?, status?, reason })`, `submitIncidentProposal(...)` with `provider: 'operator'`. Each returns `{ ok, value } | { ok: false, error: { code, message } }`; show `STALE_REVISION` and friends visibly.
+- Places (scene): reports carry `input.reportedLocation.placeId`, incidents carry `confirmedPlaceId`. Map `school (0,0)`, `residence (80,20)`, `shelter (-120,40)` inside `src/scene/`.
+- Demo flow: `npm run dev:replay`, start state R01–R06 with three authored incidents; "Send next report" delivers R07…R12. R07 shows up in the review band with a pending fixture proposal; approving it moves the school to the top of the queue.
 
 ## How to run what exists
 
@@ -27,7 +36,7 @@ npm run build
 | lead | `ws/web` | root files, `src/main.tsx`, `src/App.tsx`, `src/layout/**`, `src/adapters/**` except `replay/`, `src/test/**`, this file | — |
 | scene | `ws/web-scene` | `src/scene/**`, `public/scene/**` | `<Scene selectedIncidentId onSelectIncident/>` from `src/scene/index.tsx`, fills the left pane |
 | panels | `ws/web-panels` | `src/panels/**` | `IncomingFeed`, `ReviewBand`, `ConfirmedQueue`, `IncidentHistory` from `src/panels/index.tsx`, each inside a collapsible `Section` |
-| replay | lead (for now) | `src/adapters/replay/**`, `fixtures/replay/**` | — |
+| replay | lead (for now) | `src/adapters/replay/**`, `fixtures/replay/**` | `createExerciseReplay()`; App uses it under `vite --mode replay` |
 
 Lanes keep their public exports and props stable (`SceneProps`, `PanelProps`) or ask the lead. Tests go next to the code as `*.test.ts(x)`; vitest picks up `src/**`.
 

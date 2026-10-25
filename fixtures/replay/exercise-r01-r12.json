@@ -1,0 +1,54 @@
+{
+  "label": "fixture",
+  "about": "§18 frozen exercise for the in-browser LOCAL REPLAY. Synthetic, fictional Helene-inspired exercise. Report texts are verbatim from docs/GROUND_TRUTH.md §18. Starting incidents and per-report suggestions/proposals are AUTHORED fixture outputs (provider 'fixture'), not model results. Never model input.",
+  "exerciseVersion": "gt-18-v1",
+  "reports": {
+    "R01": { "sourceId": "school-team-a", "placeId": "school", "sentAt": "2026-09-27T14:02:00Z", "text": "School gym evacuation complete. Everyone our team checked is outside." },
+    "R02": { "sourceId": "shelter-desk", "placeId": "shelter", "sentAt": "2026-09-27T14:05:00Z", "text": "Shelter needs blankets for tonight." },
+    "R03": { "sourceId": "neighbor-1", "placeId": "residence", "sentAt": "2026-09-27T14:07:00Z", "text": "House beside the school: water rising downstairs, two people waiting upstairs." },
+    "R04": { "sourceId": "shelter-desk", "placeId": "shelter", "sentAt": "2026-09-27T14:15:00Z", "text": "Repeating the shelter request: blankets still needed tonight." },
+    "R05": { "sourceId": "school-team-b", "placeId": "school", "sentAt": "2026-09-27T14:18:00Z", "text": "School sports hall checked. Our search of that area is complete." },
+    "R06": { "sourceId": "neighbor-1", "placeId": "residence", "sentAt": "2026-09-27T14:22:00Z", "text": "House beside the school: the people upstairs have asked for help." },
+    "R07": { "sourceId": "school-team-a", "placeId": "school", "sentAt": "2026-09-27T14:31:00Z", "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building." },
+    "R08": { "sourceId": "school-team-b", "placeId": "school", "sentAt": "2026-09-27T14:36:00Z", "text": "Repeating the school report: possible person upstairs in the main building." },
+    "R09": { "sourceId": "school-team-a", "placeId": "school", "sentAt": "2026-09-27T14:40:00Z", "text": "School report refers to the main building beside the gym." },
+    "R10": { "sourceId": "relay-volunteer", "placeId": "school", "sentAt": null, "text": "Has everyone at the school been rescued?" },
+    "R11": { "sourceId": "school-team-a", "placeId": "school", "sentAt": "2026-09-27T14:03:00Z", "text": "Earlier school gym report: all people our team checked were outside." },
+    "R12": { "sourceId": "school-team-b", "placeId": "school", "sentAt": "2026-09-27T14:50:00Z", "text": "School main building search is not complete. We cannot give an all-clear." }
+  },
+  "initial": {
+    "deliver": ["R01", "R02", "R03", "R04", "R05", "R06"],
+    "incidents": [
+      { "incidentId": "INC-school", "placeId": "school", "attention": "INFORMATION", "messageIds": ["R01", "R05"], "summary": "Gym teams report the people they checked are outside (R01, R05). Covers the gym/sports hall only." },
+      { "incidentId": "INC-shelter", "placeId": "shelter", "attention": "ACTIVE_NEED", "messageIds": ["R02", "R04"], "summary": "Shelter needs blankets tonight (R02, repeated R04)." },
+      { "incidentId": "INC-residence", "placeId": "residence", "attention": "POSSIBLE_LIFE_SAFETY", "messageIds": ["R03", "R06"], "summary": "House beside the school: water rising, two people upstairs asking for help (R03, R06)." }
+    ]
+  },
+  "script": ["R07", "R08", "R09", "R10", "R11", "R12"],
+  "authored": {
+    "R07": {
+      "suggestion": { "action": "FLAG_CORRECTION", "candidateIncidentId": "INC-school", "attention": "POSSIBLE_LIFE_SAFETY" },
+      "proposal": { "incidentId": "INC-school", "relations": [{ "kind": "CORRECTION", "target": "R01" }], "suggestedAttention": "POSSIBLE_LIFE_SAFETY", "uncertainties": ["'may still be upstairs' is not a confirmed person", "No count given; do not add one"] }
+    },
+    "R08": {
+      "suggestion": { "action": "ATTACH_REPORT", "candidateIncidentId": "INC-school", "attention": "POSSIBLE_LIFE_SAFETY" },
+      "proposal": { "incidentId": "INC-school", "relations": [{ "kind": "REPEAT", "target": "R07" }], "suggestedAttention": null, "uncertainties": ["Possible repeat of R07; repeats add no severity or headcount"] }
+    },
+    "R09": {
+      "suggestion": { "action": "ATTACH_REPORT", "candidateIncidentId": "INC-school", "attention": null },
+      "proposal": { "incidentId": "INC-school", "relations": [{ "kind": "UPDATE", "target": "R07" }], "suggestedAttention": null, "uncertainties": ["Subarea clarification only; no new place"] }
+    },
+    "R10": {
+      "suggestion": { "action": "REQUEST_REVIEW", "candidateIncidentId": "INC-school", "attention": null },
+      "proposal": null
+    },
+    "R11": {
+      "suggestion": { "action": "ATTACH_REPORT", "candidateIncidentId": "INC-school", "attention": null },
+      "proposal": { "incidentId": "INC-school", "relations": [{ "kind": "UPDATE", "target": "R01" }], "suggestedAttention": null, "uncertainties": ["Sent before R07 but received later; does not override the R07 concern"] }
+    },
+    "R12": {
+      "suggestion": { "action": "ATTACH_REPORT", "candidateIncidentId": "INC-school", "attention": "POSSIBLE_LIFE_SAFETY" },
+      "proposal": { "incidentId": "INC-school", "relations": [{ "kind": "UPDATE", "target": "R07" }], "suggestedAttention": null, "uncertainties": ["Search incomplete; not an all-clear"] }
+    }
+  }
+}
