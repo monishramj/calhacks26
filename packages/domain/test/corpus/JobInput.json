@@ -1,0 +1,803 @@
+{
+  "type": "JobInput",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "local suggestion job",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "incident proposal job",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "INCIDENT_PROPOSAL",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": null,
+        "incidentId": "inc-school",
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "no candidates yet",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "expected label smuggled into a report",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null,
+            "expectedAttention": "POSSIBLE_LIFE_SAFETY"
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "expectations block",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ],
+        "expectations": {
+          "R07": "School correction"
+        }
+      }
+    },
+    {
+      "name": "future reports",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ],
+        "futureReports": [
+          {
+            "messageId": "R08"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scenario script",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ],
+        "script": [
+          {
+            "messageId": "R08"
+          }
+        ]
+      }
+    },
+    {
+      "name": "desired ranking",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ],
+        "desiredQueue": [
+          "inc-school",
+          "inc-residence"
+        ]
+      }
+    },
+    {
+      "name": "report missing receiveSequence (undelivered)",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "local suggestion with no reports",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "local suggestion without target",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": null,
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [
+              "school gym",
+              "school sports hall",
+              "school main building"
+            ]
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "place with coordinates of a real geocode",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "targetReportId": "rep-000007",
+        "incidentId": null,
+        "reports": [
+          {
+            "reportId": "rep-000001",
+            "receiveSequence": 1,
+            "text": "School gym evacuation complete. Everyone our team checked is outside.",
+            "sentAt": "2026-10-25T09:00:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": {
+              "placeId": "school",
+              "source": "sender_explicit"
+            }
+          },
+          {
+            "reportId": "rep-000007",
+            "receiveSequence": 7,
+            "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+            "sentAt": "2026-10-25T09:40:00Z",
+            "reportedEventAt": null,
+            "reportedLocation": null
+          }
+        ],
+        "candidateIncidents": [
+          {
+            "runId": "run-001",
+            "incidentId": "inc-school",
+            "revision": 2,
+            "status": "OPEN",
+            "attention": "INFORMATION",
+            "confirmedPlaceId": "school",
+            "confirmedReportIds": [
+              "rep-000001",
+              "rep-000005"
+            ],
+            "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+            "openCycleStartSequence": 1
+          }
+        ],
+        "places": [
+          {
+            "placeId": "school",
+            "aliases": [],
+            "lat": 35.6
+          },
+          {
+            "placeId": "residence",
+            "aliases": [
+              "house beside the school"
+            ]
+          },
+          {
+            "placeId": "shelter",
+            "aliases": []
+          }
+        ]
+      }
+    }
+  ]
+}

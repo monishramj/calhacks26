@@ -1,0 +1,708 @@
+{
+  "type": "LocalSuggestion",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "flag correction on the school",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "new incident has no candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "NEW_INCIDENT",
+        "candidateIncidentId": null,
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {},
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "request review with unknowns and no scores",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "REQUEST_REVIEW",
+        "candidateIncidentId": null,
+        "attention": null,
+        "scores": [],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {},
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "attach report",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "flag conflict",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CONFLICT",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "recorded output with recording provenance",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "recording"
+      }
+    },
+    {
+      "name": "fixture output (replay only)",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "fixture"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "NEW_INCIDENT with a candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "NEW_INCIDENT",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "ATTACH_REPORT without a candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": null,
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "FLAG_CORRECTION without a candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": null,
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "FLAG_CONFLICT without a candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CONFLICT",
+        "candidateIncidentId": null,
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "candidate missing from baseIncidentVersions",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-shelter": 1
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      },
+      "crossField": true
+    },
+    {
+      "name": "unknown action DELETE_REPORT",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "DELETE_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "provider claude for a local suggestion",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "provider operator for a local suggestion",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "operator"
+      }
+    },
+    {
+      "name": "negative base version",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": -1
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "fractional base version",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 1.5
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "invalid incident id key",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "empty inputSignature",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "nested probability out of range",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 1.5,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "attention URGENT",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "URGENT",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "confidence field next to attention",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya",
+        "confidence": 0.61
+      }
+    },
+    {
+      "name": "duplicate evidence ids",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CORRECTION",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "scores": [
+          {
+            "label": "POSSIBLE_LIFE_SAFETY",
+            "value": 0.61,
+            "kind": "probability"
+          },
+          {
+            "label": "INFORMATION",
+            "value": 0.39,
+            "kind": "probability"
+          }
+        ],
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000007"
+        ],
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "provider": "local_laya"
+      }
+    }
+  ]
+}
