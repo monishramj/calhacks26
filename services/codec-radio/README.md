@@ -24,7 +24,54 @@ Import `calhacks-mesh-kit.zip` **unchanged** (`codec/mesh_codec.py`, `codec/poc_
 
 ```text
 services/codec-radio/
-  tests/        pytest suite (python -m pytest services/codec-radio/tests)
+  codec/         mesh_codec.py (packet format), runtime.py (pinned llama.cpp + hash checks)
+  bridge/        envelope.py, radio.py, core.py (send/receive/retry/ACK), intake.py (ReportInput -> desk, once)
+  tools/         radio_bridge.py (bridge CLI), endpoint_check.py, radio_test.py, payload_probe.py
+  runtime/       pinned binaries per platform (D-005)
+  tests/         pytest suite (python -m pytest services/codec-radio/tests)
+  logs/ state/   local only, gitignored (event logs, bridge token, delivered-report store)
 ```
 
 Model weights and context files stay outside git (`CODEC_MODEL_PATH`, `CODEC_CONTEXT_PATH`).
+
+## Running the bridge on two machines (Windows, PowerShell)
+
+Both machines need Git, Python 3.11, the model (SHA-256 `8e0b159d…995eb4`) and the repo on `ws/codec-radio`:
+
+```powershell
+git clone -b ws/codec-radio https://github.com/monishramj/calhacks26.git C:\calhacks\calhacks26   # or: git pull
+cd C:\calhacks\calhacks26
+py -3.11 -m venv .venv
+.venv\Scripts\pip install -r services\codec-radio\requirements.txt
+$env:CODEC_MODEL_PATH = "C:\calhacks\models\SmolLM2-360M.Q8_0.gguf"
+.venv\Scripts\python -m serial.tools.list_ports -v          # find the radio's COM port
+```
+
+**Receiver, C4 ("MeshSOS A" `!f99260d4`).** Radio test without the database:
+
+```powershell
+.venv\Scripts\python services\codec-radio\tools\radio_bridge.py rx --port COM5 --run-id radio-test --intake none
+```
+
+Into SpacetimeDB. Do this once, then an operator grants the printed identity the `bridge` role:
+
+```powershell
+$env:SPACETIMEDB_URI = "http://127.0.0.1:3000"; $env:SPACETIMEDB_DATABASE = "<database>"
+.venv\Scripts\python services\codec-radio\tools\radio_bridge.py identity
+.venv\Scripts\python services\codec-radio\tools\radio_bridge.py rx --port COM5 --run-id <runId>
+```
+
+**Sender, C1 ("MeshSOS B" `!06fca5ec`, COM4).** Type reports at the `report>` prompt, or pass `--text`:
+
+```powershell
+.venv\Scripts\python services\codec-radio\tools\radio_bridge.py send --port COM4 --dest !f99260d4
+```
+
+Each send prints the radio ACK, the decode ACK (`RESULT VERIFIED`) and the bytes on air. Neither ACK means a person read it.
+
+**Failure drills (sender flags):**
+- `--corrupt-first`: the receiver rejects attempt 1, and the raw retry delivers.
+- `--msg-id 00c0ffee --text "..."` sent twice: one intake. The second copy prints `DUPLICATE` on the receiver.
+- The same `--msg-id` with different text: `CONFLICT`.
+- A very long `--text`: `REJECTED`, nothing sent.
+- On the receiver, `rx ... --ack-delay 60`: the sender times out, sends the raw retry, then logs the late ACK. Still one intake.

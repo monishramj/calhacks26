@@ -116,6 +116,9 @@ class Decoder:
         return s
 
 # ---------------------------------------------------------------- language model wrapper
+MAX_LLM_TOKENS = 300   # decoder bound on body tokens (incl. the newline terminator); compress() must respect it
+
+
 class SharedModel:
     """Evaluates the shared context once (fixed batch size), then one token at a time.
     Encoder and decoder use exactly the same calls, which keeps their logits identical."""
@@ -152,7 +155,7 @@ class SharedModel:
         if "\n" in text:
             return None
         body = self.body_tokens(text)
-        if body is None:
+        if body is None or len(body) > MAX_LLM_TOKENS:   # the decoder stops at MAX_LLM_TOKENS: never send what it can't read
             return None
         enc, lg = Encoder(), self._start()
         for t in body:
@@ -177,7 +180,8 @@ class SharedModel:
             lg = self._step(t)
         return out
 
-    def decompress(self, data, max_tokens=300):
+    def decompress(self, data, max_tokens=None):
+        max_tokens = MAX_LLM_TOKENS if max_tokens is None else max_tokens
         dec, lg, out = Decoder(data), self._start(), []
         for _ in range(max_tokens):
             t = dec.decode(freq_table(lg))

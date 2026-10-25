@@ -9,3 +9,4 @@ typing_extensions==4.16.0
 pytest>=8
 # Radio tools (tools/radio_test.py, the G2 bridge). Same version C1 verified on the bench.
 meshtastic==2.7.11
+jsonschema==4.26.0   # G0 contract validation (packages/domain/python/domain_contract.py)

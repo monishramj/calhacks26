@@ -1,21 +1,17 @@
 # Status · ws/codec-radio (C1)
 
-_Updated: 2026-10-25 02:30 PDT by the C1 agent (Claude, new session after the 01:50 handoff). Works from a cloud clone of `ws/codec-radio` and drives C1 through the device bridge._
+_Updated: 2026-10-25 02:58 PDT by the C1 agent (Claude, new session after the 01:50 handoff). Works from a cloud clone of `ws/codec-radio` and drives C1 through the device bridge._
 
 ## Now
 
-- **Process change (02:30, Sud, C1 human):** the separate TEST/IMPLEMENT/REVIEW stops for the rest of C1's work are cut to avoid re-verifying what is already proven (G1 suite, 400/400 decode, C1's 40/40 Windows decode). The work is now three blocks: **1** the C4 endpoint check, **2** the radio bridge with its tests, **3** one real C1→C4 radio run. The hard rules and honest labels are unchanged. Not yet in `work/DECISIONS.md`: **the orchestrator needs to log it.**
-
-- **Gate / phase:** G1 / **IMPLEMENT green and complete**: 104 passed, 0 skipped (real model), and the 400-packet regression is **400/400** (`work/validation/G1.md`). Next is G1 REVIEW, which waits for the human's go-ahead.
-- **Last commits:** this commit (400/400 regression recorded); `9ad02f3` merge of `origin/main`; `6b8cbed` G1 IMPL, then a chore commit adding `tools/runtime-build/` (the repo's `.gitignore` ignores `build/`, so the recipe had been left out). Earlier: `11d8df2` G1 TEST, `3d99370` kit import.
-- **Exact next steps, in order:**
-  1. **Block 1, C4 endpoint check (in progress).** `services/codec-radio/requirements.txt` pins the deps. `tools/endpoint_check.py` prints the hashes and the fingerprint, decodes 20 C1-encoded kit packets and checks 8 probe encodings byte for byte against `tools/endpoint_ref.json`. It passes on Linux. Waiting on the C4 run.
-     - On **C1 (native Windows)**: run the suite with `runtime/win-x64`.
-     - On **C4 (command post, i7-11800H)**: copy the model, pull this branch, check the fingerprint is `422ac23fca10`, then cross-decode both ways (C1-encoded packets on C4, C4-encoded on C1).
-     - Try the failure cases; record real versus unavailable; open a `[G1 REVIEW]` PR to `main`.
-  2. Then G2 TEST → IMPLEMENT → REVIEW (radio bridge).
-     - Intake per D-007: G0's proposal is that the C4 bridge calls the SpacetimeDB `receiveReport` reducer directly with its own identity. The fallback is an HTTP POST to the coordinator (now ws/inference's), host/port from env.
-     - Wait for G0 to freeze `ReportInput` + envelope.
+- **Mode:** ship mode (D-009, approved 02:45; it covers Sud's 02:30 cut of the per-phase stops). One request per gate: implement, run the real path once, note it, push.
+- **G1:** done. 104 tests pass and 400/400 stored packets decode. The C4 endpoint check (`tools/endpoint_check.py`) is ready but hasn't run on C4; the bridge's receiver checks the fingerprint at startup anyway.
+- **G2 bridge: implemented, waiting for the real two-radio run** (`work/validation/G2.md`). Code is in `bridge/`, the CLI in `tools/radio_bridge.py`, and the two-machine runbook in `services/codec-radio/README.md`.
+- **Exact next steps:**
+  1. **Real run, C1 → C4.** C4: `radio_bridge.py rx --port <COM> --run-id radio-test --intake none`. C1: `radio_bridge.py send --port COM4 --dest !f99260d4`. Then run the README failure drills, plus `tools/payload_probe.py` with the boards ≥3 m apart for the ceiling. Record the logs in `G2.md`.
+  2. **Run the G1 pytest suite once on C1 or C4.** It wasn't run after the 300-token compress bound, because pytest isn't available in the cloud container.
+  3. **Into the database:** once ws/state's G3 `receive_report` reducer and the `bridge` role are live on C4, run `radio_bridge.py identity`, have an operator grant the role, then `rx --run-id <run>` with `--intake spacetimedb`.
+  4. Later: the radio part of G9.
 
 ## How to run what exists
 
@@ -61,7 +57,7 @@ CODEC_MODEL_PATH=/path/to/SmolLM2-360M.Q8_0.gguf python -m pytest services/codec
 
 ## Blockers
 
-None for G1 REVIEW on C1. The C4 part of the REVIEW needs a slot with the C4 human (Sud is coordinating).
+None in code. The real radio run needs both humans at the same time (Sud on C1, the C4 person). Database intake waits on ws/state G3 (`receive_report` + `bridge` role).
 
 ## Needs from others
 
