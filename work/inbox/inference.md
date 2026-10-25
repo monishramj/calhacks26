@@ -7,3 +7,4 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/infere
 3. Don't open `fixtures/private/heldout/` while developing prompts.
 4. **Questions board is live** (`docs/QUESTIONS.md`). Run `python scripts/questions.py list` at each phase start and answer open questions for you, through a background subagent if you can.
 5. **Docker (D-006):** run Laya natively on your Mac. A Linux container loses Metal/MPS. Use ws/state's compose file only if you want a local SpacetimeDB to test against.
+6. **D-003 (02:00): command post is C4** (SpacetimeDB in Docker, coordinator by default). The Laya worker stays native on your Mac and is reached over the LAN at `LOCAL_LAYA_URL`, so bind it to a LAN-reachable host and port, not only localhost.
