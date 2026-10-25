@@ -26,6 +26,15 @@ html, body, #root { height: 100%; margin: 0; }
 .mode-replay .mode-label { background: #3b4aa8; }
 .mode-none .mode-label { background: #444; }
 .exercise-label { margin-left: auto; color: var(--muted); }
+.scenario-controls { display: inline-flex; gap: 0.5rem; align-items: center; }
+.scenario-controls button {
+  background: var(--panel); color: var(--text); border: 1px solid var(--border);
+  border-radius: 3px; padding: 0.2rem 0.6rem; font: inherit; cursor: pointer;
+}
+.scenario-controls button:first-child:not(:disabled) { border-color: var(--accent); }
+.scenario-controls button:disabled { opacity: 0.5; cursor: default; }
+.scenario-controls button:focus-visible { outline: 2px solid var(--accent); }
+.scenario-controls [role='alert'] { color: var(--life-safety); }
 
 .workspace { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr); }
 .scene-pane { position: relative; min-height: 0; border-right: 1px solid var(--border); }

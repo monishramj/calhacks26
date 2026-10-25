@@ -1,0 +1,35 @@
+import { useState } from 'react';
+import { useDesk } from '../adapters/DeskContext';
+
+// §18: the presenter delivers the next exercise report by choice, never on a timer.
+export function ScenarioControls() {
+  const { adapter, state } = useDesk();
+  const [error, setError] = useState<string | null>(null);
+  if (!adapter || !state) return null;
+  const { delivered, total, nextMessageId } = state.scenario;
+
+  async function sendNext() {
+    const r = await adapter!.advanceScenario({ runId: state!.runId, commandId: crypto.randomUUID() });
+    setError(r.ok ? null : r.error.message);
+  }
+
+  async function reset() {
+    const r = await adapter!.resetRun();
+    setError(r.ok ? null : r.error.message);
+  }
+
+  return (
+    <span className="scenario-controls">
+      <button type="button" onClick={sendNext} disabled={!nextMessageId}>
+        {nextMessageId ? `Send next report (${nextMessageId})` : 'All reports sent'}
+      </button>
+      <span aria-live="polite">
+        {delivered} / {total} delivered
+      </span>
+      <button type="button" onClick={reset}>
+        Reset run
+      </button>
+      {error && <span role="alert">{error}</span>}
+    </span>
+  );
+}

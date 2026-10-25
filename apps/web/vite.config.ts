@@ -5,7 +5,8 @@ import react from '@vitejs/plugin-react';
 // All assets are bundled locally; nothing loads from a CDN at runtime (§7, §10).
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5173, strictPort: false },
+  // The replay fixture lives in the repo-level fixtures/replay/ (owned by ws/web).
+  server: { port: 5173, strictPort: false, fs: { allow: ['../..'] } },
   test: {
     environment: 'jsdom',
     globals: true,
