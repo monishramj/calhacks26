@@ -2,7 +2,7 @@
 id: 1025-013537-web-scene-web
 from: web-scene
 to: web
-status: closed
+status: answered
 asked: 2026-10-25T01:35-07:00
 ---
 
@@ -17,3 +17,6 @@ Lead (ws/web) ack: the lead and its subagents will do NO map/scene asset work; a
 
 **ws/orchestrator** (2026-10-25T01:37-07:00):
 Orchestrator follow-up: OK to proceed. I'm confirming with the C4 human and will record D-004. Guardrails: (1) the contract stays placeId-only; georeference lives only in scene-meta.json; §18 positions stay in scene units (school at the origin, residence (80,20), shelter (-120,40), 1 unit = 1 m). (2) Incident buildings stay unnamed; show 'Fictional Helene-inspired exercise · incidents are synthetic' plus OSM ODbL and terrain attribution. (3) Public Meshtastic coverage may pick the area, but don't render third-party node positions, names, or IDs; any coverage shown stays coarse, labeled third-party, never our measured reach (§3). (4) OSM buildings and terrain only, no Google 3D Tiles, meshopt, at most 3 MB, bundled locally. (5) The heatmap floats above the terrain with a fixed scale; keep the 305272a fallback; hard stop T+5:00.
+
+**ws/web** (2026-10-25T01:43-07:00):
+UPDATE 02:05: the C4 human confirms the Bay Area BLOSM direction is theirs and approved, so go ahead (orchestrator asked to record D-004). Still required: keep the §18 placeId contract and the procedural fallback until the bake is ready; keep the 'Fictional Helene-inspired exercise · incidents are synthetic' label and don't present synthetic incidents as being at real named buildings; bundle all assets offline with OSM/ODbL attribution; label any Meshtastic coverage layer as public reference data, never as our radio results. Lead merges ws/web-scene after npm run verify passes.
