@@ -460,34 +460,32 @@ SpacetimeDB schemas and indexes should support the real queue, incident-source, 
 
 ## 18. Frozen exercise and expected behavior
 
-Use these exact synthetic messages as the initial exercise fixture. The expected labels are acceptance expectations written by humans. They are never inputs to Laya or Claude. The coordinates are local scene values in arbitrary exercise units. They are not real latitude and longitude. Use explicit named-place metadata, so you do not need to add a geocoder.
+Use these exact synthetic messages as the initial exercise fixture. Expected labels are human-authored acceptance expectations; they are never inputs to Laya or Claude. Coordinates are local scene values in arbitrary exercise units, not actual latitude/longitude. Use explicit named-place metadata to avoid adding a geocoder.
 
-Places on the ground plane: `school` at `(0, 0)`, `residence` at `(80, 20)`, and `shelter` at `(-120, 40)`. The river and the command marker are visual context. "School gym" and "school sports hall" are authored aliases for the same subarea. "School main building" is a different subarea of the same school incident. The nearby residence is a separate place.
+Places: `school` at `(0, 0)`, `residence` at `(80, 20)`, and `shelter` at `(-120, 40)` on the ground plane. The river and command marker are visual context. “School gym” and “school sports hall” are authored aliases for the same subarea, while “school main building” is a different subarea of the same school incident. The nearby residence is a separate place.
 
 | ID | Exact report text | Expected interpretation |
 |---|---|---|
-| R01 | School gym evacuation complete. Everyone our team checked is outside. | School incident with a limited source claim. It does not prove that every school building is clear. |
+| R01 | School gym evacuation complete. Everyone our team checked is outside. | School incident with limited source claim; does not prove every school building is clear. |
 | R02 | Shelter needs blankets for tonight. | Separate active supply need. |
 | R03 | House beside the school: water rising downstairs, two people waiting upstairs. | Separate possible life-safety concern at the residence. |
-| R04 | Repeating the shelter request: blankets still needed tonight. | New evidence of an unresolved need. It is not another incident and adds no heatmap weight. |
-| R05 | School sports hall checked. Our search of that area is complete. | School update or paraphrase about the gym subarea. Keep the scope of the source. |
-| R06 | House beside the school: the people upstairs have asked for help. | Update to the residence, not the school. |
-| R07 | Correction: the school gym is clear, but someone may still be upstairs in the main building. | School correction and uncertainty. Highlight the possible unresolved harm without claiming a confirmed person. |
-| R08 | Repeating the school report: possible person upstairs in the main building. | Possible repeat with an unresolved concern. Do not delete it. Do not add headcounts. |
-| R09 | School report refers to the main building beside the gym. | Clarification of the school location and subarea. It is not a new place inferred from sender GPS. |
-| R10 | Has everyone at the school been rescued? | A question. It does not confirm a person or a completed rescue. |
-| R11 | Earlier school gym report: all people our team checked were outside. | A delayed older gym report. It does not override R07. |
-| R12 | School main building search is not complete. We cannot give an all-clear. | Unresolved school update. Do not mark it resolved. |
+| R04 | Repeating the shelter request: blankets still needed tonight. | New evidence of unresolved need, not another incident or extra heatmap weight. |
+| R05 | School sports hall checked. Our search of that area is complete. | School update/paraphrase about the gym subarea; preserve source scope. |
+| R06 | House beside the school: the people upstairs have asked for help. | Update residence, not school. |
+| R07 | Correction: the school gym is clear, but someone may still be upstairs in the main building. | School correction/uncertainty; highlight possible unresolved harm without claiming a confirmed person. |
+| R08 | Repeating the school report: possible person upstairs in the main building. | Possible repeat with unresolved concern; do not delete it or add headcounts. |
+| R09 | School report refers to the main building beside the gym. | School location/subarea clarification, not a new place inferred from sender GPS. |
+| R10 | Has everyone at the school been rescued? | Question, not confirmation of a person or a completed rescue. |
+| R11 | Earlier school gym report: all people our team checked were outside. | Delayed older gym report; does not override R07. |
+| R12 | School main building search is not complete. We cannot give an all-clear. | Unresolved school update; do not mark resolved. |
 
-Give R11 an explicit sent time earlier than R07's, but a later receive sequence. Keep both. A missing sent or event time stays null.
+Give R11 an explicit earlier sent time than R07 but a later receive sequence. Preserve both. A missing sent/event time stays null. Start with R01–R06 and operator-reviewed incident state; school attention is INFORMATION, shelter is ACTIVE_NEED, and residence is POSSIBLE_LIFE_SAFETY for this exercise. Those are authored starting conditions, not forced model outputs. On R07, actual model output can vary; show its real result, and allow an operator to flag/confirm the concern rather than fabricate agreement.
 
-Start with R01–R06 and operator-reviewed incident state. For this exercise the school's attention is INFORMATION, the shelter's is ACTIVE_NEED, and the residence's is POSSIBLE_LIFE_SAFETY. These are authored starting conditions. They are not forced model outputs. On R07 the real model output can vary. Show its real result, and let the operator flag or confirm the concern. Do not fabricate agreement.
+Gate R07 on the initial school incident existing and the presenter choosing “Send next report.” Do not tie it to an assumed inference duration. After human confirmation of R07's category, school moves ahead of lower categories and can precede residence by its earlier open-cycle sequence. R08–R12 expose review/correctness behavior, not five additional featured demos.
 
-R07 waits for two things: the initial school incident exists, and the presenter chooses "Send next report." Do not tie it to an assumed inference duration. After a human confirms R07's category, the school moves ahead of lower categories. It can come before the residence because its open cycle started earlier in the receive sequence. R08–R12 test review and correctness behavior. They are not five more featured demos.
+Use the same semantic R01 once: when radio mode is selected, it enters through the actual radio bridge and the scenario injector skips its copy. If hardware fails, explicitly select the separate scenario/replay path. Different source/message IDs are different evidence; do not abuse text deduplication to hide accidental duplicate ingestion.
 
-Use the same R01 meaning only once. When radio mode is selected, R01 enters through the real radio bridge, and the scenario injector skips its copy. If the hardware fails, explicitly select the separate scenario or replay path. Different source or message IDs are different evidence. Do not use text deduplication to hide accidental duplicate ingestion.
-
-Live inference sees only delivered reports and the current state. Future exercise events, starting-state expectations, desired rankings, and held-out labels stay outside its context. A local replay may bundle authored outputs, but it labels them as fixtures. Never insert these messages into a corpus as historical Helene transcripts.
+Live inference sees only delivered reports and current state. Future exercise events, starting-state expectations, desired rankings, and held-out labels remain outside its context. A local replay may bundle authored outputs but labels them as fixtures. Never insert these messages into a corpus as historical Helene transcripts.
 
 ## 19. Runtime, setup, and startup
 
