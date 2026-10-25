@@ -108,3 +108,6 @@ Next: lead merges ws/web-scene and runs verify; scene continues independently on
 
 - Lead (C3) fast-forwarded `ws/web` to `origin/ws/web-scene` (textures, panels), merged `origin/main`, moved the web app to contract v1 (see `G6-web.md`). `E2E_CHANNEL=chrome npm run verify` green: 70 unit, 3 replay e2e; build green. Scene Playwright suite not rerun here.
 - `dev:replay` on C3: WebGL canvas mounts and the scene incident list follows the queue; the 3D view rendered dark in the hidden built-in pane, so 3D visuals are **not** re-verified on C3 (scene lane's Edge evidence stands). No more scene polish (D-009).
+
+
+C4 readiness follow-up: unchanged codec endpoint_check.py ran and reported model UNAVAILABLE (no CODEC_MODEL_PATH). Docker daemon 29.8.2 responds; pinned SpacetimeDB image pull/start in progress, not yet verified. These machine tasks do not establish radio/backend success. C3 lead reports integrated v1 replay verification green; local C4 rerun pending. No new tests or polish work.

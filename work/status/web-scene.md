@@ -84,3 +84,13 @@ Do not run another agent in this folder. Do not commit root/package lockfile cha
 - Human flagged noisy facade repetition and explicitly deferred texture polish in favor of bottlenecks. No more texture/camera polish queued.
 - Merged main fa5f40f and acknowledged D-009: no separate phase requests or new test suites; implement, run existing checks/real path, record short evidence, push. C3 web lead is active; do not overlap adapter/panels work.
 - Posted question 1025-024500 to orchestrator requesting a concrete highest-priority non-overlapping task and path ownership, offering C4 endpoint/environment readiness or bounded live integration work. Exact next step: read that answer and execute its assigned task continuously within confirmed ownership.
+
+
+## C4 command-post assignment - 2026-10-25
+
+- Orchestrator answered 1025-024500: take C4 machine jobs in order (codec endpoint, Docker SpacetimeDB, native Laya once G4 implementation lands). Scene polish stays deferred; no other owner code edits.
+- Isolated codec checkout: sibling calhacks26-c4-runtime, origin/ws/codec-radio. Separate Python environment: calhacks26-c4-env. Dependency installation is running (exec session 65767). Unchanged endpoint_check.py reports UNAVAILABLE: set CODEC_MODEL_PATH; model not found in searched Codex/Documents project paths. Asked C1 for pinned file/path/source as 1025-024812. No compatibility pass claimed.
+- Started Docker Desktop hidden; daemon responds version 29.8.2. Running unchanged pinned compose from this checkout with project calhacks26; pull/up running (exec session 94040). Image digest dc66a9d8d48b210f6b9c1f2c5d6aa47adbada5e37350f898782a59c2d9f9d1b8. Intended port 3000; C4 Wi-Fi IPv4 10.253.1.187. Server not yet verified; do not report it ready until container and HTTP checks pass. Keep compose/volume unchanged.
+- Existing native Laya assets found under Documents/laya-env and Documents/laya-models/laya. Remote inference-laya still at 37074d8 TEST; wait for implementation before starting worker.
+- C3 lead confirmed scene merged and adapter/panels migrated to v1, verify green. Merged origin/ws/web 2874406 locally; C4 verify running (exec session 25292). Closing old board handoffs hit one git-fetch timeout under machine load; retry after operations settle. Automation now tracks these C4 tasks every 10 minutes, quiet when pending.
+- Exact next step: finish image pull/start, verify actual server version and HTTP health, post LAN URL/port to state. Read C1 response for model and run fingerprint/decode check. Finish C4 verify and push this bookkeeping/merge. No new tests authored.
