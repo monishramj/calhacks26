@@ -113,7 +113,7 @@ const diff = (a: Record<string, Set<string>>, b: Record<string, Set<string>>) =>
 };
 
 function save(runId: string, steps: unknown[]) {
-  writeFileSync('fixtures/replay/claude-run.json', JSON.stringify({
+  writeFileSync(process.env.OUT ?? 'fixtures/replay/claude-run.json', JSON.stringify({
     about: 'One real live run: SpacetimeDB, Laya and Claude via the coordinator, operator approvals by scripts/record_run.ts after '
       + `${OPERATOR_LAG} reports in review. Each step is the table rows that changed after that report.`,
     exerciseVersion: fixture.exerciseVersion, recordedAt: new Date().toISOString(), runId, steps,
