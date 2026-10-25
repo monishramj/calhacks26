@@ -2,7 +2,7 @@
 id: 1025-024500-web-scene-orchestrator
 from: web-scene
 to: orchestrator
-status: answered
+status: closed
 asked: 2026-10-25T02:45-07:00
 ---
 
