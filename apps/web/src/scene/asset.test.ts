@@ -2,7 +2,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { Vector3 } from 'three';
+import { Texture, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { SCENE_METADATA } from './georeference';
@@ -22,12 +22,29 @@ describe('bundled BLOSM model', () => {
     expect(json.extensionsRequired).toContain('EXT_meshopt_compression');
     expect(json.extensionsUsed).not.toContain('KHR_draco_mesh_compression');
     expect(json.buffers.every((buffer: { uri?: string }) => !buffer.uri)).toBe(true);
-    expect(json.images ?? []).toHaveLength(0);
+    expect(json.images).toHaveLength(3);
+    for (const image of json.images) {
+      expect(image.uri).toBeUndefined();
+      expect(image.mimeType).toBe('image/jpeg');
+      expect(json.bufferViews[image.bufferView].byteLength).toBeGreaterThan(10_000);
+    }
+    expect(json.textures).toHaveLength(3);
+    const buildings = json.meshes.find((mesh: { name: string }) => mesh.name === 'buildings-1-mesh');
+    for (const primitive of buildings.primitives) {
+      expect(primitive.attributes.COLOR_0).toBeUndefined();
+      expect(primitive.attributes.TEXCOORD_0).toBeDefined();
+      expect(primitive.attributes.TEXCOORD_1).toBeUndefined();
+    }
+    expect(SCENE_METADATA.genericTextures.map((source) => source.license)).toEqual(['CC0-1.0', 'CC0-1.0', 'CC0-1.0']);
+    for (const source of SCENE_METADATA.genericTextures) expect(source.resolution).toEqual([1024, 1024]);
   });
 
   it('decodes locally and preserves Blender-to-glTF place anchor axes', async () => {
     const bytes = Uint8Array.from(readFileSync(resolve('public/scene/bay-area.glb'))).buffer;
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+    // jsdom cannot decode JPEGs. This test verifies actual meshopt geometry;
+    // the browser suite exercises the real embedded texture decoder.
+    loader.register(() => ({ name: 'test-image-decoder', loadTexture: () => Promise.resolve(new Texture()) }));
     const gltf = await loader.parseAsync(bytes, '');
     gltf.scene.updateMatrixWorld(true);
     for (const [name, x, z] of [['school', 0, 0], ['residence', 80, 20], ['shelter', -120, 40]] as const) {

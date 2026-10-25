@@ -20,6 +20,7 @@ args_parser.add_argument('--addon-parent', required=True)
 args_parser.add_argument('--cache', required=True)
 args_parser.add_argument('--osm', required=True)
 args_parser.add_argument('--output', required=True)
+args_parser.add_argument('--textures', required=True, help='Extracted ambientCG 1K-JPG packs')
 args_parser.add_argument('--water', help='Prepared shoreline polygon in the same projection')
 args_parser.add_argument('--geo-libs', help='Blender-Python-compatible Shapely directory for precise coast clipping')
 args_parser.add_argument('--lat', type=float, default=37.79545)
@@ -96,6 +97,65 @@ for name, color in palette.items():
     shader.inputs['Base Color'].default_value = color
     shader.inputs['Roughness'].default_value = 0.9
     materials[name] = material
+
+# Generic CC0 materials, unrelated to actual building appearance. Source JPEGs
+# remain unchanged and are embedded by the exporter (no runtime texture requests).
+texture_sources = []
+for asset_id, roughness in [('Facade001', .45), ('Facade003', .5), ('RoofingTiles006', .9)]:
+    path = Path(args.textures) / asset_id / (asset_id + '_1K-JPG_Color.jpg')
+    material = bpy.data.materials.new('generic-' + asset_id)
+    material.use_nodes = True
+    shader = material.node_tree.nodes.get('Principled BSDF')
+    shader.inputs['Roughness'].default_value = roughness
+    image_node = material.node_tree.nodes.new('ShaderNodeTexImage')
+    image_node.image = bpy.data.images.load(str(path.resolve()))
+    image_node.extension = 'REPEAT'
+    material.node_tree.links.new(image_node.outputs['Color'], shader.inputs['Base Color'])
+    materials[asset_id] = material
+    texture_sources.append(dict(id=asset_id, source='https://ambientcg.com/view?id=' + asset_id,
+        license='CC0-1.0', sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+        resolution=[1024, 1024], use='Generic authored appearance, not actual SF facades'))
+
+def texture_building(mesh):
+    # Connected components make each building keep one facade, independent of
+    # polygon order. World-meter UVs preserve window scale across the crop.
+    # BLOSM's simple renderer bakes dark wall vertex colors; remove those
+    # and its old UV sets so they cannot multiply or override the new textures.
+    for attribute in list(mesh.color_attributes):
+        mesh.color_attributes.remove(attribute)
+    for layer in list(mesh.uv_layers):
+        mesh.uv_layers.remove(layer)
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    bm.normal_update()
+    uv = bm.loops.layers.uv.verify()
+    remaining = set(bm.verts)
+    while remaining:
+        root = min(remaining, key=lambda v: tuple(v.co))
+        component, pending = set(), [root]
+        while pending:
+            vertex = pending.pop()
+            if vertex in component:
+                continue
+            component.add(vertex)
+            pending.extend(edge.other_vert(vertex) for edge in vertex.link_edges)
+        remaining.difference_update(component)
+        min_x = min(v.co.x for v in component)
+        min_y = min(v.co.y for v in component)
+        min_z = min(v.co.z for v in component)
+        facade = 1 + (int(math.floor(min_x / 17)) + int(math.floor(min_y / 17))) % 2
+        for face in {f for vertex in component for f in vertex.link_faces}:
+            roof = abs(face.normal.z) > .5
+            face.material_index = (3 if face.normal.z < .98 else 0) if roof else facade
+            for loop in face.loops:
+                co = loop.vert.co
+                if roof:
+                    loop[uv].uv = ((co.x - min_x) / 8, (co.y - min_y) / 8)
+                else:
+                    horizontal = co.y - min_y if abs(face.normal.x) > abs(face.normal.y) else co.x - min_x
+                    loop[uv].uv = (horizontal / 24, (co.z - min_z) / 30)
+    bm.to_mesh(mesh)
+    bm.free()
 
 terrain_obj = scene.objects.get(terrain_name)
 terrain_world = [terrain_obj.matrix_world @ v.co for v in terrain_obj.data.vertices]
@@ -187,6 +247,10 @@ for obj in list(scene.objects):
         obj.data.materials.append(materials['water'])
     for polygon in obj.data.polygons:
         polygon.material_index = 1 if group == 'terrain' and all(obj.data.vertices[i].co.z <= .25 for i in polygon.vertices) else 0
+    if group == 'buildings':
+        for key in ['Facade001', 'Facade003', 'RoofingTiles006']:
+            obj.data.materials.append(materials[key])
+        texture_building(obj.data)
     generic_counts[group] = generic_counts.get(group, 0) + 1
     obj.name = group + '-' + str(generic_counts[group])
     obj.data.name = obj.name + '-mesh'
@@ -241,7 +305,8 @@ metadata = {
     'osmSha256': hashlib.sha256(Path(args.osm).read_bytes()).hexdigest(),
     'blenderVersion': bpy.app.version_string,
     'blosmVersion': '.'.join(map(str, blosm.bl_info['version'])),
-    'attribution': 'Map data © OpenStreetMap contributors (ODbL). Elevation: Mapzen terrain tiles (Skadi).',
+    'genericTextures': texture_sources,
+    'attribution': 'Generic facade/roof textures: ambientCG (CC0). Map data © OpenStreetMap contributors (ODbL). Elevation: Mapzen terrain tiles (Skadi).',
     'sources': ['https://www.openstreetmap.org/copyright', 'https://github.com/tilezen/joerd',
         'https://github.com/vvoovv/blosm', 'https://meshview.bayme.sh/map'],
     'coverageUse': 'Public BayMesh map used only to select the area; no coverage or node data bundled.',
@@ -257,7 +322,15 @@ camera_data.type = 'ORTHO'
 camera_data.ortho_scale = 700
 camera_data.clip_end = 2000
 scene.camera = camera
-scene.render.engine = 'BLENDER_WORKBENCH'
+scene.render.engine = 'BLENDER_EEVEE_NEXT'
+scene.world.use_nodes = True
+scene.world.node_tree.nodes.get('Background').inputs['Color'].default_value = (.3, .4, .5, 1)
+scene.world.node_tree.nodes.get('Background').inputs['Strength'].default_value = .8
+sun_data = bpy.data.lights.new('preview-sun', 'SUN')
+sun_data.energy = 2
+sun = bpy.data.objects.new('preview-sun', sun_data)
+scene.collection.objects.link(sun)
+sun.rotation_euler = (.4, -.5, -.3)
 scene.display.shading.light = 'STUDIO'
 scene.display.shading.color_type = 'MATERIAL'
 scene.display.shading.show_shadows = True

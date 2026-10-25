@@ -60,3 +60,13 @@ Do not run another agent in this folder. Do not commit root/package lockfile cha
 - Removed dependency on DeskState.sourceProvenance (deleted in v1). Scene now derives a stable, explicit label from received report provenance, preserving mixed source kinds and never inventing live provenance.
 - Verification: 70/70 unit/component/asset tests, 3/3 lead replay browser tests, 4/4 scene browser tests, and production build green. Added provenance regressions for no source, recorded/simulated/fixture separation, and mixed sources.
 - Board item 1025-022132 tells the lead what remains in shared adapter migration. Lead/panels handoff requests were closed after inspecting their committed saved status/next steps; this lane stays active.
+
+
+## Generic texture follow-up · 2026-10-25
+
+- Human approved free generic facades without a BLOSM Pro asset pack. Added ambientCG Facade001 / Facade003 and RoofingTiles006 (CC0-1.0), three unchanged 1024-square JPEG color maps embedded in the GLB. Metadata records source URLs, licenses, hashes and generic appearance disclosure.
+- UVs use world-meter scale and deterministic connected-building variations. Removed old BLOSM building vertex colors/UVs that otherwise darkened/overrode textures. Flat roofs retain palette; sloped roofs get tile detail. Same projection, crop, terrain and place anchors; 10,023 triangles, 1,784,152-byte meshopt GLB under 3 MB. Eevee topdown regenerated from the same bake.
+- Actual browser JPEG decoding passes for all three images. Asset tests assert embedded JPEG buffer views, no external URI, UV presence, no stale vertex colors, hash/budget and anchor geometry. jsdom uses texture placeholders solely for the geometry decode test; browser evidence uses the real decoder.
+- npm run verify: 70 unit/component/asset tests and 3 replay browser tests pass. Scene suite: 5 tests pass. Production build passes (existing lazy Three chunk-size advisory remains). Screenshot visually checked with textured building walls; no live backend/radio/model or laptop FPS evidence added.
+- Parallel browser runs exposed the lead suite clearing nested scene artifacts. Scene output now uses scene-artifacts/test-results, outside the lead output tree and covered by the existing test-results ignore pattern. An artifact-path failure was rerun after isolation; it was not a scene behavior failure.
+- Exact next step: lead merges ws/web-scene and reruns whole-web verify; Codex continues actionable scene fixes independently. Sources/tool packs remain in the persistent sibling asset cache, outside git.

@@ -39,7 +39,7 @@ Bake tools run **outside the frontend**, with source extracts/caches outside git
    This uses Shapely 2.1.2 and BLOSM's own projection implementation.
 4. Run Blender with `--background --factory-startup --python-exit-code 1 --python
    tools/bake_blosm.py -- --addon-parent ADDON_PARENT --cache CACHE --osm OSM_FILE
-   --water WATER_JSON --geo-libs SHAPELY_FOR_BLENDER --output STAGING_DIR`.
+   --water WATER_JSON --geo-libs SHAPELY_FOR_BLENDER --textures TEXTURE_PACKS --output STAGING_DIR`.
    The crop is clipped in projected coordinates, and the terrain is intersected
    with the OSM shoreline. Shapely must match Blender's Python (3.11 on this bake).
    The exporter removes real object names, cameras, lights, animation, and extras.
@@ -50,7 +50,7 @@ Bake tools run **outside the frontend**, with source extracts/caches outside git
 6. `python tools/finalize_asset.py STAGING_DIR/scene-meta.json OPTIMIZED_GLB PUBLIC_SCENE_DIR`.
    It updates the asset fingerprint, both metadata copies, GLB and fallback PNG.
 
-The asset is about 105 KB / 10,023 triangles. The complete crop, source/bake versions
+The textured asset is about 1.8 MB / 10,023 triangles. The complete crop, source/bake versions
 and exact byte count live in the metadata. No `.blend`, model weights, or source
 extracts belong in git.
 
@@ -85,3 +85,28 @@ need pinned `@types/node` supplied by the lead package owner.
 
 Attribution: Map data © OpenStreetMap contributors (ODbL), elevation from Mapzen
 terrain tiles (Skadi). Public BayMesh coverage informed crop selection only.
+
+
+## Generic facade materials
+
+The user approved generic free materials. These are not photographs of the SF
+buildings. Download ambientCG Facade001, Facade003, and RoofingTiles006 as 1K-JPG
+packs, extract each to TEXTURE_PACKS/<assetId>/, and pass --textures to the bake.
+All three are CC0-1.0: https://docs.ambientcg.com/license/ . Their source URLs,
+unchanged color JPEG SHA-256 hashes, dimensions and license are in scene metadata.
+Only albedo images are embedded; scalar roughness avoids extra texture memory.
+
+Connected building components receive one of two window materials. World-meter
+UVs repeat a facade over 24 m horizontally and 30 m vertically, keeping window
+scale consistent. Sloped roofs use the roof texture; flat roofs retain the map
+palette. Old BLOSM UV sets and vertex colors are removed from buildings so they
+cannot override or darken the new materials. Geometry/projection are unchanged.
+The 2D image is rendered from the same bake using Eevee and local lighting.
+The GLB contains embedded JPEG buffer views, with no runtime asset service.
+
+Asset tests verify the embedded images and meshopt geometry separately; jsdom
+uses a texture placeholder only for the geometry/anchor test. The real browser
+test waits for all three 1024 x 1024 JPEGs to decode, checks no renderer fallback,
+and the scene selection test rejects external requests while allowing local blob
+URLs created from GLB buffer views. The production build still warns about the
+size of the existing lazy Three renderer chunk.

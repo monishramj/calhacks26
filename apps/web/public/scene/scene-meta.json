@@ -32,12 +32,47 @@
     "shelter": 18.87744140625
   },
   "triangleCount": 10023,
-  "assetBytes": 104728,
-  "assetSha256": "abcd75ec3e88e0a037bec834f12dc47e12ec747715d7b20120feb4a9ce2a426d",
+  "assetBytes": 1784152,
+  "assetSha256": "b911ad7873cc0cf0aa27eee9a89e8331221c9b938bacc371f24da78fcdad3645",
   "osmSha256": "137abf6b9dc74a854fdddaab2757a4f09a511d21c6f2d80f974b927bbdb57969",
   "blenderVersion": "4.5.15 LTS",
   "blosmVersion": "2.7.28",
-  "attribution": "Map data \u00a9 OpenStreetMap contributors (ODbL). Elevation: Mapzen terrain tiles (Skadi).",
+  "genericTextures": [
+    {
+      "id": "Facade001",
+      "source": "https://ambientcg.com/view?id=Facade001",
+      "license": "CC0-1.0",
+      "sha256": "4e0aca5797c390bba9efd80a589b9569a3efb5cd22cfbb2780fc6ef811181736",
+      "resolution": [
+        1024,
+        1024
+      ],
+      "use": "Generic authored appearance, not actual SF facades"
+    },
+    {
+      "id": "Facade003",
+      "source": "https://ambientcg.com/view?id=Facade003",
+      "license": "CC0-1.0",
+      "sha256": "89e8735f9b877008d2143f19b5381fcd3ad0e54576c6a2c55298afbd75338f2e",
+      "resolution": [
+        1024,
+        1024
+      ],
+      "use": "Generic authored appearance, not actual SF facades"
+    },
+    {
+      "id": "RoofingTiles006",
+      "source": "https://ambientcg.com/view?id=RoofingTiles006",
+      "license": "CC0-1.0",
+      "sha256": "c59a36e38b665b1923cf3b5c7aedf3f179144a376e3f72d5016927952081f334",
+      "resolution": [
+        1024,
+        1024
+      ],
+      "use": "Generic authored appearance, not actual SF facades"
+    }
+  ],
+  "attribution": "Generic facade/roof textures: ambientCG (CC0). Map data \u00a9 OpenStreetMap contributors (ODbL). Elevation: Mapzen terrain tiles (Skadi).",
   "sources": [
     "https://www.openstreetmap.org/copyright",
     "https://github.com/tilezen/joerd",

@@ -8,7 +8,7 @@ export default defineConfig({
   timeout: 30_000,
   workers: 1,
   reporter: 'list',
-  outputDir: '../../../test-results/scene',
+  outputDir: '../../../scene-artifacts/test-results',
   use: { baseURL: 'http://127.0.0.1:5182', trace: 'retain-on-failure' },
   projects: [{ name: 'scene-edge', use: { ...devices['Desktop Chrome'], channel: process.platform === 'win32' ? 'msedge' : undefined } }],
   webServer: {

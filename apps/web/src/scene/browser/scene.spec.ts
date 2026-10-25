@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('3D map and 2D view share controlled selection with the queue and history', async ({ page }, testInfo) => {
   const external: string[] = [];
   page.on('request', (request) => {
-    if (!request.url().startsWith('http://127.0.0.1:5182') && !request.url().startsWith('data:')) external.push(request.url());
+    if (!request.url().startsWith('http://127.0.0.1:5182') && !request.url().startsWith('data:') && !request.url().startsWith('blob:http://127.0.0.1:5182/')) external.push(request.url());
   });
   await page.goto('/');
   const scene = page.getByRole('region', { name: 'Exercise scene', exact: true });
@@ -62,4 +62,25 @@ test('WebGL unavailable at startup keeps keyboard selection and original history
   await scene.getByRole('button', { name: /School information/i }).press('Enter');
   await expect(page.locator('#section-history')).toContainText('School gym evacuation complete. Everyone our team checked is outside.');
   await expect(scene.getByRole('button', { name: /School information/i })).toHaveAttribute('aria-pressed', 'true');
+});
+
+
+test('embedded facade and roof JPEGs decode in the real browser', async ({ page }, testInfo) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    const original = window.createImageBitmap.bind(window);
+    const state = window as typeof window & { decodedSceneImages: number };
+    state.decodedSceneImages = 0;
+    window.createImageBitmap = (async (...args: Parameters<typeof original>) => {
+      const image = await original(...args);
+      if (image.width === 1024 && image.height === 1024) state.decodedSceneImages++;
+      return image;
+    }) as typeof original;
+  });
+  await page.goto('/');
+  await expect.poll(() => page.evaluate(() => (window as typeof window & { decodedSceneImages: number }).decodedSceneImages)).toBe(3);
+  await expect(page.getByRole('region', { name: 'Exercise scene', exact: true }).getByRole('status')).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath('textured-sf.png') });
+  expect(errors).toEqual([]);
 });
