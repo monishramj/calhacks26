@@ -128,6 +128,18 @@ Sort the confirmed queue by these keys, in this order:
 
 New evidence appears as a visible change flag. It does not reset the incident's age. An operator can override the category and must give a reason. Duplicate volume never raises severity automatically. Model confidence never defines urgency. Do not multiply a probability by a severity number to make a clinical-looking score.
 
+### When a change confirms without a person
+
+Claude checks every Laya suggestion. Claude reads the report and gives its own answer without seeing Laya's. When Laya says "needs review", its highest-scored option for each question counts as its answer. A change confirms automatically only when all of these hold:
+
+- Laya and Claude name the same incident, or both say "new incident" and the sender stated a place.
+- Laya and Claude give the same attention category.
+- Neither model says possible life safety, and Laya gives it less than 0.15 of its score.
+- Claude's answer is a plain "attach" or "new incident". A possible correction, conflict, or review request always goes to a person.
+- No incident either model looked at has changed since, and the report is not already confirmed.
+
+An automatic attach never lowers an incident's attention. The history records each one as "Claude check" (not an operator) with the reason. In every other case the report stays in the review band, and Claude's answer is kept so the operator can compare Laya and Claude side by side.
+
 Show Laya's label scores as model scores over explicit options. They do not explain the model's internal reasoning, and they are not a calibrated chance that an incident is real. Show the supporting report references and a rule-based description of the change. Evaluate calibration separately before using stronger probability language.
 
 ## 6. Local-first processing and Claude escalation
@@ -135,7 +147,9 @@ Show Laya's label scores as model scores over explicit options. They do not expl
 ```text
 Verified report arrives -> store original -> show immediately
                                       -> local Laya suggestions
-                                      -> provisional grouping/review band
+                                      -> Claude checks each suggestion
+                                      -> both agree on a safe change: confirm, labeled "Claude check"
+                                      -> otherwise: review band, Laya and Claude side by side
                                       -> human confirms material changes
                                       -> incident timeline and queue update
 
@@ -146,6 +160,10 @@ Internet available + useful trigger -> Claude reads current related evidence
 ```
 
 Useful Claude triggers are conflicting reports, ambiguous links between incidents, a cluster of updates that needs a concise summary, and an explicit operator request. Repeated packets do not trigger calls. Merge reports by incident revision and keep one active job per incident. A newly received unresolved report stays visible before any model finishes.
+
+At real-time volume (about 70 reports across 20 places), each report's Laya and Claude check jobs compare it only with the open incidents at or nearest the place the sender stated, at most ten, and only with those incidents' confirmed reports. A Claude picture is rebuilt only for an incident that just gained a confirmed report, after a short quiet period. Claude checks run before pictures, and up to three Claude jobs run at once.
+
+The Claude check uses one tool, `submitCheck`: action, incident, attention, cited report IDs, and a short reason. It cannot approve anything; the backend applies the rules above.
 
 Claude's tools are `readIncident`, `readReports`, `listCandidateIncidents`, and `submitIncidentProposal`. There are no assignment or approval tools. The final draft has these fields:
 

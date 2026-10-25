@@ -294,6 +294,39 @@ local_suggestion = {
     ],
 }
 
+# --- ClaudeCheck (v1.4.0): Claude's own read of a report Laya suggested on ------------
+
+CC = {
+    "runId": RUN,
+    "reportId": "rep-000007",
+    "action": "ATTACH_REPORT",
+    "candidateIncidentId": "inc-school",
+    "attention": "INFORMATION",
+    "evidenceReportIds": ["rep-000007", "rep-000001"],
+    "reason": "Same school gym; status only.",
+    "baseIncidentVersions": {"inc-school": 2},
+    "inputSignature": SIG,
+    "model": "claude-test",
+    "provider": "claude",
+}
+claude_check = {
+    "valid": [
+        ("attach to the school as information", CC),
+        ("new incident with no candidate", with_(CC, action="NEW_INCIDENT", candidateIncidentId=None, baseIncidentVersions={})),
+        ("possible life safety, no reason", with_(CC, attention="POSSIBLE_LIFE_SAFETY", reason=None)),
+        ("request review with unknown attention", with_(CC, action="REQUEST_REVIEW", candidateIncidentId=None, attention=None)),
+    ],
+    "invalid": [
+        ("no cited reports", with_(CC, evidenceReportIds=[])),
+        ("NEW_INCIDENT with a candidate", with_(CC, action="NEW_INCIDENT")),
+        ("FLAG_CONFLICT without a candidate", with_(CC, action="FLAG_CONFLICT", candidateIncidentId=None)),
+        ("candidate missing from baseIncidentVersions", with_(CC, baseIncidentVersions={"inc-shelter": 1})),
+        ("provider local_laya", with_(CC, provider="local_laya")),
+        ("an approve field", with_(CC, approve=True)),
+        ("scores on a Claude check", with_(CC, scores=[])),
+    ],
+}
+
 # --- IncidentProposal (§17) -----------------------------------------------------
 
 IP = {
@@ -425,11 +458,13 @@ job = {
         ("incident proposal job", with_(JOB, jobId="job-0002", kind="INCIDENT_PROPOSAL", reportId=None, incidentId="inc-school")),
         ("invalidated by reset", with_(JOB, state="INVALIDATED")),
         ("done", with_(JOB, state="DONE", attempts=1)),
+        ("Claude check of a Laya suggestion", with_(JOB, kind="LOCAL_CHECK")),
     ],
     "invalid": [
         ("claimed without claim", with_(JOB, state="CLAIMED")),
         ("queued but claimed", with_(JOB, claim=CLAIM)),
         ("local suggestion without report", with_(JOB, reportId=None)),
+        ("Claude check without report", with_(JOB, kind="LOCAL_CHECK", reportId=None)),
         ("incident proposal without incident", with_(JOB, kind="INCIDENT_PROPOSAL", reportId=None)),
         ("negative attempts", with_(JOB, attempts=-1)),
         ("state RUNNING", with_(JOB, state="RUNNING")),
@@ -514,6 +549,7 @@ job_input = {
         ("local suggestion job", JOB_INPUT),
         ("incident proposal job", with_(JOB_INPUT, kind="INCIDENT_PROPOSAL", targetReportId=None, incidentId="inc-school")),
         ("no candidates yet", with_(JOB_INPUT, candidateIncidents=[])),
+        ("Claude check job", with_(JOB_INPUT, kind="LOCAL_CHECK")),
         ("with the latest working picture as context", with_(JOB_INPUT, kind="INCIDENT_PROPOSAL", targetReportId=None, incidentId="inc-school", candidatePictures=[PICTURE])),
     ],
     "invalid": [
@@ -525,6 +561,7 @@ job_input = {
         ("report missing receiveSequence (undelivered)", at(JOB_INPUT, "reports.0", without(JOB_INPUT["reports"][0], "receiveSequence"))),
         ("local suggestion with no reports", with_(JOB_INPUT, reports=[])),
         ("local suggestion without target", with_(JOB_INPUT, targetReportId=None)),
+        ("Claude check without target", with_(JOB_INPUT, kind="LOCAL_CHECK", targetReportId=None)),
         ("place with coordinates of a real geocode", at(JOB_INPUT, "places.0", {"placeId": "school", "aliases": [], "lat": 35.6})),
     ],
 }
@@ -552,10 +589,12 @@ review_event = {
         ("manual override with a reason", with_(RE, proposalId=None, reason="Presenter confirmed possible person upstairs.", sourceReportIds=[])),
         ("manual override citing sources only", with_(RE, proposalId=None)),
         ("incident creation from revision 0", with_(RE, priorRevision=0, newRevision=1, acceptedChanges=["status", "addReportIds"])),
+        ("auto-confirmed after Claude agreed with Laya", with_(RE, actorRole="claude_check", proposalId=None, reason="Claude and Laya agreed: attach, information.")),
     ],
     "invalid": [
         ("worker actor", with_(RE, actorRole="worker")),
         ("claude actor", with_(RE, actorRole="claude")),
+        ("laya actor", with_(RE, actorRole="local_laya")),
         ("manual override without reason or sources", with_(RE, proposalId=None, sourceReportIds=[])),
         ("empty reason string", with_(RE, proposalId=None, reason="", sourceReportIds=[])),
         ("sequence 0", with_(RE, sequence=0)),
@@ -682,6 +721,13 @@ commands = {
         ],
     },
     "SubmitIncidentPictureCommand": submit_picture,
+    "SubmitClaudeCheckCommand": {
+        "valid": [("worker submits a check for its job", {"jobId": "job-0003", "check": CC})],
+        "invalid": [
+            ("no job", {"jobId": None, "check": CC}),
+            ("check candidate missing from baseIncidentVersions", {"jobId": "job-0003", "check": with_(CC, baseIncidentVersions={})}),
+        ],
+    },
     "ResetRunCommand": {
         "valid": [("reset the current run", RESET)],
         "invalid": [
@@ -697,6 +743,7 @@ ALL = {
     "IncidentView": incident_view,
     "LabelScore": label_score,
     "LocalSuggestion": local_suggestion,
+    "ClaudeCheck": claude_check,
     "IncidentProposal": incident_proposal,
     "ReportRelation": report_relation,
     "SuggestionRecord": suggestion_record,
@@ -717,6 +764,8 @@ ALL = {
 # (Python) must still reject them. Listed in the schema's x-crossFieldRules.
 CROSS_FIELD = {
     ("LocalSuggestion", "candidate missing from baseIncidentVersions"),
+    ("ClaudeCheck", "candidate missing from baseIncidentVersions"),
+    ("SubmitClaudeCheckCommand", "check candidate missing from baseIncidentVersions"),
     ("IncidentProposal", "baseIncidentVersions omits the target incident"),
     ("IncidentProposal", "relation to itself"),
     ("ReportRelation", "relation to itself"),

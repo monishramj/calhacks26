@@ -8,6 +8,7 @@ import {
   acceptReport,
   applyIncidentChange,
   authorize,
+  autoConfirmDecision,
   buildJobInput,
   changeFlags,
   checkFreshness,
@@ -17,11 +18,14 @@ import {
   citedReportIds,
   classifyIntake,
   computeInputSignature,
+  nearestOpenIncidents,
   parseWire,
   recallCommand,
   recordCommand,
   validateWire,
   type ApproveProposalCommand,
+  type ChangeField,
+  type ClaudeCheck,
   type ClaimJobCommand,
   type DeskState,
   type IncidentChange,
@@ -37,9 +41,11 @@ import {
   type Report,
   type ReportInput,
   type ReportRelation,
+  type PlacePosition,
   type ResetRunCommand,
   type Result,
   type ReviewEvent,
+  type SubmitClaudeCheckCommand,
   type SubmitIncidentPictureCommand,
   type SubmitIncidentProposalCommand,
   type SubmitLocalSuggestionCommand,
@@ -95,7 +101,10 @@ const spacetimedb = schema({
   incident_signature: table({ public: true }, { incidentId: t.string().primaryKey(), runId: t.string(), signature: t.string() }),
   // Idempotency ledger: repeated commandIds return the recorded result.
   command: table({ public: true }, { commandId: t.string().primaryKey(), fingerprint: t.string(), resultJson: t.string() }),
-  place: table({ public: true }, { placeId: t.string().primaryKey(), aliasesJson: t.string() }),
+  // Claude's check (ClaudeCheck JSON) per report Laya suggested on, for side-by-side review. Never the queue.
+  claude_check: table({ public: true }, { reportId: t.string().primaryKey(), runId: t.string().index('btree'), json: t.string() }),
+  // positionJson: {x, z} in exercise map units, or null. Used only to pick the nearest candidate incidents.
+  place: table({ public: true }, { placeId: t.string().primaryKey(), aliasesJson: t.string(), positionJson: t.string() }),
   counter: table({}, { name: t.string().primaryKey(), value: t.u32() }),
 });
 export default spacetimedb;
@@ -158,23 +167,23 @@ function loadState(ctx: Ctx, runId: string): DeskState {
   };
 }
 
-// allReports: a Claude picture job sees every report of the run, not only the relevant ones.
-type Scope = { incidentIds: string[]; targetReportId: string | null; allReports?: boolean };
+// confirmedOnly: Laya and Claude-check jobs see only the target and the candidates' confirmed reports.
+// suggestionId: the Laya suggestion a LOCAL_CHECK job checks.
+type Scope = { incidentIds: string[]; targetReportId: string | null; confirmedOnly?: boolean; suggestionId?: string };
 
 /**
  * Relevant reports for a scope: the target, every confirmed report of the scoped
- * incidents, and every unconfirmed report that the shared G6 rules flag as affecting
- * them (pending links, named place). So a new pending correction makes results stale,
- * not only a confirmed revision change (§17).
+ * incidents, and (unless confirmedOnly) every unconfirmed report that the shared G6 rules
+ * flag as affecting them (pending links, named place). So a new pending correction makes
+ * results stale, not only a confirmed revision change (§17).
  */
 function relevantReports(state: DeskState, scope: Scope): Report[] {
-  if (scope.allReports) return state.reports;
   const ids = new Set<string>(scope.targetReportId ? [scope.targetReportId] : []);
   for (const incidentId of scope.incidentIds) {
     const incident = state.incidents.find((i) => i.incidentId === incidentId);
     if (!incident) continue;
     incident.confirmedReportIds.forEach((id) => ids.add(id));
-    changeFlags(state, incidentId).forEach((f) => ids.add(f.reportId));
+    if (!scope.confirmedOnly) changeFlags(state, incidentId).forEach((f) => ids.add(f.reportId));
   }
   return state.reports.filter((r) => ids.has(r.reportId));
 }
@@ -244,8 +253,8 @@ function staleOthers(ctx: Ctx, runId: string, incidentId: string, exceptProposal
   }
 }
 
-function appendReviewEvent(ctx: Ctx, event: Omit<ReviewEvent, 'sequence' | 'actorRole' | 'actorIdentity'>) {
-  const full: ReviewEvent = { ...event, sequence: next(ctx, 'review'), actorRole: 'operator', actorIdentity: ctx.sender.toHexString() };
+function appendReviewEvent(ctx: Ctx, event: Omit<ReviewEvent, 'sequence' | 'actorRole' | 'actorIdentity'>, actorRole: ReviewEvent['actorRole'] = 'operator') {
+  const full: ReviewEvent = { ...event, sequence: next(ctx, 'review'), actorRole, actorIdentity: ctx.sender.toHexString() };
   must(validateWire('ReviewEvent', full));
   ctx.db.review_event.insert({ sequence: full.sequence, runId: full.runId, json: JSON.stringify(full) });
 }
@@ -284,8 +293,8 @@ function issueJob(ctx: Ctx, runId: string, kind: JobKind, scope: Scope, incident
 }
 
 /**
- * Queue a Claude working-picture job for an incident. One active job per incident: a queued or claimed
- * job already covers new reports (its input is built at claim time), so nothing is added then.
+ * Queue a Claude working-picture job for an incident whose confirmed state changed. One active job per
+ * incident: a queued or claimed job already covers new reports (its input is built at claim time).
  */
 function askClaude(ctx: Ctx, runId: string, incidentId: string, targetReportId: string | null) {
   for (const row of ctx.db.job.runId.filter(runId)) {
@@ -293,7 +302,7 @@ function askClaude(ctx: Ctx, runId: string, incidentId: string, targetReportId: 
     const j = JSON.parse(row.json) as Job;
     if (j.kind === 'INCIDENT_PROPOSAL' && j.incidentId === incidentId) return;
   }
-  issueJob(ctx, runId, 'INCIDENT_PROPOSAL', { incidentIds: [incidentId], targetReportId, allReports: true }, incidentId);
+  issueJob(ctx, runId, 'INCIDENT_PROPOSAL', { incidentIds: [incidentId], targetReportId }, incidentId);
 }
 
 function pictures(ctx: Ctx, runId: string): IncidentPicture[] {
@@ -306,13 +315,22 @@ function putPicture(ctx: Ctx, picture: IncidentPicture) {
   else ctx.db.incident_picture.insert(row);
 }
 
-/** A new report newer than a picture's input makes that picture stale, naming the first such report. */
-function markPicturesStale(ctx: Ctx, runId: string, report: Report) {
-  for (const p of pictures(ctx, runId)) {
-    if (p.status === 'CURRENT' && report.receiveSequence > p.throughSequence) {
-      putPicture(ctx, { ...p, status: 'STALE', staleSinceReportId: report.reportId });
-    }
+/** A report newly confirmed into an incident, newer than its picture's input, makes that picture stale. */
+function markPictureStale(ctx: Ctx, incidentId: string, added: Report[]) {
+  const row = ctx.db.incident_picture.incidentId.find(incidentId);
+  if (!row) return;
+  const p = JSON.parse(row.json) as IncidentPicture;
+  const first = added.filter((r) => r.receiveSequence > p.throughSequence).sort((a, b) => a.receiveSequence - b.receiveSequence)[0];
+  if (p.status === 'CURRENT' && first) putPicture(ctx, { ...p, status: 'STALE', staleSinceReportId: first.reportId });
+}
+
+function placePositions(ctx: Ctx): Map<string, PlacePosition> {
+  const out = new Map<string, PlacePosition>();
+  for (const p of ctx.db.place.iter()) {
+    const pos = JSON.parse(p.positionJson) as PlacePosition | null;
+    if (pos) out.set(p.placeId, pos);
   }
+  return out;
 }
 
 // ---- lifecycle ---------------------------------------------------------------------------------
@@ -333,12 +351,14 @@ export const grant_role = spacetimedb.reducer({ identityHex: t.string(), role: t
   else ctx.db.role.insert({ identity, role });
 });
 
-/** Named places the models may cite (placeId + aliases). Operator-maintained. */
-export const put_place = spacetimedb.reducer({ placeId: t.string(), aliasesJson: t.string() }, (ctx, { placeId, aliasesJson }) => {
+/** Named places the models may cite (placeId + aliases) and their map position ({x, z} or null). Operator-maintained. */
+export const put_place = spacetimedb.reducer({ placeId: t.string(), aliasesJson: t.string(), positionJson: t.string() }, (ctx, { placeId, aliasesJson, positionJson }) => {
   if (roleOf(ctx) !== 'operator') deny('UNAUTHORIZED', 'only an operator edits places');
   const aliases = JSON.parse(aliasesJson);
   if (!Array.isArray(aliases) || aliases.some((a) => typeof a !== 'string')) deny('INVALID_INPUT', 'aliases must be a string array');
-  const row = { placeId, aliasesJson: JSON.stringify(aliases) };
+  const pos = JSON.parse(positionJson);
+  if (pos !== null && !(Number.isFinite(pos?.x) && Number.isFinite(pos?.z))) deny('INVALID_INPUT', 'position must be {x, z} numbers or null');
+  const row = { placeId, aliasesJson: JSON.stringify(aliases), positionJson: JSON.stringify(pos && { x: pos.x, z: pos.z }) };
   if (ctx.db.place.placeId.find(placeId)) ctx.db.place.placeId.update(row);
   else ctx.db.place.insert(row);
 });
@@ -379,11 +399,9 @@ export const receive_report = spacetimedb.reducer({ reportInputJson: t.string() 
     messageId: input.messageId,
     json: JSON.stringify(report),
   });
-  // Every new report gets a local suggestion job against the open incidents, and a Claude picture job per open incident.
-  const open = state.incidents.filter((i) => i.status === 'OPEN').map((i) => i.incidentId);
-  issueJob(ctx, runId, 'LOCAL_SUGGESTION', { incidentIds: open, targetReportId: report.reportId }, null);
-  for (const incidentId of open) askClaude(ctx, runId, incidentId, null);
-  markPicturesStale(ctx, runId, report);
+  // Every new report gets a local suggestion job; its candidate incidents are picked at claim time.
+  // Claude pictures follow confirmed changes only (approval or auto-confirm), not every report.
+  issueJob(ctx, runId, 'LOCAL_SUGGESTION', { incidentIds: [], targetReportId: report.reportId, confirmedOnly: true }, null);
   refreshSignatures(ctx);
 });
 
@@ -432,14 +450,28 @@ export const claim_job = spacetimedb.reducer({ commandJson: t.string() }, (ctx, 
     const job = JSON.parse(r.json) as Job;
     if (!cmd.kinds.includes(job.kind)) return false;
     if (job.state === 'QUEUED') return true;
-    // A lapsed lease, or this worker re-claiming after a stale result, gets fresh input.
-    return job.state === 'CLAIMED' && (job.claim!.workerIdentity === me || BigInt(Date.parse(job.claim!.leaseExpiresAt)) * 1000n < now);
+    // A lapsed lease, or the (single) Laya loop re-claiming after a stale result, gets fresh input. Claude runs
+    // several jobs at once on one identity, so its own claimed jobs are in flight, never re-offered to it.
+    if (job.state !== 'CLAIMED') return false;
+    const reclaim = job.kind === 'LOCAL_SUGGESTION' && job.claim!.workerIdentity === me;
+    return reclaim || (BigInt(Date.parse(job.claim!.leaseExpiresAt)) * 1000n < now);
   });
   if (!row) return;
 
   const job = JSON.parse(row.json) as Job;
   const scope = JSON.parse(row.scopeJson) as Scope;
   const state = loadState(ctx, runId);
+  let places = [...ctx.db.place.iter()].map((p) => ({ placeId: p.placeId, aliases: JSON.parse(p.aliasesJson) as string[] }));
+  if (job.kind === 'LOCAL_SUGGESTION' || job.kind === 'LOCAL_CHECK') {
+    const target = state.reports.find((r) => r.reportId === scope.targetReportId)!;
+    // Laya's option limit: the open incidents at or nearest the stated place, picked now (a LOCAL_CHECK keeps its suggestion's).
+    if (job.kind === 'LOCAL_SUGGESTION') {
+      scope.incidentIds = nearestOpenIncidents(state.incidents, target.input.reportedLocation?.placeId ?? null, placePositions(ctx)).map((i) => i.incidentId);
+    }
+    // Only the places this job can mention, so the input stays inside Laya's context.
+    const near = new Set([target.input.reportedLocation?.placeId, ...state.incidents.filter((i) => scope.incidentIds.includes(i.incidentId)).map((i) => i.confirmedPlaceId)]);
+    places = places.filter((p) => near.has(p.placeId));
+  }
   const input = must(
     buildJobInput({
       runId,
@@ -449,7 +481,7 @@ export const claim_job = spacetimedb.reducer({ commandJson: t.string() }, (ctx, 
       incidentId: job.incidentId,
       reports: relevantReports(state, scope),
       incidents: state.incidents.filter((i) => scope.incidentIds.includes(i.incidentId)),
-      places: [...ctx.db.place.iter()].map((p) => ({ placeId: p.placeId, aliases: JSON.parse(p.aliasesJson) })),
+      places,
       pictures: pictures(ctx, runId),
     }),
   );
@@ -463,7 +495,7 @@ export const claim_job = spacetimedb.reducer({ commandJson: t.string() }, (ctx, 
     inputSignature: input.inputSignature,
   };
   must(validateWire('Job', claimed));
-  ctx.db.job.jobId.update({ ...row, state: claimed.state, json: JSON.stringify(claimed), inputJson: JSON.stringify(input) });
+  ctx.db.job.jobId.update({ ...row, state: claimed.state, scopeJson: JSON.stringify(scope), json: JSON.stringify(claimed), inputJson: JSON.stringify(input) });
 });
 
 function claimedJob(ctx: Ctx, jobId: string, kind: JobKind) {
@@ -503,6 +535,71 @@ export const submit_local_suggestion = spacetimedb.reducer({ commandJson: t.stri
   must(validateWire('SuggestionRecord', rec));
   ctx.db.suggestion.insert({ suggestionId, runId, json: JSON.stringify(rec) });
   finishJob(ctx, row, job);
+  // Claude checks every Laya suggestion, against the same candidates.
+  if (s.provider === 'local_laya') issueJob(ctx, runId, 'LOCAL_CHECK', { ...scope, suggestionId }, null);
+  refreshSignatures(ctx);
+});
+
+function putCheck(ctx: Ctx, check: ClaudeCheck) {
+  const row = { reportId: check.reportId, runId: check.runId, json: JSON.stringify(check) };
+  if (ctx.db.claude_check.reportId.find(check.reportId)) ctx.db.claude_check.reportId.update(row);
+  else ctx.db.claude_check.insert(row);
+}
+
+/**
+ * Claude's check of a Laya suggestion (worker only). If both agree on a safe change (shared rule
+ * autoConfirmDecision) it is confirmed now, recorded with actor claude_check. Otherwise the check is
+ * stored and the report stays in review, where Laya and Claude can be shown side by side. A stale check
+ * goes back to the queue for a fresh look instead of failing.
+ */
+export const auto_confirm = spacetimedb.reducer({ commandJson: t.string() }, (ctx, { commandJson }) => {
+  const cmd = must(parseWire<SubmitClaudeCheckCommand>('SubmitClaudeCheckCommand', commandJson));
+  allow(ctx, 'autoConfirm');
+  const c = cmd.check;
+  const { runId } = desk(ctx);
+  sameRun(c.runId, runId);
+  const { row, job, scope } = claimedJob(ctx, cmd.jobId, 'LOCAL_CHECK');
+  if (c.reportId !== job.reportId) deny('INVALID_SOURCE', `job ${job.jobId} is about ${job.reportId}, not ${c.reportId}`);
+  if (c.candidateIncidentId !== null && !scope.incidentIds.includes(c.candidateIncidentId)) deny('INVALID_SOURCE', `${c.candidateIncidentId} is not a candidate of job ${job.jobId}`);
+
+  const state = loadState(ctx, runId);
+  must(checkSourceOwnership(runId, [c.reportId, ...c.evidenceReportIds], knownReports(state)));
+  if (!checkFreshness(c, freshness(state, scope)).ok) {
+    const again: Job = { ...job, state: job.attempts >= MAX_JOB_ATTEMPTS ? 'FAILED' : 'QUEUED', claim: null };
+    ctx.db.job.jobId.update({ ...row, state: again.state, json: JSON.stringify(again) });
+    return;
+  }
+  putCheck(ctx, c);
+  finishJob(ctx, row, job);
+
+  const sRow = scope.suggestionId ? ctx.db.suggestion.suggestionId.find(scope.suggestionId) : undefined;
+  const rec = sRow ? (JSON.parse(sRow.json) as SuggestionRecord) : null;
+  if (!sRow || !rec || rec.reviewState !== 'PENDING') return;
+  const loc = state.reports.find((r) => r.reportId === c.reportId)!.input.reportedLocation;
+  const d = autoConfirmDecision({ suggestion: rec.suggestion, check: c, placeId: loc?.source === 'sender_explicit' ? loc.placeId : null, incidents: state.incidents });
+  if (!d.confirm) return;
+
+  let incidentId = d.incidentId;
+  while (incidentId === null || (d.incidentId === null && state.incidents.some((i) => i.incidentId === incidentId))) incidentId = `${runId}:i${next(ctx, 'incident')}`;
+  const { prior, next: view } = commitChange(ctx, state, incidentId, d.change, false);
+  appendReviewEvent(
+    ctx,
+    {
+      runId,
+      commandId: `${job.jobId}:auto`,
+      incidentId,
+      proposalId: null,
+      priorRevision: prior?.revision ?? 0,
+      newRevision: view.revision,
+      acceptedChanges: Object.keys(d.change) as ChangeField[],
+      reason: d.reason,
+      sourceReportIds: [c.reportId],
+    },
+    'claude_check',
+  );
+  ctx.db.suggestion.suggestionId.update({ ...sRow, json: JSON.stringify({ ...rec, reviewState: 'APPROVED' }) });
+  staleOthers(ctx, runId, incidentId, null);
+  askClaude(ctx, runId, incidentId, null);
   refreshSignatures(ctx);
 });
 
@@ -544,13 +641,13 @@ export const submit_incident_picture = spacetimedb.reducer({ commandJson: t.stri
   allow(ctx, 'submitIncidentPicture');
   const { runId } = desk(ctx);
   sameRun(cmd.picture.runId, runId);
-  const { row, job } = claimedJob(ctx, cmd.jobId, 'INCIDENT_PROPOSAL');
+  const { row, job, scope } = claimedJob(ctx, cmd.jobId, 'INCIDENT_PROPOSAL');
   if (cmd.picture.incidentId !== job.incidentId) deny('INVALID_SOURCE', `job ${job.jobId} is about ${job.incidentId}`);
   const input = JSON.parse(ctx.db.job.jobId.find(job.jobId)!.inputJson) as JobInput;
   const picture = must(checkPicture(cmd.picture, input));
 
   const throughSequence = Math.max(0, ...input.reports.map((r) => r.receiveSequence));
-  const newer = loadState(ctx, runId).reports.filter((r) => r.receiveSequence > throughSequence);
+  const newer = relevantReports(loadState(ctx, runId), scope).filter((r) => r.receiveSequence > throughSequence);
   putPicture(ctx, {
     ...picture,
     status: newer.length ? 'STALE' : 'CURRENT',
@@ -588,6 +685,7 @@ function commitChange(
   }
   const next = must(applyIncidentChange(current, change, { runId: state.runId, incidentId, reopenSequence }));
   putIncident(ctx, next);
+  markPictureStale(ctx, incidentId, state.reports.filter((r) => adds.includes(r.reportId)));
   return { prior: current, next };
 }
 

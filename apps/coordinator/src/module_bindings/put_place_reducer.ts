@@ -13,4 +13,5 @@ import {
 export default {
   placeId: __t.string(),
   aliasesJson: __t.string(),
+  positionJson: __t.string(),
 };

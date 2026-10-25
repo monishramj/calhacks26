@@ -1,0 +1,237 @@
+{
+  "type": "ClaudeCheck",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "attach to the school as information",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "new incident with no candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "NEW_INCIDENT",
+        "candidateIncidentId": null,
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {},
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "possible life safety, no reason",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": null,
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "request review with unknown attention",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "REQUEST_REVIEW",
+        "candidateIncidentId": null,
+        "attention": null,
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "no cited reports",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "NEW_INCIDENT with a candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "NEW_INCIDENT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "FLAG_CONFLICT without a candidate",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "FLAG_CONFLICT",
+        "candidateIncidentId": null,
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      }
+    },
+    {
+      "name": "candidate missing from baseIncidentVersions",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-shelter": 1
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude"
+      },
+      "crossField": true
+    },
+    {
+      "name": "provider local_laya",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "local_laya"
+      }
+    },
+    {
+      "name": "an approve field",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude",
+        "approve": true
+      }
+    },
+    {
+      "name": "scores on a Claude check",
+      "payload": {
+        "runId": "run-001",
+        "reportId": "rep-000007",
+        "action": "ATTACH_REPORT",
+        "candidateIncidentId": "inc-school",
+        "attention": "INFORMATION",
+        "evidenceReportIds": [
+          "rep-000007",
+          "rep-000001"
+        ],
+        "reason": "Same school gym; status only.",
+        "baseIncidentVersions": {
+          "inc-school": 2
+        },
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "model": "claude-test",
+        "provider": "claude",
+        "scores": []
+      }
+    }
+  ]
+}

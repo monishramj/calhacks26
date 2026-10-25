@@ -32,6 +32,8 @@ export {
 } from './rules/contract';
 export type { Assigned, BuildJobInputArgs, CommandLedger, FreshnessCurrent, FreshnessSubmitted, SignatureInput } from './rules/contract';
 export { checkPicture } from './rules/picture';
+export { HARM_FLOOR, MAX_CANDIDATES, autoConfirmDecision, layaView, nearestOpenIncidents } from './rules/autoConfirm';
+export type { AutoConfirmArgs, AutoConfirmDecision, LayaView, PlacePosition } from './rules/autoConfirm';
 export {
   ATTENTION_LABEL,
   applyIncidentChange,

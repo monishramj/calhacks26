@@ -2,6 +2,7 @@
 // It only claims kinds whose provider is actually up, so an offline provider leaves jobs
 // queued and reports reviewable instead of producing a fake result (§10).
 import { validateWire, type Result, type Job, type JobInput, type JobKind, type LocalSuggestion } from '@calhacks26/domain';
+import { check } from './inference/claude/check';
 import { enrich } from './inference/claude/enrich';
 import type { WorkerBackend } from './fixtureBackend';
 
@@ -55,12 +56,17 @@ export async function runOnce(backend: Backend, runId: string, opts: { laya: Lay
   const log = opts.log ?? ((l) => console.log(JSON.stringify(l)));
   const kinds: JobKind[] = [];
   if (opts.laya.kind !== 'off') kinds.push('LOCAL_SUGGESTION');
-  if (opts.claude) kinds.push('INCIDENT_PROPOSAL');
+  if (opts.claude) kinds.push('LOCAL_CHECK', 'INCIDENT_PROPOSAL');
   if (kinds.length === 0) return log({ event: 'idle', why: 'no provider available: Laya off, Claude unavailable' }), 0;
 
   let handled = 0;
   for (;;) {
-    const claimed = await backend.claimJob({ runId, kinds });
+    // Checks before pictures: a check can confirm a report now; a picture only describes.
+    let claimed: Awaited<ReturnType<Backend['claimJob']>> = { ok: true, value: null };
+    for (const k of kinds) {
+      claimed = await backend.claimJob({ runId, kinds: [k] });
+      if (!claimed.ok || claimed.value) break;
+    }
     if (!claimed.ok) return log({ event: 'claim_failed', error: claimed.error }), handled;
     if (!claimed.value) return handled;
     const { job, input } = claimed.value;
@@ -72,6 +78,11 @@ export async function runOnce(backend: Backend, runId: string, opts: { laya: Lay
       if (typeof s === 'string') { log({ event: 'laya_failed', jobId: job.jobId, detail: s }); return handled; }
       const r = await backend.submitLocalSuggestion({ jobId: job.jobId, suggestion: s });
       log({ event: 'suggestion', jobId: job.jobId, provider: s.provider, action: s.action, submitted: r.ok ? r.value : r.error });
+    } else if (job.kind === 'LOCAL_CHECK') {
+      const res = await check(job, input);
+      if (!res.ok) { log({ event: 'claude_check_failed', jobId: job.jobId, ...res }); return handled; }
+      const r = await backend.autoConfirm({ jobId: job.jobId, check: res.check });
+      log({ event: 'claude_check', jobId: job.jobId, reportId: res.check.reportId, action: res.check.action, attention: res.check.attention, model: res.model, ms: res.ms, submitted: r.ok ? r.value : r.error });
     } else {
       const res = await enrich(job, input);
       if (!res.ok) { log({ event: 'claude_failed', jobId: job.jobId, ...res }); return handled; }
@@ -86,11 +97,14 @@ export async function runOnce(backend: Backend, runId: string, opts: { laya: Lay
   }
 }
 
-/** Long-running loop (one per provider, see `only`): run when the active run has queued jobs for a provider that is up, else wait for a table change or the tick. */
+/**
+ * Long-running loop (one per provider, see `only`): run when the active run has queued jobs for a provider that is up, else wait for a table change or the tick.
+ * The Claude loop runs `claudeConcurrency` jobs at once (CLAUDE_CONCURRENCY, default 3).
+ */
 export async function runLoop(
   backend: Backend & { runId(): string | null; queued(kinds: string[]): number; onChange(cb: () => void): void },
   getOpts: () => Promise<{ laya: LayaMode; claude: boolean }>,
-  { tickMs = 3000, signal, only }: { tickMs?: number; signal?: AbortSignal; only?: 'laya' | 'claude' } = {},
+  { tickMs = 3000, signal, only, claudeConcurrency = Number(process.env.CLAUDE_CONCURRENCY) || 3 }: { tickMs?: number; signal?: AbortSignal; only?: 'laya' | 'claude'; claudeConcurrency?: number } = {},
 ) {
   let wake = () => {};
   let lastChange = 0;
@@ -100,15 +114,18 @@ export async function runLoop(
     const all = await getOpts();
     // `only` makes this an independent loop for one provider, so a slow Claude job never queues behind Laya (or the reverse).
     const opts: { laya: LayaMode; claude: boolean } = { laya: only === 'claude' ? { kind: 'off' } : all.laya, claude: only === 'laya' ? false : all.claude };
-    const kinds = [...(opts.laya.kind !== 'off' ? ['LOCAL_SUGGESTION'] : []), ...(opts.claude ? ['INCIDENT_PROPOSAL'] : [])];
+    const kinds = [...(opts.laya.kind !== 'off' ? ['LOCAL_SUGGESTION'] : []), ...(opts.claude ? ['LOCAL_CHECK', 'INCIDENT_PROPOSAL'] : [])];
     if (runId && kinds.length && backend.queued(kinds) > 0) {
-      if (kinds.includes('INCIDENT_PROPOSAL')) {
-        // Debounce: wait until reports stop arriving for SETTLE_MS (capped), so a burst makes one pass per incident.
+      if (kinds.includes('INCIDENT_PROPOSAL') && backend.queued(['LOCAL_CHECK']) === 0) {
+        // Debounce pictures (checks never wait): until confirmations stop for SETTLE_MS (capped), so a burst makes one pass per incident.
         const started = Date.now();
         while (Date.now() - lastChange < SETTLE_MS && Date.now() - started < SETTLE_MAX_MS) await new Promise((r) => setTimeout(r, 100));
       }
       // A failed pass is logged and retried later; it must not stop the worker.
-      await runOnce(backend, runId, opts).catch((e: unknown) => console.log(JSON.stringify({ event: 'loop_error', detail: (e as Error).message })));
+      const lanes = opts.claude && only === 'claude' ? claudeConcurrency : 1;
+      await Promise.all(
+        Array.from({ length: lanes }, () => runOnce(backend, runId, opts).catch((e: unknown) => console.log(JSON.stringify({ event: 'loop_error', detail: (e as Error).message })))),
+      );
     }
     await new Promise<void>((res) => { wake = res; setTimeout(res, tickMs); });
   }

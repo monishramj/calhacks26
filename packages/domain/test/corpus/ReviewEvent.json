@@ -90,6 +90,29 @@
           "rep-000007"
         ]
       }
+    },
+    {
+      "name": "auto-confirmed after Claude agreed with Laya",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "claude_check",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": null,
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": "Claude and Laya agreed: attach, information.",
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
     }
   ],
   "invalid": [
@@ -123,6 +146,29 @@
         "sequence": 1,
         "commandId": "cmd-0001",
         "actorRole": "claude",
+        "actorIdentity": "id:c20000ab",
+        "incidentId": "inc-school",
+        "proposalId": "prop-0001",
+        "priorRevision": 2,
+        "newRevision": 3,
+        "acceptedChanges": [
+          "attention",
+          "addReportIds",
+          "relations"
+        ],
+        "reason": null,
+        "sourceReportIds": [
+          "rep-000007"
+        ]
+      }
+    },
+    {
+      "name": "laya actor",
+      "payload": {
+        "runId": "run-001",
+        "sequence": 1,
+        "commandId": "cmd-0001",
+        "actorRole": "local_laya",
         "actorIdentity": "id:c20000ab",
         "incidentId": "inc-school",
         "proposalId": "prop-0001",

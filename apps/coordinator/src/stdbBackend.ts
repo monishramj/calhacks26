@@ -86,6 +86,10 @@ export async function connectStdb(uri: string, database: string): Promise<StdbBa
       const r = await call(() => conn.reducers.submitLocalSuggestion({ commandJson: JSON.stringify(cmd) }));
       return r.ok ? { ok: true, value: { suggestionId: cmd.jobId } } : r;
     },
+    async autoConfirm(cmd) {
+      const r = await call(() => conn.reducers.autoConfirm({ commandJson: JSON.stringify(cmd) }));
+      return r.ok ? { ok: true, value: { reportId: cmd.check.reportId } } : r;
+    },
     async submitIncidentPicture(cmd) {
       const r = await call(() => conn.reducers.submitIncidentPicture({ commandJson: JSON.stringify(cmd) }));
       return r.ok ? { ok: true, value: { incidentId: cmd.picture.incidentId } } : r;

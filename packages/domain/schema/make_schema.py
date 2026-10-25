@@ -16,7 +16,7 @@ from pathlib import Path
 
 OUT = Path(__file__).parent / "contract.schema.json"
 
-CONTRACT_VERSION = "1.3.0"
+CONTRACT_VERSION = "1.4.0"
 MAX_ID_LENGTH = 128
 # Authored bound, not a measured one: ~4x the 233-byte packet ceiling so llm-coded
 # radio text fits, while operator text stays short. Revisit with C1's measured ratio.
@@ -57,7 +57,7 @@ LOCAL_ACTIONS = ["NEW_INCIDENT", "ATTACH_REPORT", "FLAG_CORRECTION", "FLAG_CONFL
 RELATION_KINDS = ["REPEAT", "UPDATE", "CORRECTION", "CONFLICT"]
 ERROR_CODES = ["STALE_REVISION", "INVALID_SOURCE", "INVALID_INPUT", "UNAUTHORIZED", "WRONG_RUN", "SERVICE_UNAVAILABLE"]
 REVIEW_STATES = ["PENDING", "APPROVED", "REJECTED", "STALE"]
-JOB_KINDS = ["LOCAL_SUGGESTION", "INCIDENT_PROPOSAL"]
+JOB_KINDS = ["LOCAL_SUGGESTION", "INCIDENT_PROPOSAL", "LOCAL_CHECK"]
 JOB_STATES = ["QUEUED", "CLAIMED", "DONE", "FAILED", "INVALIDATED"]
 CHANGE_FIELDS = ["status", "attention", "confirmedPlaceId", "summary", "addReportIds", "relations"]
 
@@ -215,6 +215,26 @@ defs["ReportRelation"] = closed(
     when({"state": {"const": "CONFIRMED"}}, {"reviewer": ID}, {"reviewer": NULL}),
 )
 
+# Claude's own read of the report a Laya suggestion is about (v1.4.0). Compared with Laya's view by
+# the auto-confirm rule; stored for side-by-side review when they do not agree.
+defs["ClaudeCheck"] = closed(
+    {
+        "runId": ID,
+        "reportId": ID,
+        "action": enum(LOCAL_ACTIONS),
+        "candidateIncidentId": nullable(ID),
+        "attention": nullable(enum(ATTENTION)),
+        "evidenceReportIds": ids(minItems=1),
+        "reason": nullable(SHORT_TEXT),
+        "baseIncidentVersions": VERSIONS,
+        "inputSignature": ID,
+        "model": SHORT_TEXT,
+        "provider": {"const": "claude"},
+    },
+    when({"action": {"const": "NEW_INCIDENT"}}, {"candidateIncidentId": NULL}),
+    when({"action": enum(["ATTACH_REPORT", "FLAG_CORRECTION", "FLAG_CONFLICT"])}, {"candidateIncidentId": ID}),
+)
+
 defs["SuggestionRecord"] = closed({
     "suggestionId": ID,
     "jobId": ID,
@@ -248,7 +268,7 @@ defs["Job"] = closed(
         "claim": nullable(CLAIM),
     },
     when({"state": {"const": "CLAIMED"}}, {"claim": {"type": "object"}}, {"claim": NULL}),
-    when({"kind": {"const": "LOCAL_SUGGESTION"}}, {"reportId": ID}),
+    when({"kind": enum(["LOCAL_SUGGESTION", "LOCAL_CHECK"])}, {"reportId": ID}),
     when({"kind": {"const": "INCIDENT_PROPOSAL"}}, {"incidentId": ID}),
 )
 
@@ -275,7 +295,7 @@ defs["JobInput"] = closed(
         "candidatePictures": described({"type": "array", "items": ref("IncidentPicture"), "maxItems": 32},
                                        "Latest Claude working picture per candidate incident, as context. Empty means none."),
     },
-    when({"kind": {"const": "LOCAL_SUGGESTION"}}, {"targetReportId": ID, "reports": {"minItems": 1}}),
+    when({"kind": enum(["LOCAL_SUGGESTION", "LOCAL_CHECK"])}, {"targetReportId": ID, "reports": {"minItems": 1}}),
     when({"kind": {"const": "INCIDENT_PROPOSAL"}}, {"incidentId": ID}),
 )
 # Claude working picture (unconfirmed, v1.3.0): area -> site -> subarea -> claims. Fixed depth, no recursion.
@@ -321,7 +341,8 @@ defs["ReviewEvent"] = closed(
         "runId": ID,
         "sequence": POSITIVE,
         "commandId": ID,
-        "actorRole": {"const": "operator"},
+        # claude_check: Claude and Laya agreed on a safe change and it confirmed without a person (v1.4.0).
+        "actorRole": enum(["operator", "claude_check"]),
         "actorIdentity": ID,
         "incidentId": ID,
         "proposalId": nullable(ID),
@@ -383,6 +404,7 @@ defs["OperatorEditCommand"] = closed(
 )
 defs["ClaimJobCommand"] = closed({"runId": ID, "kinds": {"type": "array", "items": enum(JOB_KINDS), "uniqueItems": True, "minItems": 1}})
 defs["SubmitLocalSuggestionCommand"] = closed({"jobId": ID, "suggestion": ref("LocalSuggestion")})
+defs["SubmitClaudeCheckCommand"] = closed({"jobId": ID, "check": ref("ClaudeCheck")})
 defs["SubmitIncidentProposalCommand"] = closed({"jobId": nullable(ID), "proposal": ref("IncidentProposal")})
 defs["AdvanceScenarioCommand"] = closed({"commandId": ID, "runId": ID, "expectedDeliveredCount": COUNT})
 defs["ResetRunCommand"] = closed({"commandId": ID, "runId": ID})
@@ -398,7 +420,7 @@ SCHEMA = {
     "x-maxWireBytes": MAX_WIRE_BYTES,
     "x-maxDepth": MAX_DEPTH,
     "x-crossFieldRules": [
-        "LocalSuggestion: a non-null candidateIncidentId is a key of baseIncidentVersions",
+        "LocalSuggestion, ClaudeCheck: a non-null candidateIncidentId is a key of baseIncidentVersions",
         "IncidentProposal: incidentId is a key of baseIncidentVersions",
         "IncidentProposal: no relation has reportId == targetReportId",
         "ReportRelation: reportId != targetReportId",

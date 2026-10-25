@@ -80,6 +80,7 @@ function crossField(type: string, v: any): string | null {
       }
       return null;
     case 'LocalSuggestion':
+    case 'ClaudeCheck':
       return v.candidateIncidentId !== null && !Object.hasOwn(v.baseIncidentVersions, v.candidateIncidentId)
         ? 'candidateIncidentId must appear in baseIncidentVersions'
         : null;
@@ -97,6 +98,8 @@ function crossField(type: string, v: any): string | null {
       return crossField('IncidentProposal', v.proposal);
     case 'SubmitLocalSuggestionCommand':
       return crossField('LocalSuggestion', v.suggestion);
+    case 'SubmitClaudeCheckCommand':
+      return crossField('ClaudeCheck', v.check);
     case 'SubmitIncidentProposalCommand':
       return crossField('IncidentProposal', v.proposal);
     case 'IncidentPictureDraft':

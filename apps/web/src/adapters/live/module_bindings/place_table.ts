@@ -13,4 +13,5 @@ import {
 export default __t.row({
   placeId: __t.string().primaryKey().name("place_id"),
   aliasesJson: __t.string().name("aliases_json"),
+  positionJson: __t.string().name("position_json"),
 });

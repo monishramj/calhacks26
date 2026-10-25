@@ -36,6 +36,7 @@ export const ADAPTER_METHODS = Object.freeze([
   'submitLocalSuggestion',
   'submitIncidentProposal',
   'submitIncidentPicture',
+  'autoConfirm',
   'approveProposal',
   'rejectProposal',
   'operatorEdit',
@@ -118,6 +119,7 @@ const ONLY: Partial<Record<AdapterMethod, readonly Role[]>> = {
   subscribeState: ROLES,
   submitLocalSuggestion: ['worker'],
   submitIncidentPicture: ['worker'],
+  autoConfirm: ['worker'],
   approveProposal: ['operator'],
   rejectProposal: ['operator'],
   operatorEdit: ['operator'],
@@ -252,7 +254,7 @@ export function buildJobInput(args: BuildJobInputArgs): Result<JobInput> {
     incidents.push(checked.value);
   }
 
-  if (args.kind === 'LOCAL_SUGGESTION' && !reports.some((r) => r.reportId === args.targetReportId)) {
+  if ((args.kind === 'LOCAL_SUGGESTION' || args.kind === 'LOCAL_CHECK') && !reports.some((r) => r.reportId === args.targetReportId)) {
     return fail('INVALID_INPUT', 'the target report must be one of the job reports');
   }
 

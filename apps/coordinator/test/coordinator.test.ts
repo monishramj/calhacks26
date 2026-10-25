@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+import type { LocalSuggestion } from '@calhacks26/domain';
 import { createFixtureBackend } from '../src/fixtureBackend';
+import { toCheck } from '../src/inference/claude/check';
 import { enrichClaude } from '../src/inference/claude/enrich';
 import { runLoop, runOnce } from '../src/runner';
 
@@ -9,6 +11,23 @@ vi.mock('../src/inference/claude/enrich', async (orig) => ({
   ...(await orig<object>()),
   enrich: async () => (await new Promise((r) => setTimeout(r, 2000)), { ok: false, reason: 'unavailable', detail: 'simulated slow claude', responses: 0, toolExecutions: 0, ms: 2000 }),
 }));
+
+// Simulated Claude check: its own reading per target report, run through the real toCheck validation.
+vi.mock('../src/inference/claude/check', async (orig) => {
+  const real = await orig<typeof import('../src/inference/claude/check')>();
+  const answers: Record<string, object> = {
+    'rep-2': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'POSSIBLE_LIFE_SAFETY', evidenceReportIds: ['rep-2', 'rep-1'], reason: 'Oxygen generator out.' },
+    'rep-3': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'ACTIVE_NEED', evidenceReportIds: ['rep-3'], reason: 'Hearsay; rescue unconfirmed.' },
+    'rep-5': { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'INFORMATION', evidenceReportIds: ['rep-5'], reason: 'Road status only.' },
+  };
+  return {
+    ...real,
+    check: async (job: any, input: any) => {
+      const out = real.toCheck(answers[input.targetReportId], input, job, 'claude-mock');
+      return out.ok ? { ok: true, check: out.check, model: 'claude-mock', responses: 1, ms: 1 } : { ok: false, reason: 'bounds', detail: out.error, responses: 1, ms: 1 };
+    },
+  };
+});
 
 describe('runner against the fixture backend', () => {
   it('laya off: claims nothing, submits nothing', async () => {
@@ -70,4 +89,51 @@ describe.skipIf(!key || !process.env.CLAUDE_MODEL)('real Claude call', () => {
       expect(res.proposal.evidenceReportIds.length).toBeGreaterThan(0);
     }
   }, 30_000);
+});
+
+describe('Claude checks Laya (fixture backend)', () => {
+  // Laya as it usually answers: REQUEST_REVIEW, with scores the backend reads as its top labels.
+  const p = (label: string, value: number) => ({ label, value, kind: 'probability' as const });
+  const layaScores: Record<string, ReturnType<typeof p>[]> = {
+    'rep-2': [p('ATTACH_REPORT', 0.6), p('REQUEST_REVIEW', 0.4), p('ACTIVE_NEED', 0.5), p('POSSIBLE_LIFE_SAFETY', 0.4), p('INFORMATION', 0.1)],
+    'rep-3': [p('ATTACH_REPORT', 0.5), p('REQUEST_REVIEW', 0.5), p('INFORMATION', 0.9), p('ACTIVE_NEED', 0.05), p('POSSIBLE_LIFE_SAFETY', 0.05)],
+    'rep-5': [p('ATTACH_REPORT', 0.55), p('REQUEST_REVIEW', 0.45), p('INFORMATION', 0.9), p('ACTIVE_NEED', 0.05), p('POSSIBLE_LIFE_SAFETY', 0.05)],
+  };
+
+  it('agreeing information confirms with the claude_check label; life safety and disagreement stay in review', async () => {
+    const b = createFixtureBackend();
+    b.jobs.length = 0;
+    for (const reportId of Object.keys(layaScores)) {
+      b.addJob(`job-local-${reportId}`, 'LOCAL_SUGGESTION', reportId, null);
+      const claimed = await b.claimJob({ runId: b.runId, kinds: ['LOCAL_SUGGESTION'] });
+      const { job, input } = claimed.ok && claimed.value ? claimed.value : (() => { throw new Error('no job'); })();
+      const suggestion: LocalSuggestion = {
+        runId: b.runId, reportId, action: 'REQUEST_REVIEW', candidateIncidentId: null, attention: null, scores: layaScores[reportId],
+        evidenceReportIds: [reportId], baseIncidentVersions: job.baseIncidentVersions, inputSignature: input.inputSignature, provider: 'local_laya',
+      };
+      expect(await b.submitLocalSuggestion({ jobId: job.jobId, suggestion })).toMatchObject({ ok: true });
+    }
+    expect(b.jobs.filter((j) => j.job.kind === 'LOCAL_CHECK')).toHaveLength(3);
+
+    await runOnce(b, b.runId, { laya: { kind: 'off' }, claude: true, log: quiet });
+
+    expect(b.checks.map((c) => c.reportId)).toEqual(['rep-2', 'rep-3', 'rep-5']);
+    expect(b.reviewEvents).toHaveLength(1);
+    expect(b.reviewEvents[0]).toMatchObject({ actorRole: 'claude_check', sourceReportIds: ['rep-5'], reason: 'Laya and Claude agree: attach to inc-school-gym, INFORMATION' });
+    // Confirmed without lowering the open concern; the other two are not confirmed.
+    expect(b.incident()).toMatchObject({ revision: 2, attention: 'POSSIBLE_LIFE_SAFETY', confirmedReportIds: ['rep-1', 'rep-5'] });
+    // The disagreement keeps Claude's own view for side-by-side review.
+    expect(b.checks.find((c) => c.reportId === 'rep-3')).toMatchObject({ action: 'ATTACH_REPORT', attention: 'ACTIVE_NEED', reason: 'Hearsay; rescue unconfirmed.', provider: 'claude' });
+  });
+
+  it('toCheck keeps Claude to the job: known reports, candidate incidents, target always cited', () => {
+    const b = createFixtureBackend();
+    b.addJob('job-check-rep-4', 'LOCAL_CHECK', 'rep-4', null);
+    const { job, input } = b.jobs.at(-1)!;
+    const base = { action: 'ATTACH_REPORT', candidateIncidentId: 'inc-school-gym', attention: 'ACTIVE_NEED', evidenceReportIds: ['rep-1'], reason: 'x' };
+    expect(toCheck(base, input, job, 'm')).toMatchObject({ ok: true, check: { evidenceReportIds: ['rep-4', 'rep-1'], provider: 'claude' } });
+    expect(toCheck({ ...base, candidateIncidentId: 'inc-other' }, input, job, 'm')).toMatchObject({ ok: false });
+    expect(toCheck({ ...base, evidenceReportIds: ['rep-99'] }, input, job, 'm')).toMatchObject({ ok: false });
+    expect(toCheck({ ...base, action: 'APPROVE' }, input, job, 'm')).toMatchObject({ ok: false });
+  });
 });

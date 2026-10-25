@@ -83,7 +83,7 @@ def _cross_field(type_name: str, v: dict) -> list[str]:
         return _cross_field("ReportInput", v["input"])
     if type_name == "JobInput":
         return [f"report {r['reportId']} text is over the byte limit" for r in v["reports"] if _too_long(r["text"])]
-    if type_name == "LocalSuggestion":
+    if type_name in ("LocalSuggestion", "ClaudeCheck"):
         c = v["candidateIncidentId"]
         return ["candidateIncidentId must appear in baseIncidentVersions"] if c is not None and c not in v["baseIncidentVersions"] else []
     if type_name == "IncidentProposal":
@@ -97,6 +97,8 @@ def _cross_field(type_name: str, v: dict) -> list[str]:
         return [] if v["newRevision"] > v["priorRevision"] else ["newRevision must be greater than priorRevision"]
     if type_name in ("SuggestionRecord", "SubmitLocalSuggestionCommand"):
         return _cross_field("LocalSuggestion", v["suggestion"])
+    if type_name == "SubmitClaudeCheckCommand":
+        return _cross_field("ClaudeCheck", v["check"])
     if type_name in ("ProposalRecord", "SubmitIncidentProposalCommand"):
         return _cross_field("IncidentProposal", v["proposal"])
     if type_name in ("IncidentPictureDraft", "IncidentPicture"):

@@ -35,6 +35,8 @@ export const EXPECTED_WIRE_TYPES = [
   'IncidentPictureDraft',
   'IncidentPicture',
   'SubmitIncidentPictureCommand',
+  'ClaudeCheck',
+  'SubmitClaudeCheckCommand',
 ] as const;
 
 export type CorpusCase = { name: string; payload: unknown; crossField?: boolean };
