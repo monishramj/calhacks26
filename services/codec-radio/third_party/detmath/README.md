@@ -10,4 +10,4 @@ expf, logf and powf. They are compiled the way glibc compiles its x86-64 FMA var
 contraction) and linked into ggml-base.dll and ggml-cpu.dll, so the Windows DLLs compute these functions exactly as
 glibc does on an FMA-capable x86-64 CPU. `shim/` maps the few glibc-internal macros the sources use.
 
-`tools/build_runtime.sh` builds the DLLs; `tools/detmath_check.c` compares every float input against the system glibc.
+`tools/runtime-build/build_runtime.sh` builds the DLLs; `tools/runtime-build/detmath_check.c` compares every float input against the system glibc.
