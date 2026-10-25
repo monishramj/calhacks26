@@ -1,26 +1,26 @@
 # spacetimedb
 
-**Owner:** ws/state (state laptop) · **Areas:** Incident state, resilience backend · **Spec:** §9, §17 "Commands and adapter", §20 incident state
+**Spec:** §9, §17 "Commands and adapter", §20 incident state
 
-The one authoritative local backend: reports, incidents, relations, proposals, jobs, review events, scenario state. It provides reducers and subscriptions.
+This is the one authoritative local backend. It stores reports, incidents, relations, proposals, jobs, review events, and scenario state. It provides reducers and subscriptions.
 
-- **No model calls inside reducers.** The coordinator runs models and submits results through reducers (§9).
-- Approval validates the run, every referenced revision, `inputSignature`, and source ownership atomically. Repeated `commandId`s return the recorded result. Workers can't approve.
+- **No model calls inside reducers.** The coordinator runs models and submits the results through reducers (§9).
+- Approval checks the run, every referenced revision, `inputSignature`, and source ownership in one atomic step. A repeated `commandId` returns the recorded result. Workers cannot approve.
 - Future scenario truth is never in a client-visible table.
-- Pin the server/client pair after preflight. Generated client bindings are committed by ws/state only.
-- Indexes only where the actual queue, incident-source, identity, and job lookups need them. No event-sourcing framework or distributed queue (§17).
+- Pin the server and client versions after preflight. Only one owner commits the generated client bindings.
+- Add indexes only where the real queue, incident-source, identity, and job lookups need them. Do not add an event-sourcing framework or a distributed queue (§17).
 
 ## Local setup
 
-Runs entirely on the command post laptop. No Maincloud, no internet.
+The database runs entirely on the command post laptop. It needs no Maincloud and no internet.
 
-Tested with SpacetimeDB CLI and server **2.13.0** on macOS arm64, Node 22. The `spacetimedb` npm package is pinned by `package-lock.json`.
+Tested with SpacetimeDB CLI and server **2.13.0** on macOS arm64 with Node 22. The `spacetimedb` npm package is pinned by `package-lock.json`.
 
-1. Install the CLI (official installer, puts `spacetime` in `~/.local/bin`):
+1. Install the CLI with the official installer. It puts `spacetime` in `~/.local/bin`.
    ```bash
    curl -sSf https://install.spacetimedb.com | sh
    ```
-2. Point the CLI at the local server so nothing publishes to Maincloud by accident:
+2. Point the CLI at the local server, so nothing publishes to Maincloud by accident.
    ```bash
    spacetime server set-default local
    ```
@@ -28,16 +28,16 @@ Tested with SpacetimeDB CLI and server **2.13.0** on macOS arm64, Node 22. The `
    ```bash
    spacetime start
    ```
-4. Install, build, and publish from this folder. `spacetime.json` supplies the server (`local`) and database name (`incident-desk`).
+4. Install, build, and publish from this folder. `spacetime.json` sets the server (`local`) and the database name (`incident-desk`).
    ```bash
    cd spacetimedb
    npm ci
    spacetime publish
    ```
-5. Check it:
+5. Check that it works.
    ```bash
    spacetime sql incident-desk "SELECT * FROM person"
    spacetime logs incident-desk
    ```
 
-`src/index.ts` is the incident state module: tables, reducers, roles and freshness rules. `smoke.py` replays the incident state checks against a freshly published database.
+`src/index.ts` is the incident state module. It holds the tables, reducers, roles, and freshness rules. `smoke.py` runs the incident state checks again against a freshly published database.

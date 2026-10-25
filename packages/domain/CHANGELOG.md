@@ -2,9 +2,9 @@
 
 One line per `CONTRACT_VERSION`. Newest first.
 
-- v1.0.0 · 2026-10-25 · Shared contracts freeze (REVIEW passed).
-  - §17 types verbatim.
+- v1.0.0 · 2026-10-25 · Shared contracts frozen (review passed).
+  - §17 types, verbatim.
   - §9 records: `Report`, `ReportRelation`, `SuggestionRecord`, `ProposalRecord`, `Job` (with `baseIncidentVersions`), `JobInput`, `ReviewEvent`, `ScenarioState`.
   - Commands, roles, errors, and `DeskState`/`DeskAdapter` (with backend `inputSignatures`), as in `schema/contract.schema.json`.
   - Wire limits: 1000 B text, 1 MiB JSON, depth 16.
-  - Radio intake: the bridge calls the `receive_report` reducer over SpacetimeDB HTTP with its own identity, and `sourceId = mesh_source_id(node)` (README).
+  - Radio intake: the bridge calls the `receive_report` reducer over SpacetimeDB HTTP with its own identity, and `sourceId = mesh_source_id(node)` (see README).

@@ -1,6 +1,6 @@
 # Handoff: finish the Incident Desk demo
 
-_Written 2026-10-25 ~03:30 PDT for a new agent picking this up. Start here, not in the older process docs._
+_Written 2026-10-25 about 03:30 PDT for a new agent picking this up. Start here._
 
 ## The project in one paragraph
 
@@ -12,15 +12,15 @@ The full spec is `docs/GROUND_TRUTH.md`. The parts that matter: §5 (ranking rul
 
 The owner wants this **finished, fast, with minimal process**:
 
-- Ship features. Don't write new test suites; keep existing tests passing.
-- Ignore the old multi-computer process (gate numbers, inboxes, the board, the questions board, "owned paths"). The other agents are stopped. Work on one branch and merge to `main` yourself.
-- Talk to the owner in plain technical English. Don't use gate codes or computer codes.
-- Keep these rules from the spec, because they're the product:
+- Build the features. Do not write new test suites. Keep the existing tests passing.
+- Work on one branch and merge to `main` yourself. The other agents are stopped.
+- Talk to the owner in plain technical English.
+- Keep these rules from the spec. They are the product:
   - Store the original report text before any model sees it, and never edit it.
   - Model confidence is not urgency. An uncertain possible harm stays flagged for review; it is never silently downgraded.
   - Only an operator approval changes the confirmed queue. Models only propose.
   - A late, older report never overrides a newer concern (R11 vs R07).
-  - Label honestly: fixture, scenario, and live data look different on screen.
+  - Label data honestly. Fixture, scenario, and live data must look different on screen.
   - The API key lives only in `.env` on the machine running the coordinator. Never commit it, log it, or put it in the frontend.
 - **Out of scope for you:** the radio step. The owner handles it separately. In the demo, R01 can be typed in as labeled scenario input.
 
