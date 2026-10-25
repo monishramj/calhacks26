@@ -70,3 +70,5 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .side-pane::-webkit-scrollbar-thumb { background: #2e2e2e; border-radius: 8px; border: 2px solid var(--panel); }
 .side-pane::-webkit-scrollbar-thumb:hover { background: #444; }
 .scenario-controls .clock, [aria-live] { font-family: var(--mono); }
+.brand { font-weight: 700; font-size: 18px; letter-spacing: -.03em; color: var(--text); padding-right: 12px; border-right: 1px solid var(--border); white-space: nowrap; }
+.brand-at { color: var(--accent-text); }
