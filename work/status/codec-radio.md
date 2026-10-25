@@ -1,31 +1,29 @@
 # Status · ws/codec-radio (C1)
 
-_Updated: 2026-10-25 01:50 PDT by the C1 agent (Claude). **Handoff:** Sud asked for a handoff to a new agent mid-session._
+_Updated: 2026-10-25 02:30 PDT by the C1 agent (Claude, new session after the 01:50 handoff). Works from a cloud clone of `ws/codec-radio` and drives C1 through the device bridge._
 
 ## Now
 
-- **Gate / phase:** G1 / **IMPLEMENT green** (104 passed, 0 skipped, real model; `work/validation/G1.md`). Next is G1 REVIEW.
-- **Last commits:** `6b8cbed` G1 IMPL, then a chore commit adding `tools/runtime-build/` (the repo's `.gitignore` ignores `build/`, so the recipe had been left out). Earlier: `11d8df2` G1 TEST, `3d99370` kit import.
+- **Gate / phase:** G1 / **IMPLEMENT green and complete**: 104 passed, 0 skipped (real model), and the 400-packet regression is **400/400** (`work/validation/G1.md`). Next is G1 REVIEW, which waits for the human's go-ahead.
+- **Last commits:** this commit (400/400 regression recorded); `9ad02f3` merge of `origin/main`; `6b8cbed` G1 IMPL, then a chore commit adding `tools/runtime-build/` (the repo's `.gitignore` ignores `build/`, so the recipe had been left out). Earlier: `11d8df2` G1 TEST, `3d99370` kit import.
 - **Exact next steps, in order:**
-  1. **Finish the IMPLEMENT regression:** all 400 stored kit packets must still decode with the fixed parser. It was interrupted by the handoff with no failures so far.
-     From `services/codec-radio/codec`: `import runtime, mesh_codec as mc, json; m = runtime.load()`, then for each row of `../results/smol_pk.jsonl`, `mc.parse_packet(bytes.fromhex(r["packet"]), m)` must give `ok` and `text == r["text"]`.
-     Append the result to the IMPLEMENT section of `work/validation/G1.md`.
-  2. **G1 REVIEW**, as its own request (§20 G1 REVIEW).
+  1. **G1 REVIEW**, as its own request (§20 G1 REVIEW).
+     - First pin the extra pure-Python dependencies of the vendored bindings (see How to run).
      - On **C1 (native Windows)**: run the suite with `runtime/win-x64`.
      - On **C4 (command post, i7-11800H)**: copy the model, pull this branch, check the fingerprint is `422ac23fca10`, then cross-decode both ways (C1-encoded packets on C4, C4-encoded on C1).
      - Try the failure cases; record real versus unavailable; open a `[G1 REVIEW]` PR to `main`.
-  3. Then G2 TEST → IMPLEMENT → REVIEW (radio bridge).
+  2. Then G2 TEST → IMPLEMENT → REVIEW (radio bridge).
      - Intake per D-007: G0's proposal is that the C4 bridge calls the SpacetimeDB `receiveReport` reducer directly with its own identity. The fallback is an HTTP POST to the coordinator (now ws/inference's), host/port from env.
      - Wait for G0 to freeze `ReportInput` + envelope.
 
 ## How to run what exists
 
 ```bash
-pip install numpy pytest                    # nothing else: Unishox2 and llama.cpp are pinned in runtime/<platform>/
+pip install numpy pytest diskcache jinja2 typing_extensions   # the last three are imported by the vendored third_party/llama_cpp; Unishox2 and llama.cpp themselves are pinned in runtime/<platform>/
 CODEC_MODEL_PATH=/path/to/SmolLM2-360M.Q8_0.gguf python -m pytest services/codec-radio/tests -q -rs
 ```
 
-- Without `CODEC_MODEL_PATH` the `model` tests skip as **unavailable**, never as passed.
+- Without `CODEC_MODEL_PATH` the `model` tests skip as **unavailable**, never as passed. Without `diskcache`/`jinja2`/`typing_extensions` they **error** (`ModuleNotFoundError`); they never pass. Versions verified: diskcache 5.6.3, jinja2 3.1.6, markupsafe 3.0.4, typing_extensions 4.16.0.
 - In Python, from `services/codec-radio/codec/`: `import runtime; m = runtime.load(); print(runtime.fingerprint(m))`. `load()` checks the runtime, model and context hashes.
 - `codec/poc_run.py encode|decode <model> 2 <context> <in.jsonl> <out.jsonl> a:b` is the batch driver. It needs `LLAMA_CPP_LIB_PATH=runtime/<platform>` and `PYTHONPATH=third_party`.
 - `tools/payload_probe.py --ports COMa COMb` measures the payload ceiling. `tools/runtime-build/build_runtime.sh` rebuilds the pinned binaries.
@@ -46,7 +44,7 @@ CODEC_MODEL_PATH=/path/to/SmolLM2-360M.Q8_0.gguf python -m pytest services/codec
   - Re-sending a file with the same name through `device_commit_files` once delivered a stale copy. Use new names, or write through `device_bash`.
 - **Radios.** "MeshSOS A" (`!f99260d4`) goes to **C4**; "MeshSOS B" (`!06fca5ec`) stays on C1 (COM4). The channel link (key) is not in the repo. A size probe may still be running on C1; its results are confounded (see Preflight).
 - **C4 is busy.** It is the command post (D-003) and also runs the coordinator (D-007) and the Laya worker (D-008). Budget its CPU when timing codec decode there.
-- **Questions board:** nothing open for codec-radio at handoff.
+- **Questions board:** nothing open for codec-radio at handoff. At 02:20, C1 answered `1025-020711-state-codec-radio` (status `action`): it accepts ws/state's direct-HTTP `receive_report` intake for G2, keeps the coordinator fallback, accepts the 1000 B text bound, and sets `sentAt: null` unless the G2 framing adds one. One correction: the answer cites the 233 B snapshot ceiling as §17; it is §19.
 
 ## Preflight (§19)
 
@@ -66,7 +64,7 @@ None for G1 REVIEW on C1. The C4 part of the REVIEW needs a slot with the C4 hum
 ## Needs from others
 
 - **ws/state (G0):** frozen `ReportInput` + envelope (stable message ID, version) and the radio-intake transport. D-007 proposal: the C4 bridge calls `receiveReport` directly with its own identity; fallback HTTP with host/port from env.
-- **C4 human (command post):** for G1 REVIEW, copy the model to C4, pull `ws/codec-radio` and run the checks (~15–20 min); for G2, plug in "MeshSOS A" ≥3 m from C1's board. All native, outside `apps/web`.
+- **C4 human (command post):** prep was sent to Sud at 02:17: copy and hash-check the model, clone `ws/codec-radio`, create a venv with `numpy pytest diskcache jinja2 typing_extensions`, plug in "MeshSOS A". The rest comes with REVIEW. For G1 REVIEW, copy the model to C4, pull `ws/codec-radio` and run the checks (~15–20 min); for G2, plug in "MeshSOS A" ≥3 m from C1's board. All native, outside `apps/web`.
 
 ## Inbox acknowledged
 
