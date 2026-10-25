@@ -6,12 +6,16 @@
   --border: #262626;
   --text: #f5f5f5;
   --muted: #a1a1a1;
-  --accent: #e5484d;
-  --accent-soft: rgba(229, 72, 77, .14);
-  --life-safety: #ff6369;
+  --accent: #b4232a;
+  --accent-text: #e35d63;
+  --accent-soft: rgba(180, 35, 42, .18);
+  --life-safety: #e35d63;
   --active-need: #f5a524;
   --information: #d4d4d4;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  --mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -.005em;
   font-size: 14px;
   line-height: 1.5;
   color: var(--text);
@@ -23,7 +27,7 @@ html, body, #root { height: 100%; margin: 0; }
 button:disabled { opacity: .45; cursor: default; }
 button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .mode-banner { display: flex; flex-wrap: nowrap; gap: 16px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; background: var(--bg); z-index: 3; overflow-x: auto; }
-.mode-label { padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 500; }
+.mode-label { padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); font-size: 12px; font-weight: 500; }
 .mode-degraded .mode-label, .mode-none .mode-label { color: var(--muted); }
 .exercise-label { margin-left: auto; color: var(--muted); font-size: 10px; white-space: nowrap; }
 .scenario-controls { display: inline-flex; gap: 12px; align-items: center; white-space: nowrap; }
@@ -31,7 +35,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .scenario-controls [role='alert'] { color: var(--life-safety); }
 .scenario-controls .speed { display: inline-flex; gap: 2px; }
 .scenario-controls .speed button { padding: 5px 7px; background: none; color: var(--muted); }
-.scenario-controls button[aria-pressed='true'] { color: var(--accent); background: var(--selected); }
+.scenario-controls button[aria-pressed='true'] { color: #000; background: var(--text); }
 .scenario-controls .play { min-width: 58px; }
 .scrubber input { width: clamp(80px, 12vw, 180px); accent-color: var(--accent); vertical-align: middle; }
 .scenario-controls .clock { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
@@ -46,14 +50,23 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .panel-section h2 button > span:first-child { color: var(--muted); font-size: 11px; }
 .panel-body { padding: 0 24px 24px; }
 .empty { color: var(--muted); font-size: 13px; margin: 0; }
-.count-badge { margin-left: auto; padding: 0 7px; border-radius: 4px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 500; }
+.count-badge { margin-left: auto; padding: 0 7px; border-radius: 4px; background: var(--accent-soft); color: var(--accent-text); font-family: var(--mono); font-size: 12px; font-weight: 500; }
 .queue-filters { display: flex; gap: 6px; padding-bottom: 16px; flex-wrap: wrap; }
 .queue-filters button { background: none; color: var(--muted); border: 0; border-radius: 999px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
-.queue-filters button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); }
+.queue-filters button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent-text); }
 @media (max-width: 800px) {
   .workspace { grid-template-columns: 1fr; grid-template-rows: 50vh auto; overflow-y: auto; }
   .side-pane { overflow-y: visible; }
   .mode-banner { padding: 8px 12px; gap: 12px; flex-shrink: 0; }
 }
 
-.panel-section.pinned h2 button { color: var(--accent); }
+.panel-section.pinned h2 button { color: var(--text); }
+.panel-section h2 button { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.panel-section.pinned h2 button::after { content: ''; order: -1; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+/* Thin dark scrollbar that sits inside the sidebar instead of a bright default track. */
+.side-pane { scrollbar-width: thin; scrollbar-color: #2e2e2e transparent; scrollbar-gutter: stable; }
+.side-pane::-webkit-scrollbar { width: 8px; }
+.side-pane::-webkit-scrollbar-track { background: transparent; }
+.side-pane::-webkit-scrollbar-thumb { background: #2e2e2e; border-radius: 8px; border: 2px solid var(--panel); }
+.side-pane::-webkit-scrollbar-thumb:hover { background: #444; }
+.scenario-controls .clock, [aria-live] { font-family: var(--mono); }
