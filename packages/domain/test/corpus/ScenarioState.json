@@ -6,7 +6,7 @@
       "name": "waiting on presenter before R07",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -19,7 +19,7 @@
       "name": "finished",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 12,
         "deliveredCount": 12,
@@ -34,7 +34,7 @@
       "name": "next report text",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -48,7 +48,7 @@
       "name": "next message id",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -62,7 +62,7 @@
       "name": "script",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -76,7 +76,7 @@
       "name": "expectations",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -90,7 +90,7 @@
       "name": "timer gate",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -103,7 +103,7 @@
       "name": "delay",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": 6,
@@ -117,7 +117,7 @@
       "name": "negative delivered",
       "payload": {
         "runId": "run-001",
-        "scriptVersion": "exercise-v1",
+        "exerciseVersion": "exercise-v1",
         "seed": "seed-001",
         "logicalClock": 6,
         "deliveredCount": -1,

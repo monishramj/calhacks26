@@ -86,7 +86,8 @@
         "state": "PROVISIONAL",
         "proposalId": "prop-0002",
         "reviewer": null
-      }
+      },
+      "crossField": true
     },
     {
       "name": "kind MERGE",

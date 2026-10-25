@@ -36,7 +36,8 @@ describe.each(corpus.map((c) => [c.type, c] as const))('corpus %s', (type, c) =>
   it.each(c.valid.map((v) => [v.name, v.payload] as const))('schema accepts: %s', (_name, payload) => {
     expect(validators[type]!(payload)).toBe(true);
   });
-  it.each(c.invalid.map((v) => [v.name, v.payload] as const))('schema rejects: %s', (_name, payload) => {
+  const schemaExpressible = c.invalid.filter((v) => !v.crossField);
+  it.each(schemaExpressible.map((v) => [v.name, v.payload] as const))('schema rejects: %s', (_name, payload) => {
     expect(validators[type]!(payload)).toBe(false);
   });
 

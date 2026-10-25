@@ -4,14 +4,19 @@ _Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
 
 ## Now
 
-- **Gate / phase:** G0 / **TEST red** (`work/validation/G0.md`). vitest has 695 of 773 failing and pytest 339 of 484, all on assertions against stubs. Root `npm test` is red on `ws/state` until IMPLEMENT. Don't PR to main before then.
-- **Last commit:** `[ws/state][G0][TEST] ...` on `ws/state`
-- **Exact next step:** G0 IMPLEMENT (§20 common context + G0 IMPLEMENT prompt). Replace the stubs in `packages/domain/src/index.ts`, `schema/contract.schema.json`, and `python/domain_contract.py`. Add TS types, set `CONTRACT_VERSION` 1.0.0 with a CHANGELOG line, and author `fixtures/private/exercise/exercise.json` + `expectations.json` in the shape the tests fix (G0.md "Contract choices"). Don't weaken tests. Freeze the radio-intake transport with C1 (inbox 2, 6): verify the SpacetimeDB 2.13 HTTP reducer call, or fall back to a coordinator POST.
-- **G0 ETA posted on the board (1025-005903):** `[contract] v1` PR ~03:30 PDT, merged ~03:45.
+- **Gate / phase:** G0 / **IMPL green** (`work/validation/G0.md`). Contract **v1.0.0** on `ws/state`. vitest 770/770, pytest 482/482. Not on main yet: that waits for REVIEW and a `[contract] v1` PR.
+- **Last commit:** `[ws/state][G0][IMPL] ...` on `ws/state`
+- **Exact next step:** G0 REVIEW (§20 common context + G0 REVIEW prompt).
+  - Check every producer/consumer meaning against GROUND_TRUTH: place aliases, R11 timing, starting state, R07 checkpoint, no labels in model inputs.
+  - Read C1's answer on 1025-020711-state-codec-radio (intake transport, 1000-byte bound).
+  - Settle the ws/web differences (G0.md "Contract choices" 2, 5, 7, 8).
+  - Mutation-check a few rules (e.g. let a worker approve and confirm the tests catch it).
+  - Then open `[contract] v1` PR to main.
+- **G0 ETA posted on the board (1025-005903):** `[contract] v1` PR ~03:30 PDT, merged ~03:45. On track.
 
 ## How to run what exists
 
-- Root: `npm install` (workspaces `packages/*`, `apps/*`). `npm test` runs each workspace's `test` script: `packages/domain` vitest, currently red by design. `npm run dev:replay`, `npm run build`, and `npm run test:e2e` forward to `@calhacks26/web`.
+- Root: `npm install` (workspaces `packages/*`, `apps/*`). `npm test` runs each workspace's `test` script: `packages/domain` vitest (green). `npm run dev:replay`, `npm run build`, and `npm run test:e2e` forward to `@calhacks26/web`.
 - Contract tests: `npm test -w @calhacks26/domain`. Python side: `npm run setup:py -w @calhacks26/domain` once (pinned venv: jsonschema 4.26.0, pytest 9.1.1), then `npm run test:py -w @calhacks26/domain`. Regenerate the shared corpus with `python3 packages/domain/test/corpus/make_corpus.py`.
 - Docker (C4): `docker compose pull && docker compose up -d spacetimedb`. Set `SPACETIMEDB_HOST_PORT` if a native server already holds 3000.
 - SpacetimeDB module: see `spacetimedb/README.md` "Local setup". `spacetimedb/` is **not** a root workspace. It keeps its own `package-lock.json` (pinned 2.13) and is built and published from its folder with `spacetime publish`. `src/index.ts` is still the template placeholder until G3.
@@ -33,6 +38,7 @@ None. Coordinator ownership is settled by **D-007**: ws/inference owns `apps/coo
 
 ## Needs from others
 
+- ws/codec-radio: confirm the frozen radio-intake transport and the 1000-byte text bound (board 1025-020711-state-codec-radio, `packages/domain/README.md`).
 - ws/codec-radio: agree on the radio-intake transport during G0. C2 proposal: the C4 bridge calls the `receiveReport` reducer through SpacetimeDB's HTTP reducer-call API with its own identity (unverified in 2.13, checked in G0). Fallback: HTTP POST of `ReportInput` to the coordinator, host/port from env.
 - ws/inference: `apps/coordinator/**` is yours (D-007), including `package.json`. ws/state regenerates the root lockfile on merge.
 - ws/web: G0 differs from `apps/web/src/adapters/contract.ts` on `Report.provenance`, flat vs nested proposal records, `ScenarioState.nextMessageId` (dropped), `claimJob.workerId` (dropped), and `approveProposal` (now carries `inputSignature` + `baseIncidentVersions`). See `work/validation/G0.md`; settled in G0 REVIEW.

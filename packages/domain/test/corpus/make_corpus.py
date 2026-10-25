@@ -9,12 +9,14 @@ Only rules a JSON Schema can express go here. Cross-record rules (source ownersh
 freshness, receive order) are tested in TypeScript against the rule functions.
 
 Run: python3 test/corpus/make_corpus.py   (stdlib only; commit the output)
+     python3 test/corpus/make_corpus.py --check   (exit 1 if committed files are stale)
 """
 
 from __future__ import annotations
 
 import copy
 import json
+import sys
 from pathlib import Path
 
 OUT = Path(__file__).parent
@@ -524,7 +526,7 @@ review_event = {
 
 SCEN = {
     "runId": RUN,
-    "scriptVersion": "exercise-v1",
+    "exerciseVersion": "exercise-v1",
     "seed": "seed-001",
     "logicalClock": 6,
     "deliveredCount": 6,
@@ -665,15 +667,42 @@ ALL = {
 }
 
 
-def main() -> None:
+# Invalid cases whose rule compares two fields, which JSON Schema cannot express.
+# The raw-schema checks skip these; validateWire (TS) and domain_contract.validate
+# (Python) must still reject them. Listed in the schema's x-crossFieldRules.
+CROSS_FIELD = {
+    ("LocalSuggestion", "candidate missing from baseIncidentVersions"),
+    ("IncidentProposal", "baseIncidentVersions omits the target incident"),
+    ("IncidentProposal", "relation to itself"),
+    ("ReportRelation", "relation to itself"),
+}
+
+
+def render() -> dict[str, str]:
+    out = {}
     for name, cases in ALL.items():
         doc = {
             "type": name,
             "generatedBy": "test/corpus/make_corpus.py",
             "valid": [{"name": n, "payload": p} for n, p in cases["valid"]],
-            "invalid": [{"name": n, "payload": p} for n, p in cases["invalid"]],
+            "invalid": [
+                {"name": n, "payload": p, **({"crossField": True} if (name, n) in CROSS_FIELD else {})}
+                for n, p in cases["invalid"]
+            ],
         }
-        (OUT / f"{name}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        out[f"{name}.json"] = json.dumps(doc, indent=2, ensure_ascii=False) + "\n"
+    return out
+
+
+def main() -> None:
+    files = render()
+    if "--check" in sys.argv:
+        stale = [n for n, text in files.items() if not (OUT / n).exists() or (OUT / n).read_text(encoding="utf-8") != text]
+        sys.exit(1 if stale else 0)
+    for n, text in files.items():
+        (OUT / n).write_text(text, encoding="utf-8")
+    tagged = {(d, c) for d, cs in ALL.items() for c, _ in cs["invalid"]}
+    assert CROSS_FIELD <= tagged, CROSS_FIELD - tagged
     print(f"wrote {len(ALL)} corpus files")
 
 

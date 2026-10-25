@@ -155,7 +155,8 @@
           "No one has confirmed a person in the main building."
         ],
         "provider": "claude"
-      }
+      },
+      "crossField": true
     },
     {
       "name": "relation to itself",
@@ -189,7 +190,8 @@
           "No one has confirmed a person in the main building."
         ],
         "provider": "claude"
-      }
+      },
+      "crossField": true
     },
     {
       "name": "unknown relation kind",

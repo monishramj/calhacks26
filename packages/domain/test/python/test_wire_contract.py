@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import math
+import subprocess
 import sys
 from pathlib import Path
 
@@ -28,9 +29,11 @@ def validator(name: str) -> Draft202012Validator:
     return Draft202012Validator({"$ref": f"#/$defs/{name}", **{k: v for k, v in SCHEMA.items() if k != "$id"}})
 
 
-def cases(kind: str):
+def cases(kind: str, schema_only: bool = False):
     for doc in CORPUS:
         for case in doc[kind]:
+            if schema_only and case.get("crossField"):
+                continue  # two-field rule: JSON Schema can't express it; the helper must
             yield pytest.param(doc["type"], case["payload"], id=f"{doc['type']}: {case['name']}")
 
 
@@ -54,7 +57,7 @@ def test_schema_accepts_valid(type_name, payload):
     assert list(validator(type_name).iter_errors(payload)) == []
 
 
-@pytest.mark.parametrize("type_name,payload", list(cases("invalid")))
+@pytest.mark.parametrize("type_name,payload", list(cases("invalid", schema_only=True)))
 def test_schema_rejects_invalid(type_name, payload):
     assert list(validator(type_name).iter_errors(payload)) != []
 
@@ -148,3 +151,9 @@ def test_worker_echoes_job_signature_unchanged():
     }
     assert suggestion["inputSignature"] == job["inputSignature"]
     assert domain_contract.validate("LocalSuggestion", json.loads(json.dumps(suggestion))) == []
+
+
+@pytest.mark.parametrize("generator", ["schema/make_schema.py", "test/corpus/make_corpus.py"])
+def test_committed_files_match_their_generator(generator):
+    r = subprocess.run([sys.executable, str(DOMAIN / generator), "--check"], cwd=DOMAIN)
+    assert r.returncode == 0, f"{generator} output is stale; rerun it and commit"

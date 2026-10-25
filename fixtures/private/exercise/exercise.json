@@ -1,0 +1,360 @@
+{
+  "exerciseVersion": "exercise-v1",
+  "about": "Authored §18 exercise (docs/GROUND_TRUTH.md). Synthetic messages, never historical Helene transcripts. Private: never model input, never a client-visible table. Coordinates are local scene units, not lat/long. sentAt values are authored; R10 has none, and every reportedEventAt is unknown (null). R11 is an older gym report delivered late: it was sent at 09:02, before R07 at 09:40, and is delivered after R10.",
+  "places": [
+    {
+      "placeId": "school",
+      "position": {
+        "x": 0,
+        "z": 0
+      },
+      "aliases": [
+        "school"
+      ],
+      "subareas": [
+        {
+          "subareaId": "school.gym",
+          "aliases": [
+            "school gym",
+            "school sports hall"
+          ]
+        },
+        {
+          "subareaId": "school.main_building",
+          "aliases": [
+            "school main building",
+            "main building"
+          ]
+        }
+      ]
+    },
+    {
+      "placeId": "residence",
+      "position": {
+        "x": 80,
+        "z": 20
+      },
+      "aliases": [
+        "house beside the school"
+      ],
+      "subareas": []
+    },
+    {
+      "placeId": "shelter",
+      "position": {
+        "x": -120,
+        "z": 40
+      },
+      "aliases": [
+        "shelter"
+      ],
+      "subareas": []
+    }
+  ],
+  "startingState": {
+    "afterMessageId": "R06",
+    "provenance": "authored",
+    "about": "Operator-reviewed state after R01-R06. Authored starting conditions, not forced model outputs.",
+    "incidents": [
+      {
+        "incidentId": "inc-school",
+        "placeId": "school",
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "reportMessageIds": [
+          "R01",
+          "R05"
+        ],
+        "summary": null
+      },
+      {
+        "incidentId": "inc-shelter",
+        "placeId": "shelter",
+        "status": "OPEN",
+        "attention": "ACTIVE_NEED",
+        "reportMessageIds": [
+          "R02",
+          "R04"
+        ],
+        "summary": null
+      },
+      {
+        "incidentId": "inc-residence",
+        "placeId": "residence",
+        "status": "OPEN",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "reportMessageIds": [
+          "R03",
+          "R06"
+        ],
+        "summary": null
+      }
+    ]
+  },
+  "events": [
+    {
+      "position": 1,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": true,
+      "input": {
+        "sourceId": "team-a",
+        "messageId": "R01",
+        "text": "School gym evacuation complete. Everyone our team checked is outside.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:00:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 2,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "shelter-staff",
+        "messageId": "R02",
+        "text": "Shelter needs blankets for tonight.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:05:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 3,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-b",
+        "messageId": "R03",
+        "text": "House beside the school: water rising downstairs, two people waiting upstairs.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:10:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 4,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "shelter-staff",
+        "messageId": "R04",
+        "text": "Repeating the shelter request: blankets still needed tonight.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:20:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 5,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-c",
+        "messageId": "R05",
+        "text": "School sports hall checked. Our search of that area is complete.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:25:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 6,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-b",
+        "messageId": "R06",
+        "text": "House beside the school: the people upstairs have asked for help.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:30:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 7,
+      "gate": "SEND_NEXT_REPORT",
+      "gateRequiresIncident": "inc-school",
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-a",
+        "messageId": "R07",
+        "text": "Correction: the school gym is clear, but someone may still be upstairs in the main building.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:40:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 8,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-d",
+        "messageId": "R08",
+        "text": "Repeating the school report: possible person upstairs in the main building.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:45:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 9,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-a",
+        "messageId": "R09",
+        "text": "School report refers to the main building beside the gym.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:50:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 10,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "relay-desk",
+        "messageId": "R10",
+        "text": "Has everyone at the school been rescued?",
+        "origin": "scenario",
+        "sentAt": null,
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 11,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-a",
+        "messageId": "R11",
+        "text": "Earlier school gym report: all people our team checked were outside.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T09:02:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    },
+    {
+      "position": 12,
+      "gate": null,
+      "gateRequiresIncident": null,
+      "radioCandidate": false,
+      "input": {
+        "sourceId": "team-c",
+        "messageId": "R12",
+        "text": "School main building search is not complete. We cannot give an all-clear.",
+        "origin": "scenario",
+        "sentAt": "2026-10-25T10:05:00Z",
+        "reportedEventAt": null,
+        "reportedLocation": null,
+        "transport": {
+          "verification": "not_applicable",
+          "encoding": "not_applicable",
+          "measurementSource": "not_applicable",
+          "originalBytes": null,
+          "applicationPacketBytes": null
+        }
+      }
+    }
+  ]
+}

@@ -34,7 +34,7 @@ export const EXPECTED_WIRE_TYPES = [
   'ResetRunCommand',
 ] as const;
 
-export type CorpusCase = { name: string; payload: unknown };
+export type CorpusCase = { name: string; payload: unknown; crossField?: boolean };
 export type Corpus = { type: string; valid: CorpusCase[]; invalid: CorpusCase[] };
 
 export function loadSchema(): any {
