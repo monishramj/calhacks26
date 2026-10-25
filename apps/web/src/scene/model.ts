@@ -1,4 +1,4 @@
-import { SCENE_METADATA } from './georeference';
+import { SUNSET } from './georeference';
 import type { IncidentView } from '../../../../packages/domain/src/types';
 
 // A read-only rendering projection of frozen contract v1, not another schema.
@@ -13,15 +13,17 @@ export type SceneDataProps = {
 
 export type GroundPoint = { x: number; z: number };
 
+const { school, residence, shelter } = SUNSET.sites;
+// §18 positions in scene metres; tools/build_sunset.py puts the map's school building at the origin and real
+// buildings under the other two. Synthetic exercise sites with generic labels only.
 export const PLACES = [
-  { id: 'school', name: 'School', x: 0, z: 0 },
-  { id: 'residence', name: 'Residence', x: 80, z: 20 },
-  { id: 'shelter', name: 'Shelter', x: -120, z: 40 },
+  { id: 'school', name: 'School', x: school.x, z: school.z },
+  { id: 'residence', name: 'Residence', x: residence.x, z: residence.z },
+  { id: 'shelter', name: 'Shelter', x: shelter.x, z: shelter.z },
 ] as const;
-// Fixed display settings in arbitrary exercise units, never dataset-normalized.
-export const HEATMAP_RADIUS = 45;
-export const HEATMAP_HEIGHT_SCALE = 14;
-export const HEATMAP_BASE = SCENE_METADATA.terrainMaxY + 24;
+// Fixed display settings in metres, never dataset-normalized.
+export const HEATMAP_RADIUS = 60;
+export const HEATMAP_HEIGHT_SCALE = 30;
 
 export function placePosition(placeId: string | null): GroundPoint | null {
   const place = PLACES.find((candidate) => candidate.id === placeId);

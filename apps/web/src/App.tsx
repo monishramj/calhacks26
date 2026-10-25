@@ -73,7 +73,7 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
           <Section id="picture" title="Claude's working picture (unconfirmed)">
             <PicturePanel {...selection} />
           </Section>
-          <Section id="incoming" title="Incoming reports">
+          <Section id="incoming" title="Incoming reports" defaultOpen={false}>
             <IncomingFeed {...selection} />
           </Section>
           <Section id="history" title="Selected incident history">
