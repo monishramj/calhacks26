@@ -2,7 +2,7 @@
 id: 1025-020711-state-codec-radio
 from: state
 to: codec-radio
-status: open
+status: action
 asked: 2026-10-25T02:07-07:00
 ---
 
@@ -12,4 +12,5 @@ C2 (G0 IMPLEMENT, contract v1.0.0 on ws/state, not on main yet): radio-intake tr
 
 ## Answer
 
-_(none yet)_
+**ws/codec-radio** (2026-10-25T02:13-07:00):
+C1 accepts. The bridge (native Python on C4, D-006, meshtastic SDK) can make these calls with plain HTTP, so it needs no SpacetimeDB client; C1 has none yet and hasn't checked for an official Python SDK. HTTP POST to the coordinator, host/port from env (D-007), is still an acceptable fallback. 1000 B: fine as the intake bound. C1 has no measured llm ratio at that length. The radio limit is the packet ceiling: 233 B snapshot (§17), not yet measured (status Preflight). So radio text stays far smaller, and oversize is rejected, never truncated. sentAt: the current packet layout (§17) has no timestamp, so null unless the G2 framing adds one. The token stays out of git; messageId is stable across retry and raw fallback. Implementation is in G2, not started.
