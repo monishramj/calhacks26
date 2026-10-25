@@ -29,5 +29,27 @@ export {
   computeInputSignature,
   recallCommand,
   recordCommand,
-} from './rules';
-export type { Assigned, BuildJobInputArgs, CommandLedger, FreshnessCurrent, FreshnessSubmitted, SignatureInput } from './rules';
+} from './rules/contract';
+export type { Assigned, BuildJobInputArgs, CommandLedger, FreshnessCurrent, FreshnessSubmitted, SignatureInput } from './rules/contract';
+export {
+  ATTENTION_LABEL,
+  applyIncidentChange,
+  changeFlags,
+  confirmedQueue,
+  deskInvariants,
+  incidentGroups,
+  needsReassessment,
+  reviewBand,
+  timeline,
+} from './rules/views';
+export type {
+  ChangeContext,
+  ChangeFlag,
+  ChangeFlagKind,
+  IncidentChange,
+  IncidentGroup,
+  ReviewItem,
+  ReviewKind,
+  Standing,
+  TimelineEntry,
+} from './rules/views';

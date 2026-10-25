@@ -4,16 +4,10 @@ _Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
 
 ## Now
 
-- **Gate / phase:** G0 / **REVIEW passed, merged to main as v1.0.0** (PR #2). Since then: Windows test-harness fix (inbox 10), a chore PR to main. vitest 777/777, pytest 486/486 on macOS. **Not yet run on Windows.**
-- **Last commit:** `[ws/state][G0][REVIEW] ...` on `ws/state`
-- **Exact next step:** G6 rules TEST (§20 common context + G6 TEST prompt, ws/state slice). Write pure-function tests in `packages/domain/src/rules/` for:
-  - confirmed queue order (attention category, then earlier open-cycle sequence; no numeric score; duplicates never raise severity)
-  - review band
-  - timeline (sent/event/receive kept apart; late old reports never erase newer concerns)
-  - change flags (new unconfirmed evidence flags reassessment)
-
-  C1 accepted the intake transport and the 1000-byte bound (board 1025-020711, closed). Inbox 10 says "then G3" while inbox 3 says G6 rules before G3. Following inbox 3 (and KICKOFF 1:00–2:30) unless the orchestrator says otherwise.
-- **G0 ETA posted on the board (1025-005903):** PR ~03:30 PDT, merged ~03:45. The PR is open on time.
+- **Gate / phase:** G6 rules / **TEST red** (`work/validation/G6-state.md`). G6: 64 of 69 failing, all on assertions against the stubs in `packages/domain/src/rules/views.ts`. G0 stays green (777/777, pytest 486/486). Root `npm test` is red on `ws/state` until G6 IMPLEMENT. Don't PR to main before then.
+- **Last commit:** `[ws/state][G6][TEST] ...` on `ws/state`
+- **Exact next step:** G6 IMPLEMENT (§20 common context + G6 IMPLEMENT prompt, rules slice). Implement `confirmedQueue`, `reviewBand`, `needsReassessment`, `timeline`, `incidentGroups`, `changeFlags`, `applyIncidentChange`, `deskInvariants`, and `ATTENTION_LABEL` in `src/rules/views.ts`, following G6-state.md "Choices". Don't weaken tests. Then REVIEW, then G3.
+- **G0:** merged as v1.0.0 (PR #2); Windows fix merged (PR #3).
 
 ## How to run what exists
 
@@ -47,7 +41,7 @@ None. Coordinator ownership is settled by **D-007**: ws/inference owns `apps/coo
 
 ## Inbox acknowledged
 
-1–10 (1–8 read 01:40, 9 read 01:52, 10 read 03:20).
+1–10 (1–8 read 01:40, 9 read 01:52, 10 read 03:20). Orchestrator confirmed G6 rules, then G3.
 - 1–3: G0 TEST → IMPL → REVIEW next, then G6 rules before G3. The intake transport and adapter interface get frozen in G0.
 - 4: questions board checked. 1025-005903 answered (needs-human), 1025-011817 answered.
 - 5: will review ws/web's `contract.ts` in G0. Root `package.json` landed for C3.
