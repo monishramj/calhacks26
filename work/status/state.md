@@ -4,7 +4,7 @@ _Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
 
 ## Now
 
-- **Gate / phase:** G0 / **REVIEW passed** (`work/validation/G0.md`). Contract **v1.0.0**; `[contract] v1` PR open to main (link in G0.md / the PR list). vitest 777/777, pytest 486/486.
+- **Gate / phase:** G0 / **REVIEW passed, merged to main as v1.0.0** (PR #2). Since then: Windows test-harness fix (inbox 10), a chore PR to main. vitest 777/777, pytest 486/486 on macOS. **Not yet run on Windows.**
 - **Last commit:** `[ws/state][G0][REVIEW] ...` on `ws/state`
 - **Exact next step:** G6 rules TEST (§20 common context + G6 TEST prompt, ws/state slice). Write pure-function tests in `packages/domain/src/rules/` for:
   - confirmed queue order (attention category, then earlier open-cycle sequence; no numeric score; duplicates never raise severity)
@@ -12,13 +12,13 @@ _Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
   - timeline (sent/event/receive kept apart; late old reports never erase newer concerns)
   - change flags (new unconfirmed evidence flags reassessment)
 
-  After the PR merges, merge `origin/main` first. If C1 answers 1025-020711 with a different byte bound or transport, that's a v1.x `[contract]` change.
+  C1 accepted the intake transport and the 1000-byte bound (board 1025-020711, closed). Inbox 10 says "then G3" while inbox 3 says G6 rules before G3. Following inbox 3 (and KICKOFF 1:00–2:30) unless the orchestrator says otherwise.
 - **G0 ETA posted on the board (1025-005903):** PR ~03:30 PDT, merged ~03:45. The PR is open on time.
 
 ## How to run what exists
 
 - Root: `npm install` (workspaces `packages/*`, `apps/*`). `npm test` runs each workspace's `test` script: `packages/domain` vitest (green). `npm run dev:replay`, `npm run build`, and `npm run test:e2e` forward to `@calhacks26/web`.
-- Contract tests: `npm test -w @calhacks26/domain`. Python side: `npm run setup:py -w @calhacks26/domain` once (pinned venv: jsonschema 4.26.0, pytest 9.1.1), then `npm run test:py -w @calhacks26/domain`. Regenerate the shared corpus with `python3 packages/domain/test/corpus/make_corpus.py`.
+- Contract tests: `npm test -w @calhacks26/domain`. Python side: `npm run setup:py -w @calhacks26/domain` once (pinned venv: jsonschema 4.26.0, pytest 9.1.1; finds `python3`, `python`, or `py -3`, or set `PYTHON`), then `npm run test:py -w @calhacks26/domain`. Regenerate the shared corpus with `python3 packages/domain/test/corpus/make_corpus.py`.
 - Docker (C4): `docker compose pull && docker compose up -d spacetimedb`. Set `SPACETIMEDB_HOST_PORT` if a native server already holds 3000.
 - SpacetimeDB module: see `spacetimedb/README.md` "Local setup". `spacetimedb/` is **not** a root workspace. It keeps its own `package-lock.json` (pinned 2.13) and is built and published from its folder with `spacetime publish`. `src/index.ts` is still the template placeholder until G3.
 
@@ -47,10 +47,11 @@ None. Coordinator ownership is settled by **D-007**: ws/inference owns `apps/coo
 
 ## Inbox acknowledged
 
-1–9 (1–8 read 01:40, 9 read 01:52).
+1–10 (1–8 read 01:40, 9 read 01:52, 10 read 03:20).
 - 1–3: G0 TEST → IMPL → REVIEW next, then G6 rules before G3. The intake transport and adapter interface get frozen in G0.
 - 4: questions board checked. 1025-005903 answered (needs-human), 1025-011817 answered.
 - 5: will review ws/web's `contract.ts` in G0. Root `package.json` landed for C3.
 - 6, 8: D-003 revised. C4 is the command post. C2 publishes the module to C4 over the LAN, and every URI comes from `SPACETIMEDB_URI`.
 - 7: D-006 `docker-compose.yml` added in G0 TEST, pinned by tag + digest, not yet run on C4.
 - 9: D-007 acknowledged. ws/state no longer edits `apps/coordinator/**`.
+- 10: done. Python lookup tries `PYTHON`, `python3`, `python`, then `py -3`, and skips the Microsoft Store stub. Venv path is `.venv\\Scripts\\python.exe` on Windows; `setup:py` is a node script. Path checks use `/` on every OS, and the §18 parse tolerates CRLF. Needs a rerun on C4.
