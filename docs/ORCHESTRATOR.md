@@ -44,7 +44,7 @@ The orchestrator drafts these and waits for a person to confirm in chat or in a 
 
 - Any change to `docs/GROUND_TRUTH.md` or a new `work/DECISIONS.md` entry.
 - Contract version bumps.
-- Held-out labels in `fixtures/private/heldout/`, reviewed by someone not on `ws/inference`.
+- Held-out labels in `fixtures/private/heldout/`: the PM (pitch role) owns them.
 - Scope cuts and the final pitch claims (§21, §22).
 
 ## Bootstrap prompt

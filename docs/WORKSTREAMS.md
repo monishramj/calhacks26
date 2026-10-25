@@ -86,7 +86,7 @@ These are the only places workstreams touch. Each is defined by `packages/domain
 
 ## Orchestrator · `main` · PM bookkeeping
 
-See `docs/ORCHESTRATOR.md`. Hour 0: initialize `work/BOARD.md` and `work/PREFLIGHT.md`. Draft the ≥24 held-out cases (§13) in `fixtures/private/heldout/` for a human not on C3 to review. Review C2's authored exercise expectations.
+See `docs/ORCHESTRATOR.md`. Hour 0: initialize `work/BOARD.md` and `work/PREFLIGHT.md`, and review C2's authored exercise expectations. The ≥24 held-out cases (§13) belong to the PM (pitch role).
 
 ---
 

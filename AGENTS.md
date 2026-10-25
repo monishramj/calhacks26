@@ -58,7 +58,7 @@ Each workstream also owns `work/status/<ws>.md` and its own `work/validation/` f
 
 **Editing a path you don't own:** don't. Write what you need in your status file under **Needs from others**, or open a small PR and tag the owner. Two workstreams never edit the same files at the same time (§11).
 
-**`fixtures/private/heldout/`** is drafted by the orchestrator and reviewed by a human who is not on the inference workstream.
+**`fixtures/private/heldout/`** belongs to the PM (pitch role). The inference workstream never authors or reads it.
 
 ## Contracts (`packages/domain`)
 

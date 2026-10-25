@@ -2,7 +2,7 @@
 
 _Maintained by the orchestrator on `main`. Status comes from validation files, never from claims alone._
 
-**Last orchestrator pass:** 2026-10-24 23:45 PDT. No workstream or lane branch has pushed yet, and there are no open PRs.
+**Last orchestrator pass:** 2026-10-25 00:26 PDT. No workstream or lane branch has pushed yet. Team reports: the radios exchange messages, SpacetimeDB is being set up on C2, and the Claude key is being set up.
 
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
@@ -16,8 +16,8 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | G3 incident state | P0 | ws/state | not started | `work/validation/G3.md` | Real local SpacetimeDB. |
 | G4 local Laya | P0 | ws/inference | not started | `work/validation/G4.md` | Needs a loadable Laya. |
 | G5 Claude enrichment | P1 | ws/inference | not started | `work/validation/G5.md` | Fixture tools first, live after G3. |
-| G6 queue and history | P0 | ws/state + ws/web | not started | `G6-state.md`, `G6-web.md` | Rules in `packages/domain/src/rules`. |
-| G7 scene and heatmap | P0 | ws/web | not started | `work/validation/G7.md` | Fixture adapter first. |
+| G6 queue and history | P0 | ws/state + ws/web (panels lane) | not started | `G6-state.md`, `G6-panels.md` | Rules in `packages/domain/src/rules`. |
+| G7 scene and heatmap | P0 | ws/web (scene lane) | not started | `G7-scene.md` | Fixture adapter first. |
 | G8 resilience | P0 | all | not started | `G8-state.md`, `G8-inference.md`, `G8-web.md` | After the G3–G7 real paths. |
 | G9 end-to-end | P0 | all | not started | `G9-radio.md`, `G9-integration.md` | Every pitched feature. |
 
@@ -25,19 +25,19 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 
 | Checkpoint | Target | Status |
 |---|---|---|
-| CP1 contracts merged + preflight filled | T+1:30 | not started |
-| CP2 / M1 labeled replay with basic 3D, evidence, queue movement | T+3:00 | not started |
-| CP3 / M2 real local backend + Laya (+ Claude), two clients agree | T+5:30 | not started |
+| CP1 contracts merged + preflight filled | T+1:00 | not started |
+| CP2 / M1 core built: labeled replay with basic 3D, evidence, queue movement | T+2:30 | not started |
+| CP3 integrated: radio report → SpacetimeDB → Laya → approval, two browsers agree (+ Claude) | T+4:00 | not started |
 | CP4 feature freeze; G9 evidence and pitch-claim check | T+7:00 | not started |
-| M3 radio-connected demo with failure tests and a baseline | by T+8:00 | not started |
+| Final | T+8:00 | not started |
 
-## CP1 check (T+1:30)
+## CP1 check (T+1:00)
 
 The ground truth already says what happens for every outcome. The orchestrator applies these rules; nobody has to decide anything.
 
 | Check | Comes from | Ready | Not ready (rule that applies) |
 |---|---|---|---|
-| Two radios + identical codec weights, context, and runtime on both endpoints | C1 preflight | G2 continues on real hardware | G2 stays unverified. Others keep building against fixtures. The demo's radio step uses labeled scenario input (§8, §18, §19). |
+| Codec over the radios (the radios already exchange messages): identical codec weights, context, and runtime on both endpoints, and a binary payload under the measured ceiling | C1 preflight | G2 continues on real hardware | G2 stays unverified. Others keep building against fixtures. The demo's radio step uses labeled scenario input (§8, §18, §19). |
 | Laya loads locally | C3 preflight | G4 continues | Reports stay visible and manually reviewable. G4 is unverified, and the demo is presented as an explicitly limited prototype (§10, §14). C3 moves to G5. |
 | Claude reachable with an account-accessible model | C3 smoke call | Pin it in `CLAUDE_MODEL` (§6, §19) | G5 unverified. The local path is unaffected (§10). |
 | Local SpacetimeDB server/client pair | C2 preflight | Pin versions; G3 continues | G3 blocked. The UI continues on the fixture adapter, labeled, never as a silent substitute (§16). |
