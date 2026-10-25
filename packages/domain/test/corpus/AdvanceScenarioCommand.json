@@ -1,0 +1,49 @@
+{
+  "type": "AdvanceScenarioCommand",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "presenter sends next report",
+      "payload": {
+        "commandId": "cmd-0004",
+        "runId": "run-001",
+        "expectedDeliveredCount": 6
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "timer delay",
+      "payload": {
+        "commandId": "cmd-0004",
+        "runId": "run-001",
+        "expectedDeliveredCount": 6,
+        "delayMs": 5000
+      }
+    },
+    {
+      "name": "after seconds",
+      "payload": {
+        "commandId": "cmd-0004",
+        "runId": "run-001",
+        "expectedDeliveredCount": 6,
+        "afterSeconds": 3
+      }
+    },
+    {
+      "name": "negative expected count",
+      "payload": {
+        "commandId": "cmd-0004",
+        "runId": "run-001",
+        "expectedDeliveredCount": -1
+      }
+    },
+    {
+      "name": "missing commandId",
+      "payload": {
+        "runId": "run-001",
+        "expectedDeliveredCount": 6
+      }
+    }
+  ]
+}

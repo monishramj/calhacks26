@@ -1,0 +1,261 @@
+{
+  "type": "IncidentView",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "open school incident",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "unknown attention, place, and summary",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": null,
+        "confirmedPlaceId": null,
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": null,
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "resolved incident",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 4,
+        "status": "RESOLVED",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "possible life safety",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-residence",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "POSSIBLE_LIFE_SAFETY",
+        "confirmedPlaceId": "residence",
+        "confirmedReportIds": [
+          "rep-000003"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 3
+      }
+    },
+    {
+      "name": "no confirmed reports yet",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "revision 0",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 0,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "status CLOSED",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "CLOSED",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "attention HIGH",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "HIGH",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "numeric attention",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": 3,
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "numeric urgency score field",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1,
+        "urgencyScore": 0.93
+      }
+    },
+    {
+      "name": "duplicate confirmedReportIds",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000001"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "openCycleStartSequence 0",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 0
+      }
+    },
+    {
+      "name": "summary key omitted",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "openCycleStartSequence": 1
+      }
+    },
+    {
+      "name": "team assignment",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1,
+        "assignedTeam": "team-2"
+      }
+    },
+    {
+      "name": "headcount",
+      "payload": {
+        "runId": "run-001",
+        "incidentId": "inc-school",
+        "revision": 1,
+        "status": "OPEN",
+        "attention": "INFORMATION",
+        "confirmedPlaceId": "school",
+        "confirmedReportIds": [
+          "rep-000001",
+          "rep-000005"
+        ],
+        "summary": "One team checked the gym; the rest of the school is not confirmed clear.",
+        "openCycleStartSequence": 1,
+        "peopleCount": 2
+      }
+    }
+  ]
+}

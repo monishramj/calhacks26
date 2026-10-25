@@ -1,0 +1,120 @@
+{
+  "type": "ReportRelation",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "provisional repeat",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "PROVISIONAL",
+        "proposalId": "prop-0002",
+        "reviewer": null
+      }
+    },
+    {
+      "name": "confirmed with backend reviewer identity",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "CONFIRMED",
+        "proposalId": "prop-0002",
+        "reviewer": "id:c20000ab"
+      }
+    },
+    {
+      "name": "operator relation without proposal",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "CONFIRMED",
+        "proposalId": null,
+        "reviewer": "id:c20000ab"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "confirmed without reviewer",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "CONFIRMED",
+        "proposalId": "prop-0002",
+        "reviewer": null
+      }
+    },
+    {
+      "name": "provisional with reviewer",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "PROVISIONAL",
+        "proposalId": "prop-0002",
+        "reviewer": "id:c20000ab"
+      }
+    },
+    {
+      "name": "relation to itself",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000004",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "PROVISIONAL",
+        "proposalId": "prop-0002",
+        "reviewer": null
+      }
+    },
+    {
+      "name": "kind MERGE",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "MERGE",
+        "incidentId": "inc-shelter",
+        "state": "PROVISIONAL",
+        "proposalId": "prop-0002",
+        "reviewer": null
+      }
+    },
+    {
+      "name": "state AUTO",
+      "payload": {
+        "runId": "run-001",
+        "relationId": "rel-0001",
+        "reportId": "rep-000004",
+        "targetReportId": "rep-000002",
+        "kind": "REPEAT",
+        "incidentId": "inc-shelter",
+        "state": "AUTO",
+        "proposalId": "prop-0002",
+        "reviewer": null
+      }
+    }
+  ]
+}

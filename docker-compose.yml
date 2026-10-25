@@ -1,0 +1,29 @@
+# Local SpacetimeDB for the C4 command post (D-003, D-006). Owner: ws/state.
+# Dev tooling only. Never containerize the codec, radio bridge, or Laya (D-006).
+# Native `spacetime start` keeps working and `npm run dev:replay` never needs Docker.
+#
+#   docker compose pull            # before the demo, while online. Nothing downloads at demo time.
+#   docker compose up -d spacetimedb
+#   spacetime server add c4 --url http://<C4-LAN-IP>:${SPACETIMEDB_HOST_PORT:-3000} --no-fingerprint   # from C2
+#
+# Port: native and container both default to 3000. Run one or the other, or set
+# SPACETIMEDB_HOST_PORT (e.g. 3100) and point SPACETIMEDB_URI at it.
+#
+# Pinned 2026-10-25: clockworklabs/spacetime:v2.13.0, multi-arch index digest from Docker Hub
+# (linux/amd64 sha256:82bd7c24…305c, linux/arm64 sha256:f8e02149…e5da). Matches the
+# 2.13.0 CLI/server and the `spacetimedb` npm 2.13.x module SDK used on C2.
+# UNVERIFIED until run on C4: the data path below and whether identity signing keys
+# survive a restart (check that an issued token still works after `docker compose restart`).
+
+services:
+  spacetimedb:
+    image: clockworklabs/spacetime:v2.13.0@sha256:dc66a9d8d48b210f6b9c1f2c5d6aa47adbada5e37350f898782a59c2d9f9d1b8
+    command: ["start", "--listen-addr", "0.0.0.0:3000", "--data-dir", "/home/spacetime/.local/share/spacetime/data"]
+    ports:
+      - "${SPACETIMEDB_HOST_PORT:-3000}:3000"
+    volumes:
+      - spacetimedb-data:/home/spacetime/.local/share/spacetime/data
+    restart: unless-stopped
+
+volumes:
+  spacetimedb-data:

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://calhacks26.local/contract.schema.json",
+  "title": "G0 TEST placeholder: every type accepts anything until G0 IMPLEMENT",
+  "x-contractVersion": "0.0.0-unfrozen",
+  "$defs": {
+    "ReportInput": true,
+    "Report": true,
+    "IncidentView": true,
+    "LabelScore": true,
+    "LocalSuggestion": true,
+    "IncidentProposal": true,
+    "ReportRelation": true,
+    "SuggestionRecord": true,
+    "ProposalRecord": true,
+    "Job": true,
+    "JobInput": true,
+    "ReviewEvent": true,
+    "ScenarioState": true,
+    "ContractError": true,
+    "ApproveProposalCommand": true,
+    "RejectProposalCommand": true,
+    "OperatorEditCommand": true,
+    "ClaimJobCommand": true,
+    "SubmitLocalSuggestionCommand": true,
+    "SubmitIncidentProposalCommand": true,
+    "AdvanceScenarioCommand": true,
+    "ResetRunCommand": true
+  }
+}

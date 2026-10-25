@@ -1,0 +1,195 @@
+{
+  "type": "Job",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "queued local suggestion",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "claimed with lease",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "CLAIMED",
+        "attempts": 1,
+        "claim": {
+          "workerIdentity": "id:w0000001",
+          "leaseExpiresAt": "2026-10-25T16:05:00Z"
+        }
+      }
+    },
+    {
+      "name": "incident proposal job",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0002",
+        "kind": "INCIDENT_PROPOSAL",
+        "reportId": null,
+        "incidentId": "inc-school",
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "invalidated by reset",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "INVALIDATED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "done",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "DONE",
+        "attempts": 1,
+        "claim": null
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "claimed without claim",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "CLAIMED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "queued but claimed",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": {
+          "workerIdentity": "id:w0000001",
+          "leaseExpiresAt": "2026-10-25T16:05:00Z"
+        }
+      }
+    },
+    {
+      "name": "local suggestion without report",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": null,
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "incident proposal without incident",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "INCIDENT_PROPOSAL",
+        "reportId": null,
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "negative attempts",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": -1,
+        "claim": null
+      }
+    },
+    {
+      "name": "state RUNNING",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "RUNNING",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "kind DISPATCH",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "DISPATCH",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "inputSignature": "sig1:3f9a0c41d2e7b8a65f1e0d9c8b7a69584736251403f2e1d0c9b8a79685746352",
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": null
+      }
+    },
+    {
+      "name": "missing inputSignature",
+      "payload": {
+        "runId": "run-001",
+        "jobId": "job-0001",
+        "kind": "LOCAL_SUGGESTION",
+        "reportId": "rep-000007",
+        "incidentId": null,
+        "state": "QUEUED",
+        "attempts": 0,
+        "claim": null
+      }
+    }
+  ]
+}

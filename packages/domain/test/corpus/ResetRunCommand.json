@@ -1,0 +1,29 @@
+{
+  "type": "ResetRunCommand",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "reset the current run",
+      "payload": {
+        "commandId": "cmd-0005",
+        "runId": "run-001"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "merge replay decisions back",
+      "payload": {
+        "commandId": "cmd-0005",
+        "runId": "run-001",
+        "mergeReplay": true
+      }
+    },
+    {
+      "name": "missing runId",
+      "payload": {
+        "commandId": "cmd-0005"
+      }
+    }
+  ]
+}

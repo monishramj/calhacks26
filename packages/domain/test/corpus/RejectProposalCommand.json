@@ -1,0 +1,34 @@
+{
+  "type": "RejectProposalCommand",
+  "generatedBy": "test/corpus/make_corpus.py",
+  "valid": [
+    {
+      "name": "reject with reason",
+      "payload": {
+        "commandId": "cmd-0002",
+        "runId": "run-001",
+        "proposalId": "prop-0001",
+        "reason": "The summary overstates the gym report."
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "empty reason",
+      "payload": {
+        "commandId": "cmd-0002",
+        "runId": "run-001",
+        "proposalId": "prop-0001",
+        "reason": ""
+      }
+    },
+    {
+      "name": "missing reason",
+      "payload": {
+        "commandId": "cmd-0002",
+        "runId": "run-001",
+        "proposalId": "prop-0001"
+      }
+    }
+  ]
+}
