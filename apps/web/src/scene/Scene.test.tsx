@@ -33,6 +33,7 @@ describe('scene interaction with WebGL unavailable', () => {
     expect(screen.getByText(/webgl unavailable.*2d/i)).toBeVisible();
     expect(screen.getByText(/fictional helene-inspired exercise/i)).toBeVisible();
     expect(screen.getByText(/source: fixture/i)).toBeVisible();
+    expect(screen.getByRole('button', { name: '2D map' })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('lets pointer selection report an incident ID without mutating inputs', async () => {

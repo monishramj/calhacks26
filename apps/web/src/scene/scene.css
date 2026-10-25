@@ -1,5 +1,6 @@
 .valley-scene { display:flex; flex-direction:column; height:100%; min-height:0; overflow-y:auto; padding:22px; gap:12px; color:#e2e9e5; background:radial-gradient(ellipse at 25% 0%,#193235 0%,#102125 65%); }
 .scene-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.scene-toolbar { display:flex; gap:6px; flex-shrink:0; }
 .scene-heading h2 { font-size:27px; font-weight:500; margin:3px 0 0; letter-spacing:-.7px; }
 .scene-eyebrow { margin:0; font-size:10px; font-weight:650; letter-spacing:1.6px; color:#91aca7; }
 .scene-disclosure { color:#adc1bc; font-size:12px; margin:0; }

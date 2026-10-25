@@ -44,3 +44,36 @@ Behavioral red evidence:
 - npm run build: passed after correcting OrbitControls event callback typing. Renderer chunk is large because Three is bundled locally; no runtime external dependencies added.
 - Real in-app browser at localhost:5181 renders procedural 3D and heatmap. Pointer-selecting School updates the shell history to INC-school. Narrow viewport exposed scene/panel overlap; fixed scrolling entirely within scene CSS. Actual WebGL-unavailable and context-loss behavior remain to review beyond jsdom.
 - Real providers: none; source remains fixture, inference banner says authored outputs/no model ran. Current base still has placeholder panels, owned by lead/panels. Backend acceptance remains unverified.
+
+## IMPLEMENT extension · 2026-10-25 · approved SF BLOSM scene
+
+- Human requested BLOSM geography in this Codex chat and then suggested SF for demo impact. Coordinated through questions 1025-013537, 1025-013701 and 1025-014057; D-004 approval is recorded on origin/main (af82f79) and merged here. Lead reserved scene paths; no overlapping asset edits.
+- Ran actual portable Blender 4.5.15 LTS, official BLOSM 2.7.28 at release commit 4adff00270f4492667f3bf1305d0b338f3cd1268, OSM API extract, and BLOSM Skadi terrain. Shapely 2.1.2 clips the terrain to the OSM shoreline; glTF Transform CLI 4.2.1 applies meshopt with 16-bit position quantization.
+- Final GLB: 104,728 bytes, 10,023 triangles. Public scene-meta.json contains exact hashes, bounds, origin, source versions, scale, altitude offset, and golden coordinates. Locally bundled MeshoptDecoder; no Draco/CDN, external imagery, textures, node positions, or extra frontend dependencies.
+- Added georeference.ts using BLOSM's spherical transverse Mercator and the glTF axis mapping: Blender (east,north,altitude) -> Three (east,altitude,south). School/residence/shelter retain (0,0), (80,20), (-120,40). Generic synthetic site boxes sit over the geography, separately labeled from real buildings. The public contract remains placeId-only.
+- Blender also generated a matching north-up orthographic PNG; the 2D SVG overlays use the same projected coordinates. Added a manual 2D switch, GLB-error procedural fallback, and source/attribution labels. Renderer chunk stays local and lazy-loaded.
+- Bake/reproduction scripts and README live only in src/scene/tools and src/scene. Source extract, addon checkout, terrain cache, and Blender executable stay outside git. Metadata import/public copies are generated together and checked for equality.
+- Lead supplied pinned @types/node 22.10.2 at 4e1d8fc in response to questions item 1025-015224; merged and closed. Node references are scoped to Node-only test/config files. No shared package or root lockfile edited by this lane.
+
+## REVIEW · 2026-10-25 · scene slice
+
+Commands from apps/web:
+
+- npm run verify: typecheck, 67/67 unit/component/asset tests, 3/3 lead replay-story browser tests passed.
+- npx playwright test --config src/scene/tools/playwright.config.ts: 4/4 scene browser tests passed on installed Edge, on an isolated port (5182).
+- npm run build: passed. The remaining bundle-size advisory concerns the local Three renderer chunk (~909 KB uncompressed); no missing assets or compile errors.
+- Final focused regression after 2D accessibility refinement: Scene.test.tsx 9/9, scene browser 4/4, production build passed. A Testing Library-only unsupported exact option was corrected; no behavior assertion was removed.
+
+Reviewed failure cases and fixes:
+
+- Actual browser canvas rendered the meshopt GLB. Both 3D and 2D selection synchronize with the queue/history; original school text remains inspectable. Keyboard Enter/Space work. Startup WebGL unavailability was injected before page load; actual WEBGL_lose_context was exercised against a browser WebGL2 context. Both fall back without losing selection. Blocking the GLB request shows an explicit procedural fallback and retains incident selection.
+- Browser request capture saw no external requests during scene use. All models/assets/decoders are local. Provider labels remain fixture/authored outputs; no model/provider success is fabricated.
+- Verified exported place anchors by decoding the actual GLB, hash/size/extension checks, absence of external buffers/textures, 11 geographic alignment/round-trip tests against BLOSM Python, and geometry vertex heights against densityAt(). Fixed heatmap base is above highest terrain; radius and contribution scale remain fixed, independent of priority/report volume.
+- Inspected 1280x720 browser screenshot and narrow 670px in-app view. Fixed scene/panel overlap with scene-local scrolling. Markers render above occluding buildings for legibility; written attention/status labels and selected states remain available. 2D button correctly reports pressed when fallback is active.
+- Cut coarse shoreline artifacts with a precise OSM polygon intersection. Imported buildings dim in heatmap mode; no source names or radio node identities exported.
+
+Real tools/providers: Blender/BLOSM and source data downloads were real; Windows Edge and the in-app browser rendered real WebGL. Pure tests/DOM events exercise actual application code. Report data and inference outputs are authored fixtures. WebGL/context/asset failures are intentionally induced in browser tests.
+
+Still unverified: actual live SpacetimeDB adapter, stale/unauthorized backend action rejection, radios, real inference, actual demo laptop frame-rate target and display measurements. Those are not claimed as passes. Scene browser review is green; the lead retains whole-G7/live integration acceptance.
+
+Next: lead merges ws/web-scene and runs verify; scene continues independently on any actionable review or integration defect. Human clarified Codex should continue despite Claude usage-limit handoffs; Codex's recurring follow-up is ACTIVE.

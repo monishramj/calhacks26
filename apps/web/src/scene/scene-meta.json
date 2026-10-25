@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "label": "SF waterfront basemap",
+  "asset": "bay-area.glb",
+  "topdown": "topdown.png",
+  "projection": {
+    "kind": "blosm-spherical-transverse-mercator",
+    "radiusMeters": 6378137,
+    "scaleFactor": 1,
+    "originLatitude": 37.79545,
+    "originLongitude": -122.3949,
+    "verticalOriginMeters": 0.0,
+    "axes": "x=east,y=up,z=south",
+    "units": "meters"
+  },
+  "geographicBounds": {
+    "south": 37.79320414489111,
+    "west": -122.39887873104027,
+    "north": 37.797695721300876,
+    "east": -122.39092102705463
+  },
+  "sceneBounds": {
+    "minX": -350,
+    "maxX": 350,
+    "minZ": -250,
+    "maxZ": 250
+  },
+  "terrainMaxY": 22.0,
+  "exerciseGroundY": {
+    "school": 18.26007080078125,
+    "residence": 18.0001220703125,
+    "shelter": 18.87744140625
+  },
+  "triangleCount": 10023,
+  "assetBytes": 104728,
+  "assetSha256": "abcd75ec3e88e0a037bec834f12dc47e12ec747715d7b20120feb4a9ce2a426d",
+  "osmSha256": "137abf6b9dc74a854fdddaab2757a4f09a511d21c6f2d80f974b927bbdb57969",
+  "blenderVersion": "4.5.15 LTS",
+  "blosmVersion": "2.7.28",
+  "attribution": "Map data \u00a9 OpenStreetMap contributors (ODbL). Elevation: Mapzen terrain tiles (Skadi).",
+  "sources": [
+    "https://www.openstreetmap.org/copyright",
+    "https://github.com/tilezen/joerd",
+    "https://github.com/vvoovv/blosm",
+    "https://meshview.bayme.sh/map"
+  ],
+  "coverageUse": "Public BayMesh map used only to select the area; no coverage or node data bundled.",
+  "goldenCoordinates": [
+    {
+      "latitude": 37.79545,
+      "longitude": -122.3949,
+      "x": 0.0,
+      "z": -0.0
+    },
+    {
+      "latitude": 37.79645,
+      "longitude": -122.3949,
+      "x": 0.0,
+      "z": -111.3194907929834
+    },
+    {
+      "latitude": 37.79545,
+      "longitude": -122.3939,
+      "x": 87.96507154387297,
+      "z": -0.00047044429190645776
+    },
+    {
+      "latitude": 37.794450000000005,
+      "longitude": -122.39590000000001,
+      "x": -87.96626222094908,
+      "z": 111.3190203536483
+    }
+  ],
+  "compression": "EXT_meshopt_compression",
+  "optimizerVersion": "@gltf-transform/cli 4.2.1",
+  "positionQuantizationBits": 16,
+  "blosmCommit": "4adff00270f4492667f3bf1305d0b338f3cd1268",
+  "bakedAt": "2026-10-25"
+}

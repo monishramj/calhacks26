@@ -1,3 +1,5 @@
+import { SCENE_METADATA } from './georeference';
+
 // Lane-local rendering input, not a public wire contract. Replace with a Pick
 // of packages/domain IncidentView after G0. Only confirmed state enters here.
 export type SceneIncident = {
@@ -23,7 +25,7 @@ export const PLACES = [
 // Fixed display settings in arbitrary exercise units, never dataset-normalized.
 export const HEATMAP_RADIUS = 45;
 export const HEATMAP_HEIGHT_SCALE = 14;
-export const HEATMAP_BASE = 24;
+export const HEATMAP_BASE = SCENE_METADATA.terrainMaxY + 24;
 
 export function placePosition(placeId: string | null): GroundPoint | null {
   const place = PLACES.find((candidate) => candidate.id === placeId);

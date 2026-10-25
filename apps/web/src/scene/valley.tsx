@@ -1,14 +1,17 @@
-import { useEffect, useMemo } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { BufferAttribute, BufferGeometry, CanvasTexture, Color, DoubleSide } from 'three';
+import { Component, Suspense, useEffect, useMemo, type ReactNode } from 'react';
+import { Canvas, useLoader, useThree } from '@react-three/fiber';
+import { BufferAttribute, BufferGeometry, CanvasTexture, Color, DoubleSide, Mesh, MeshStandardMaterial } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { SCENE_METADATA } from './georeference';
 import { attentionColor, densityAt, HEATMAP_BASE, HEATMAP_HEIGHT_SCALE, PLACES, placePosition, type SceneIncident } from './model';
 
 function Controls({ onFailure }: { onFailure: () => void }) {
   const { camera, gl, invalidate } = useThree();
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
-    controls.target.set(-30, 0, 15);
+    controls.target.set(0, 0, 0);
     controls.maxPolarAngle = Math.PI / 2.3;
     controls.minZoom = .6;
     controls.maxZoom = 5;
@@ -36,15 +39,15 @@ function PlaceLabel({ name, x, z }: { name: string; x: number; z: number }) {
     return new CanvasTexture(canvas);
   }, [name]);
   useEffect(() => () => texture.dispose(), [texture]);
-  return <sprite position={[x, 25, z]} scale={[48, 9, 1]} renderOrder={5}><spriteMaterial map={texture} depthTest={false} /></sprite>;
+  return <sprite position={[x, 42, z]} scale={[60, 11, 1]} renderOrder={5}><spriteMaterial map={texture} depthTest={false} /></sprite>;
 }
 
 export function heatmapGeometry(incidents: readonly SceneIncident[]): BufferGeometry {
-  const segmentsX = 88, segmentsZ = 56;
+  const segmentsX = 140, segmentsZ = 100;
   const positions: number[] = [], colors: number[] = [], indices: number[] = [];
   const low = new Color('#286c79'), middle = new Color('#91bf9c'), high = new Color('#e5c179'), peak = new Color('#f09972');
   for (let z = 0; z <= segmentsZ; z++) for (let x = 0; x <= segmentsX; x++) {
-    const px = -220 + x * 5, pz = -120 + z * 5;
+    const px = -350 + x * 5, pz = -250 + z * 5;
     const density = densityAt({ x: px, z: pz }, incidents);
     positions.push(px, HEATMAP_BASE + density * HEATMAP_HEIGHT_SCALE, pz);
     const color = density <= 1 ? low.clone().lerp(middle, density)
@@ -73,21 +76,68 @@ type ValleyProps = {
   selectedIncidentId: string | null;
   onSelectIncident: (id: string | null) => void;
   heatmap: boolean;
+  baked?: boolean;
+  onAssetFailure?: () => void;
 };
 
-function World({ incidents, selectedIncidentId, onSelectIncident, heatmap }: ValleyProps) {
+class AssetBoundary extends Component<{ children: ReactNode; fallback: ReactNode; onFailure?: () => void }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch() { this.props.onFailure?.(); }
+  render() { return this.state.failed ? this.props.fallback : this.props.children; }
+}
+
+function BakedMap({ heatmap }: { heatmap: boolean }) {
+  const gltf = useLoader(GLTFLoader, `${import.meta.env.BASE_URL}scene/${SCENE_METADATA.asset}`, (loader) => loader.setMeshoptDecoder(MeshoptDecoder));
+  const scene = useMemo(() => {
+    const copy = gltf.scene.clone(true);
+    copy.traverse((object) => {
+      if (object instanceof Mesh) object.material = Array.isArray(object.material) ? object.material.map((material) => material.clone()) : object.material.clone();
+    });
+    return copy;
+  }, [gltf]);
+  useEffect(() => {
+    scene.traverse((object) => {
+      if (!(object instanceof Mesh)) return;
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      for (const material of materials) {
+        if (!(material instanceof MeshStandardMaterial)) continue;
+        material.opacity = heatmap ? .28 : 1;
+        material.transparent = heatmap;
+        material.depthWrite = !heatmap;
+        material.needsUpdate = true;
+      }
+    });
+  }, [scene, heatmap]);
+  useEffect(() => () => scene.traverse((object) => {
+    if (object instanceof Mesh) {
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material) => material.dispose());
+    }
+  }), [scene]);
+  return <primitive object={scene} dispose={null} />;
+}
+
+function ProceduralMap({ heatmap }: { heatmap: boolean }) {
+  return <>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}><planeGeometry args={[700, 500]} /><meshStandardMaterial color={heatmap ? '#1a302e' : '#243e3d'} roughness={1} /></mesh>
+    <gridHelper args={[700, 35, '#49635a', '#314d46']} position={[0, -.8, 0]} />
+    <mesh rotation={[-Math.PI / 2, 0, -.07]} position={[0, -.3, -72]}><planeGeometry args={[700, 24]} /><meshStandardMaterial color="#32748b" roughness={.4} /></mesh>
+  </>;
+}
+
+function World({ incidents, selectedIncidentId, onSelectIncident, heatmap, baked = true, onAssetFailure }: ValleyProps) {
   const visible = incidents.filter((row) => row.status === 'OPEN' && placePosition(row.confirmedPlaceId));
   return <>
     <color attach="background" args={['#142c30']} />
     <ambientLight intensity={1.3} />
     <directionalLight position={[-80, 180, 90]} intensity={2.1} />
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 20]}><planeGeometry args={[440, 280]} /><meshStandardMaterial color="#243e3d" roughness={1} /></mesh>
-    <gridHelper args={[440, 22, '#49635a', '#314d46']} position={[0, -.8, 20]} />
-    <mesh rotation={[-Math.PI / 2, 0, -.07]} position={[0, -.3, -72]}><planeGeometry args={[460, 24]} /><meshStandardMaterial color="#32748b" roughness={.4} /></mesh>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.2, 90]}><planeGeometry args={[440, 5]} /><meshStandardMaterial color="#69766b" /></mesh>
+    {baked ? <AssetBoundary onFailure={onAssetFailure} fallback={<ProceduralMap heatmap={heatmap} />}><Suspense fallback={<ProceduralMap heatmap={heatmap} />}><BakedMap heatmap={heatmap} /></Suspense></AssetBoundary> : <ProceduralMap heatmap={heatmap} />}
     {PLACES.map((place) => <group key={place.id}>
-      <mesh position={[place.x, 5, place.z]}><boxGeometry args={[place.id === 'residence' ? 17 : 29, 10, 19]} /><meshStandardMaterial color={heatmap ? '#455950' : '#8c9c86'} /></mesh>
-      {place.id === 'school' && <mesh position={[place.x - 23, 3.5, place.z + 3]}><boxGeometry args={[13, 7, 25]} /><meshStandardMaterial color={heatmap ? '#455950' : '#738e7f'} /></mesh>}
+      <mesh position={[place.x, (baked ? SCENE_METADATA.exerciseGroundY[place.id] : 0) + 5, place.z]}>
+        <boxGeometry args={[place.id === 'residence' ? 17 : 25, 10, 16]} />
+        <meshStandardMaterial color={heatmap ? '#455950' : '#bad2bb'} transparent={heatmap} opacity={heatmap ? .3 : 1} />
+      </mesh>
       <PlaceLabel name={place.name} x={place.x} z={place.z + 24} />
     </group>)}
     {heatmap && <Heatmap incidents={incidents} />}
@@ -95,20 +145,20 @@ function World({ incidents, selectedIncidentId, onSelectIncident, heatmap }: Val
       const place = placePosition(row.confirmedPlaceId)!;
       const selected = row.incidentId === selectedIncidentId;
       const offset = visible.slice(0, index).filter((other) => other.confirmedPlaceId === row.confirmedPlaceId).length * 10;
-      const top = heatmap ? HEATMAP_BASE + densityAt(place, incidents) * HEATMAP_HEIGHT_SCALE + 9 : 19;
+      const top = heatmap ? HEATMAP_BASE + densityAt(place, incidents) * HEATMAP_HEIGHT_SCALE + 9 : 48;
       return <group key={row.incidentId} position={[place.x + offset, top, place.z - 8]}>
-        <mesh onClick={(event) => { event.stopPropagation(); onSelectIncident(row.incidentId); }}>
+        <mesh renderOrder={6} onClick={(event) => { event.stopPropagation(); onSelectIncident(row.incidentId); }}>
           <sphereGeometry args={[selected ? 5 : 4, 16, 12]} />
-          <meshStandardMaterial color={attentionColor(row.attention)} emissive={attentionColor(row.attention)} emissiveIntensity={selected ? .5 : .15} />
+          <meshStandardMaterial color={attentionColor(row.attention)} emissive={attentionColor(row.attention)} emissiveIntensity={selected ? .5 : .15} depthTest={false} depthWrite={false} />
         </mesh>
-        {selected && <mesh rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[6, 7, 32]} /><meshBasicMaterial color="#fff4d3" side={DoubleSide} /></mesh>}
+        {selected && <mesh renderOrder={6} rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[6, 7, 32]} /><meshBasicMaterial color="#fff4d3" side={DoubleSide} depthTest={false} depthWrite={false} /></mesh>}
       </group>;
     })}
   </>;
 }
 
 export function ValleyCanvas(props: ValleyProps & { onFailure: () => void }) {
-  return <Canvas orthographic camera={{ position: [230, 270, 300], zoom: 1.7, near: .1, far: 2000 }} dpr={[1, 1.5]} frameloop="demand" aria-label="Fictional river valley 3D scene">
+  return <Canvas orthographic camera={{ position: [330, 450, 430], zoom: 1, near: .1, far: 3000 }} dpr={[1, 1.5]} frameloop="demand" aria-label="SF waterfront 3D basemap · synthetic exercise incidents">
     <Controls onFailure={props.onFailure} />
     <World {...props} />
   </Canvas>;

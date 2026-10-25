@@ -3,6 +3,7 @@ import { useDesk } from '../adapters/DeskContext';
 import { attentionColor, attentionLabel, HEATMAP_HEIGHT_SCALE, HEATMAP_RADIUS,
   PLACES, placePosition, type SceneDataProps, type SceneIncident } from './model';
 import './scene.css';
+import { SCENE_METADATA, sceneToGeographic } from './georeference';
 
 const ValleyCanvas = lazy(() => import('./valley').then((module) => ({ default: module.ValleyCanvas })));
 
@@ -36,10 +37,9 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
 }) {
   const located = incidents.filter((row) => row.status === 'OPEN' && placePosition(row.confirmedPlaceId));
   const contributors = [...new Map(located.map((row) => [row.incidentId, row])).values()];
-  return <svg className="scene-map" viewBox="-220 -120 440 280" role="img" aria-label="Fictional exercise map · 2D">
-    <rect x="-220" y="-120" width="440" height="280" fill="#162d31" />
-    <path d="M-220,-65 C-90,-110 -40,-65 45,-80 S160,-110 240,-50" fill="none" stroke="#245d73" strokeWidth="25" />
-    <path d="M-220,90 L220,90 M-155,-120 L-155,160 M-5,-120 L-5,160 M100,-120 L100,160" stroke="#3a5051" strokeWidth="5" />
+  return <svg className="scene-map" viewBox="-350 -250 700 500" role="img" aria-label="Fictional exercise map · 2D">
+    <rect x="-350" y="-250" width="700" height="500" fill="#162d31" />
+    <image href={`${import.meta.env.BASE_URL}scene/${SCENE_METADATA.topdown}`} x="-350" y="-250" width="700" height="500" />
     {heatmap && contributors.map((row) => {
       const point = placePosition(row.confirmedPlaceId)!;
       return <g key={row.incidentId} aria-hidden="true" className="scene-density-rings">
@@ -47,7 +47,7 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
       </g>;
     })}
     {PLACES.map((place) => <g key={place.id}>
-      <rect x={place.x - 15} y={place.z - 10} width={place.id === 'residence' ? 19 : 30} height="20" rx="2" fill="#71827d" stroke="#a2b0a1" />
+      <rect x={place.x - 20} y={place.z + 16} width="40" height="16" rx="2" fill="#10262a" />
       <text x={place.x} y={place.z + 28} textAnchor="middle" fill="#e2e9dd" fontSize="10">{place.name}</text>
     </g>)}
     {contributors.map((row, index) => {
@@ -57,8 +57,7 @@ function TopDown({ incidents, selectedIncidentId, onSelectIncident, heatmap }: {
         <circle cx={point.x + offset} cy={point.z - 17} r={selectedIncidentId === row.incidentId ? 8 : 6} fill={attentionColor(row.attention)} stroke={selectedIncidentId === row.incidentId ? '#fff' : '#13272b'} strokeWidth="2" />
       </g>;
     })}
-    <text x="198" y="-97" textAnchor="middle" fill="#b3c6c1" fontSize="10">N ↑</text>
-    <text x="-205" y="143" fill="#b3c6c1" fontSize="9">Local exercise coordinates · schematic</text>
+    <text x="320" y="-220" textAnchor="middle" fill="#e2e9dd" fontSize="15">N ↑</text>
   </svg>;
 }
 
@@ -68,14 +67,20 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
   const provenance = sourceProvenance ?? state?.sourceProvenance ?? 'none';
   const [heatmap, setHeatmap] = useState(false);
   const [webgl, setWebgl] = useState(false);
+  const [use2d, setUse2d] = useState(false);
+  const [assetFailed, setAssetFailed] = useState(false);
   const rendererFailed = useCallback(() => setWebgl(false), []);
+  const mapAssetFailed = useCallback(() => setAssetFailed(true), []);
   useEffect(() => { setWebgl(supportsWebGL()); }, []);
   const unique = useMemo(() => [...new Map(incidents.map((row) => [row.incidentId, row])).values()], [incidents]);
   const located = unique.filter((row) => placePosition(row.confirmedPlaceId));
   const unplaced = unique.filter((row) => !placePosition(row.confirmedPlaceId));
   function incidentButton(row: SceneIncident) {
     const place = PLACES.find((candidate) => candidate.id === row.confirmedPlaceId);
+    const point = placePosition(row.confirmedPlaceId);
+    const geographic = point ? sceneToGeographic(point.x, point.z) : null;
     return <button key={row.incidentId} type="button" className="scene-incident"
+      title={geographic ? `Synthetic exercise anchor: ${geographic.latitude.toFixed(6)}, ${geographic.longitude.toFixed(6)}` : 'Unlocated incident'}
       aria-pressed={selectedIncidentId === row.incidentId} onClick={() => onSelectIncident(row.incidentId)}>
       <span className="scene-dot" style={{ background: attentionColor(row.attention) }} />
       <span><strong>{place?.name ?? row.incidentId}</strong><small>{attentionLabel(row.attention)} · {row.status.toLowerCase()}</small></span>
@@ -84,27 +89,30 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
   }
   return <div className="valley-scene">
     <header className="scene-heading">
-      <div><p className="scene-eyebrow">INCIDENT DESK / EXERCISE AREA</p><h2>River valley</h2></div>
-      <button type="button" className="scene-mode" aria-pressed={heatmap} onClick={() => setHeatmap((value) => !value)}>Heatmap {heatmap ? 'on' : 'off'}</button>
+      <div><p className="scene-eyebrow">INCIDENT DESK / EXERCISE AREA</p><h2>SF waterfront</h2></div>
+      <div className="scene-toolbar"><button type="button" className="scene-mode" aria-pressed={!webgl || use2d} disabled={!webgl} onClick={() => setUse2d((value) => !value)}>2D map</button>
+      <button type="button" className="scene-mode" aria-pressed={heatmap} onClick={() => setHeatmap((value) => !value)}>Heatmap {heatmap ? 'on' : 'off'}</button></div>
     </header>
     <p className="scene-disclosure">Fictional Helene-inspired exercise · incidents are synthetic</p>
+    <p className="scene-disclosure">Real OSM geography · exercise sites are synthetic overlays</p>
     <div className="scene-viewport">
-      {webgl ? <RenderBoundary onFailure={rendererFailed}><Suspense fallback={<p className="scene-empty">Loading local 3D scene…</p>}>
-        <ValleyCanvas incidents={unique} selectedIncidentId={selectedIncidentId} onSelectIncident={onSelectIncident} heatmap={heatmap} onFailure={rendererFailed} />
+      {webgl && !use2d ? <RenderBoundary onFailure={rendererFailed}><Suspense fallback={<p className="scene-empty">Loading local 3D scene…</p>}>
+        <ValleyCanvas incidents={unique} selectedIncidentId={selectedIncidentId} onSelectIncident={onSelectIncident} heatmap={heatmap} onFailure={rendererFailed} baked={!assetFailed} onAssetFailure={mapAssetFailed} />
         </Suspense>
       </RenderBoundary> : <TopDown incidents={unique} selectedIncidentId={selectedIncidentId} onSelectIncident={onSelectIncident} heatmap={heatmap} />}
-      <span className="scene-view-label">{webgl ? '3D · drag to orbit · scroll to zoom' : 'WebGL unavailable · 2D map'}</span>
+      <span className="scene-view-label">{webgl && !use2d ? '3D · drag to orbit · scroll to zoom' : webgl ? '2D map · same geographic alignment' : 'WebGL unavailable · 2D map'}</span>
     </div>
+    {assetFailed && <p role="status" className="scene-disclosure">Basemap unavailable · procedural geometry fallback. Incident coordinates are unchanged.</p>}
     {heatmap && <div className="scene-legend" role="note" aria-label="Heatmap legend">
       <strong>Confirmed unresolved incident concentration</strong>
       <span className="scene-legend-ramp" />
       <span>0 · 1 · 2 · 3+ incidents at center · fixed radius {HEATMAP_RADIUS} units · fixed height scale {HEATMAP_HEIGHT_SCALE} units per contribution.</span>
       <span>Height is not severity, terrain, or flood depth. Repeated reports add no height.</span>
-      {!webgl && <span>2D shows equal fixed-radius density footprints; elevation requires 3D.</span>}
+      {(!webgl || use2d) && <span>2D shows equal fixed-radius density footprints; elevation requires 3D.</span>}
     </div>}
     <div className="scene-incident-list" aria-label="Located incidents">{located.map(incidentButton)}</div>
     {unplaced.length > 0 && <section className="scene-unplaced" aria-label="Unplaced incidents"><h3>Unplaced incidents</h3><p>Unknown location · excluded from heatmap</p>{unplaced.map(incidentButton)}</section>}
     {unique.length === 0 && <p className="scene-empty">No confirmed incidents. Reports appear after an adapter connects.</p>}
-    <footer className="scene-footer"><span>Source: {provenance}</span><span>Procedural exercise geometry</span></footer>
+    <footer className="scene-footer"><span>Source: {provenance}</span><span>BLOSM · local OSM basemap</span><span>{SCENE_METADATA.attribution}</span><span>Public mesh map informed area choice · no measured radio coverage shown</span></footer>
   </div>;
 }
