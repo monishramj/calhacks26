@@ -77,3 +77,10 @@ Do not run another agent in this folder. Do not commit root/package lockfile cha
 - Fetched and merged origin/main eb96482 (bookkeeping only); origin/ws/web remains unchanged. No scene integration request or new code defect is actionable. Existing verification remains applicable because no application code changed.
 - Read web inbox 10 and 11: lead merge/v1 migration remains with lead; C1 endpoint model/hardware check remains outside the scene lane. Human explicitly approved generic textures and continued Codex work, overriding the older texture timing/paused visualization notes. Texture handoff 1025-023643 is already posted.
 - Exact next step: monitor lead merge/v1 adapter integration and questions; fix scene-owned regressions if they arise. No additional polish work is queued.
+
+
+## Ship mode / reassignment request - 2026-10-25
+
+- Human flagged noisy facade repetition and explicitly deferred texture polish in favor of bottlenecks. No more texture/camera polish queued.
+- Merged main fa5f40f and acknowledged D-009: no separate phase requests or new test suites; implement, run existing checks/real path, record short evidence, push. C3 web lead is active; do not overlap adapter/panels work.
+- Posted question 1025-024500 to orchestrator requesting a concrete highest-priority non-overlapping task and path ownership, offering C4 endpoint/environment readiness or bounded live integration work. Exact next step: read that answer and execute its assigned task continuously within confirmed ownership.
