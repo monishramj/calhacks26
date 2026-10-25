@@ -24,3 +24,12 @@ ws/codec-radio may commit the pinned codec runtime (about 8 MB: the llama.cpp Mi
 ## D-004 · proposed · scene geometry source
 
 §7 calls for "one simple fictional river-valley scene." Proposal from ws/web: bake a static scene once in Blender (BLOSM, OpenStreetMap buildings + terrain) and bundle it as a local glTF. Incident data stays fictional and labeled. Needs a decision on whether real-world geometry is acceptable, and which location (not a Helene-affected place). Details: `apps/web/SCENE_PIPELINE.md`. Until approved, the procedural placeholder scene is the default.
+
+## D-006 · approved (2026-10-25 by the C4 human, proposed by C2) · Docker as dev tooling
+
+The team has two Macs (C2, C3) and two Windows machines (C1, C4). Docker is allowed as tooling, not product scope:
+
+- **Use it for:** local SpacetimeDB, with a pinned image matching the version ws/state chose (2.13). Optionally also the coordinator. ws/state owns the compose file (`docker-compose.yml` at the root) and pins every image tag and digest.
+- **Don't use it for:** the codec and radio bridge (C1, C4). USB serial passthrough on Docker Desktop is unreliable, and C1 showed decoding needs the identical pinned build; a Linux or emulated build on another CPU can compute different logits. The same applies to Laya on the Macs, where a Linux container loses Metal/MPS acceleration. Run those natively unless a measurement says the container is equivalent.
+- **Native paths keep working.** `npm run dev:replay` never needs Docker. Docker is never a second backend or a sync layer (§4, §23).
+- **Demo is offline-safe.** Pull and pin images before the demo. Nothing may download at demo time.

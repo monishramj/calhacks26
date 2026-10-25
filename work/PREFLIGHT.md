@@ -12,6 +12,7 @@ _Consolidated by the orchestrator from each workstream's status file. "Unknown" 
 | Local SpacetimeDB server + client pair, pinned | ws/state | command post | in progress | Being set up on C2 (team report 2026-10-25). |
 | Laya loads locally; latency and output semantics recorded | ws/inference | command post | unknown | |
 | Claude reachable with a pinned, account-accessible model | ws/inference | command post | in progress | API key being set up (team report 2026-10-25). Model ID comes from C3's smoke call. |
+| Docker Desktop on the machines that use it (C2 at least), images pulled and pinned (D-006) | ws/state | C2 (+ any that run SpacetimeDB) | unknown | |
 | Demo browser has WebGL; demo display resolution known | ws/web | demo laptop | unknown | |
 
 A dry-run or fixture mode never counts as a successful real preflight.

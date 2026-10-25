@@ -6,3 +6,4 @@ _Written by the orchestrator. Acknowledge items by number in `work/status/infere
 2. G4 TEST may start against the §17 types before G0 merges. Switch to `packages/domain` imports once `[contract] v1` lands.
 3. Don't open `fixtures/private/heldout/` while developing prompts.
 4. **Questions board is live** (`docs/QUESTIONS.md`). Run `python scripts/questions.py list` at each phase start and answer open questions for you, through a background subagent if you can.
+5. **Docker (D-006):** run Laya natively on your Mac. A Linux container loses Metal/MPS. Use ws/state's compose file only if you want a local SpacetimeDB to test against.

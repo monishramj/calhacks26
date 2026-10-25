@@ -130,7 +130,7 @@ These are the required interface. **None of them exist yet.** The owning workstr
 
 ## Environment
 
-Copy `.env.example` to `.env` on the coordinator machine only. Names are listed there; values never go in git. Pin runtime and SDK versions after preflight and commit lockfiles (§19).
+Docker is allowed for local SpacetimeDB (and optionally the coordinator), never for the codec, the radio bridge, or Laya on the Macs (D-006). Copy `.env.example` to `.env` on the coordinator machine only. Names are listed there; values never go in git. Pin runtime and SDK versions after preflight and commit lockfiles (§19).
 
 ## Repo map
 
