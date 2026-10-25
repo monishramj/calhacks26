@@ -2,7 +2,7 @@
 
 _Maintained by the orchestrator on `main`. Status comes from validation files, never from claims alone._
 
-**Last orchestrator pass:** 2026-10-25 00:26 PDT. No workstream or lane branch has pushed yet. Team reports: the radios exchange messages, SpacetimeDB is being set up on C2, and the Claude key is being set up.
+**Last orchestrator pass:** 2026-10-25 01:35 PDT. C1: kit imported, G1 TEST red, radios and the C1 codec runtime verified. C2 lane `ws/state-spacetimedb`: SpacetimeDB 2.13 toolchain + placeholder TS module. C4: shell and lane skeleton pushed. C3: nothing pushed yet. G0 not started on any branch. Open questions to state and inference are unanswered.
 
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
@@ -11,7 +11,7 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | Gate | Pri | Workstream | Status | Evidence | Notes |
 |---|---|---|---|---|---|
 | G0 contracts | P0 | ws/state | not started | `work/validation/G0.md` | Blocks everyone. First. |
-| G1 codec quality | P0 | ws/codec-radio | not started | `work/validation/G1.md` | Can start beside G0. |
+| G1 codec quality | P0 | ws/codec-radio | TEST red | `work/validation/G1.md` | Can start beside G0. |
 | G2 radio path | P0 | ws/codec-radio | not started | `work/validation/G2.md` | After G1 + frozen intake contract. |
 | G3 incident state | P0 | ws/state | not started | `work/validation/G3.md` | Real local SpacetimeDB. |
 | G4 local Laya | P0 | ws/inference | not started | `work/validation/G4.md` | Needs a loadable Laya. |
