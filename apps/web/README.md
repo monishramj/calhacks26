@@ -1,6 +1,6 @@
 # apps/web
 
-**Spec:** §5, §7, §10, §20 queue and history, 3D scene and heatmap, resilience
+**Spec:** §5, §7, §10, §20 Dashboard and heatmap, 3D scene and heatmap, resilience
 
 This is the React/Three.js dashboard and the isolated browser replay.
 

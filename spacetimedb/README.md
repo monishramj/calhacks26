@@ -1,6 +1,6 @@
 # spacetimedb
 
-**Spec:** §9, §17 "Commands and adapter", §20 incident state
+**Spec:** §9, §17 "Commands and adapter", §20 Authoritative incident state
 
 This is the one authoritative local backend. It stores reports, incidents, relations, proposals, jobs, review events, and scenario state. It provides reducers and subscriptions.
 

@@ -1,8 +1,8 @@
 # services/local-laya
 
-**Spec:** §4, §5, §17 `LocalSuggestion`, §20 local Laya suggestions
+**Spec:** §4, §5, §17 `LocalSuggestion`, §20 Useful local inference
 
-This is a local Python worker. It loads Laya once and answers bounded action, relationship, and attention questions about the current candidates. It serves at `LOCAL_LAYA_URL`. It has no generated summaries, no cloud dependency, no retrieval service, and no fine-tuning (§20 local Laya suggestions). It runs natively on the Windows laptop, which is the command post (D-008).
+This is a local Python worker. It loads Laya once and answers bounded action, relationship, and attention questions about the current candidates. It serves at `LOCAL_LAYA_URL`. It has no generated summaries, no cloud dependency, no retrieval service, and no fine-tuning (§20 Useful local inference). It runs natively on the command post.
 
 ## Setup (once per machine)
 
@@ -10,7 +10,7 @@ This is a local Python worker. It loads Laya once and answers bounded action, re
 py -3.11 -m venv ../laya-env                      # outside the repo
 ../laya-env/Scripts/python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
 ../laya-env/Scripts/python -m pip install -r services/local-laya/requirements.txt
-export LAYA_MODEL_PATH=<dir outside git>          # the Windows laptop: ../laya-models/laya
+export LAYA_MODEL_PATH=<dir outside git>          # the command post: ../laya-models/laya
 ../laya-env/Scripts/python services/local-laya/tools/setup_laya.py   # pinned download + provenance.json
 ../laya-env/Scripts/python services/local-laya/tools/laya_smoke.py   # load time, outputs, warm latency
 ../laya-env/Scripts/python -m pytest services/local-laya/tests -rs   # model tests skip as "unavailable" without LAYA_MODEL_PATH
@@ -22,11 +22,11 @@ export LAYA_MODEL_PATH=<dir outside git>          # the Windows laptop: ../laya-
 services/local-laya/
   laya_worker/   config (env), runtime (load once, typed-answer checks, token room), suggest + server
   tools/         setup_laya.py, laya_smoke.py (ported from flyby)
-  results/       laya_smoke_cpu.json (measured on the Windows laptop)
+  results/       laya_smoke_cpu.json (measured on the command post)
   tests/         pytest suite: mocked contract tests, plus `-m model` real-checkpoint tests
 ```
 
-## What the runtime does (measured on the Windows laptop, 2026-10-25)
+## What the runtime does (measured on the command post, 2026-10-25)
 
 - `laya==0.3.20`, English root checkpoint `convaiinnovations/laya@55cf4c4e…`. `model.safetensors` is 842,609,210 bytes, SHA-256 `891102d372688fc2a094dac56a384bc537b87c63f21f9f3dac0be2b7cbc8d86c`.
 - **512 tokens total** (`max_len`). The question header plus options are capped at 192 (`head_max_len`). The SDK **silently cuts off the end** of the state when it passes the room left (`laya/common.py` `build_sequence`). So the worker must count tokens itself and send oversize jobs to review.
@@ -38,7 +38,7 @@ Weights stay outside git (`LAYA_MODEL_PATH`).
 
 ## Native Mac worker
 
-Use Python 3.11 or newer. The pins above were measured on the Windows laptop. The Mac installation and inference are unverified until the real-model check below succeeds.
+Use Python 3.11 or newer. The pins above were measured on the command post. The Mac installation and inference are unverified until the real-model check below succeeds.
 
 ```bash
 python3 -m venv ../laya-env

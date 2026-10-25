@@ -1,6 +1,6 @@
 # Scene
 
-The default basemap is an offline BLOSM bake of a 700 x 500 m crop of the San Francisco waterfront. D-004 approved it. The app fetches no tiles, external fonts, Google imagery, third-party radio node positions, or model results. The three exercise sites are synthetic generic boxes placed over the geography. They are not claims about real buildings.
+The default basemap is an offline BLOSM bake of a 700 x 500 m crop of the San Francisco waterfront. This choice is approved. The app fetches no tiles, external fonts, Google imagery, third-party radio node positions, or model results. The three exercise sites are synthetic generic boxes placed over the geography. They are not claims about real buildings.
 
 ## Geographic alignment
 

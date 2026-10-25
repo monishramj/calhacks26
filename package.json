@@ -2,7 +2,7 @@
   "name": "calhacks26",
   "private": true,
   "version": "0.0.0",
-  "description": "Mesh Codec + Incident Desk. npm workspaces; see AGENTS.md for owners.",
+  "description": "Mesh Codec + Incident Desk. npm workspaces.",
   "workspaces": [
     "packages/*",
     "apps/*"

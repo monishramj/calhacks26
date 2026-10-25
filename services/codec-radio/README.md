@@ -1,6 +1,6 @@
 # services/codec-radio
 
-**Spec:** §3, §19 "Existing inputs", §20 codec quality, radio path
+**Spec:** §3, §19 "Existing inputs", §20 Codec correctness, radio path
 
 This is the existing kit codec with boundary fixes only. It also holds the USB Meshtastic binary bridge, which delivers verified text into intake exactly once.
 
@@ -27,7 +27,7 @@ services/codec-radio/
   codec/         mesh_codec.py (packet format), runtime.py (pinned llama.cpp + hash checks)
   bridge/        envelope.py, radio.py, core.py (send/receive/retry/ACK), intake.py (ReportInput -> desk, once)
   tools/         radio_bridge.py (bridge CLI), endpoint_check.py, radio_test.py, payload_probe.py
-  runtime/       pinned binaries per platform (D-005)
+  runtime/       pinned binaries per platform, committed to git so every endpoint runs the identical binary
   tests/         pytest suite (python -m pytest services/codec-radio/tests)
   logs/ state/   local only, gitignored (event logs, bridge token, delivered-report store)
 ```
@@ -47,7 +47,7 @@ $env:CODEC_MODEL_PATH = "C:\calhacks\models\SmolLM2-360M.Q8_0.gguf"
 .venv\Scripts\python -m serial.tools.list_ports -v          # find the radio's COM port
 ```
 
-**Receiver: the Windows laptop ("MeshSOS A", `!f99260d4`).** To test the radio without the database:
+**Receiver: the command post ("MeshSOS A", `!f99260d4`).** To test the radio without the database:
 
 ```powershell
 .venv\Scripts\python services\codec-radio\tools\radio_bridge.py rx --port COM5 --run-id radio-test --intake none
@@ -61,7 +61,7 @@ $env:SPACETIMEDB_URI = "http://127.0.0.1:3000"; $env:SPACETIMEDB_DATABASE = "<da
 .venv\Scripts\python services\codec-radio\tools\radio_bridge.py rx --port COM5 --run-id <runId>
 ```
 
-**Sender: the codec/radio laptop ("MeshSOS B", `!06fca5ec`, COM4).** Type reports at the `report>` prompt, or pass `--text`:
+**Sender: the sending machine ("MeshSOS B", `!06fca5ec`, COM4).** Type reports at the `report>` prompt, or pass `--text`:
 
 ```powershell
 .venv\Scripts\python services\codec-radio\tools\radio_bridge.py send --port COM4 --dest !f99260d4

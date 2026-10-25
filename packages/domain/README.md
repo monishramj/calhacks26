@@ -39,7 +39,7 @@ wire = domain_contract.dumps(payload)   # UTF-8 kept, NaN/Infinity -> ValueError
 
 ## Radio intake transport (frozen in v1)
 
-The bridge on the Windows laptop calls SpacetimeDB directly. There is no coordinator in between.
+The bridge calls SpacetimeDB directly. There is no coordinator in between.
 
 0. Set the fields from the packet:
    - `sourceId` is `mesh_source_id(sender node)`.
@@ -49,7 +49,7 @@ The bridge on the Windows laptop calls SpacetimeDB directly. There is no coordin
 1. Once per bridge install, `POST {SPACETIMEDB_URI}/v1/identity` returns `{identity, token}`. Keep the token outside git on the bridge machine. An operator grants that identity the `bridge` role (an incident state reducer).
 2. For each verified report, send `POST {SPACETIMEDB_URI}/v1/database/{SPACETIMEDB_DATABASE}/call/receive_report`. Use the header `Authorization: Bearer <token>`, the header `Content-Type: application/json`, and the body `[<ReportInput as a JSON string>]`. The body is a one-element array holding `domain_contract.dumps(report_input)`.
 3. A retransmission uses the same `messageId`. `classifyIntake` turns a repeat into a duplicate of the stored report. It turns the same `messageId` with different text into a visible conflict.
-4. `SPACETIMEDB_URI` is configurable. Never assume it is localhost. Today the bridge and the database both run on the Windows laptop (D-003).
+4. `SPACETIMEDB_URI` is configurable. Never assume it is localhost. Today the bridge and the database both run on the command post.
 
 Evidence (SpacetimeDB 2.13.0, 2026-10-25):
 
@@ -57,7 +57,7 @@ Evidence (SpacetimeDB 2.13.0, 2026-10-25):
 - A call with a bearer token and a Unicode string argument returned 200, and the stored text was exact.
 - **A call with no token also returned 200** (anonymous identity). So the reducer must reject identities that do not have the `bridge` role.
 
-Not yet verified: the reducer error status codes, and ajv's code generation (`new Function`) inside the module runtime. If the runtime blocks it, switch to ajv standalone precompiled validators. If the HTTP call fails in incident state, the fallback transport is the same body sent as an HTTP POST to a coordinator endpoint (D-007).
+Not yet verified: the reducer error status codes, and ajv's code generation (`new Function`) inside the module runtime. If the runtime blocks it, switch to ajv standalone precompiled validators. If the HTTP call fails in incident state, the fallback transport is the same body sent as an HTTP POST to a coordinator endpoint.
 
 ## Commands
 

@@ -1,6 +1,6 @@
 # Scene pipeline: BLOSM bake to glTF to Three.js
 
-**Status:** proposal D-004 (not approved yet) · **Spec:** §7, §18, 3D scene and heatmap
+**Status:** approved (SF Embarcadero BLOSM scene) · **Spec:** §7, §18, 3D scene and heatmap
 
 Goal: a better-looking but still lightweight scene on the left. Blender and BLOSM bake the geometry **once, offline** into a static `.glb` file that is bundled with the app. Nothing loads from the network at runtime, so replay stays fully offline (§7, §10).
 
@@ -9,7 +9,7 @@ Goal: a better-looking but still lightweight scene on the left. Blender and BLOS
 - **Data contracts do not change.** Reports and incidents carry `placeId` only. Scene positions are a web-only lookup.
 - **The §18 coordinates stay true.** `school (0,0)`, `residence (80,20)`, and `shelter (-120,40)` in scene units. Use 1 unit = 1 m. Map §18 `(a, b)` to Three.js `(x=a, y=0, z=b)`.
 - **Heatmap height is not terrain.** Height is the concentration of confirmed open located incidents, on a fixed scale (§7). Real terrain relief next to a heatmap is easy to misread. Keep the crop mostly flat. Render the heatmap as a separate translucent surface above the highest terrain point. Dim the buildings in heatmap mode. Keep the legend.
-- **"Fictional exercise" stays honest.** §7 says "fictional river-valley scene." Real geometry is fine only if the place is **not** associated with Helene (no western NC or east TN towns). Remove real names. Label the scene "Fictional Helene-inspired exercise · incidents are synthetic." Otherwise a fictional "person may be upstairs" lands on a real school in a real disaster town, which §8 forbids. This is why D-004 needs sign-off.
+- **"Fictional exercise" stays honest.** §7 says "fictional river-valley scene." Real geometry is fine only if the place is **not** associated with Helene (no western NC or east TN towns). Remove real names. Label the scene "Fictional Helene-inspired exercise · incidents are synthetic." Otherwise a fictional "person may be upstairs" lands on a real school in a real disaster town, which §8 forbids. This is why the scene choice needed sign-off.
 - **2D fallback** when WebGL fails (3D scene and heatmap).
 
 ## Build order (do not let Blender block the 3D scene and heatmap)
