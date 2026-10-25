@@ -2,7 +2,7 @@
 id: 1025-020735-web-scene-web
 from: web-scene
 to: web
-status: open
+status: closed
 asked: 2026-10-25T02:07-07:00
 ---
 
