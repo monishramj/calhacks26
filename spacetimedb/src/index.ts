@@ -273,6 +273,22 @@ function issueJob(ctx: Ctx, runId: string, kind: JobKind, scope: Scope, incident
   return jobId;
 }
 
+/** Queue a Claude summary job for an incident unless one is already queued or claimed (one active job per incident). */
+function askClaude(ctx: Ctx, runId: string, incidentId: string, targetReportId: string | null) {
+  for (const row of ctx.db.job.runId.filter(runId)) {
+    if (row.state !== 'QUEUED' && row.state !== 'CLAIMED') continue;
+    const j = JSON.parse(row.json) as Job;
+    if (j.kind === 'INCIDENT_PROPOSAL' && j.incidentId === incidentId) return;
+  }
+  issueJob(ctx, runId, 'INCIDENT_PROPOSAL', { incidentIds: [incidentId], targetReportId }, incidentId);
+}
+
+/** When a report just confirmed into an incident was flagged as a correction or conflict, queue a Claude summary job. */
+function askClaudeOnConfirmed(ctx: Ctx, state: DeskState, incidentId: string, confirmed: string[]) {
+  const hit = changeFlags(state, incidentId).find((f) => (f.kind === 'POSSIBLE_CORRECTION' || f.kind === 'POSSIBLE_CONFLICT') && confirmed.includes(f.reportId));
+  if (hit) askClaude(ctx, state.runId, incidentId, hit.reportId);
+}
+
 // ---- lifecycle ---------------------------------------------------------------------------------
 
 export const init = spacetimedb.init((ctx) => {
@@ -355,7 +371,7 @@ export const issue_incident_job = spacetimedb.reducer(
     if (!state.incidents.some((i) => i.incidentId === incidentId)) deny('INVALID_INPUT', `no incident ${incidentId} in ${runId}`);
     const target = targetReportId === '' ? null : targetReportId;
     if (target && !state.reports.some((r) => r.reportId === target)) deny('INVALID_SOURCE', `no report ${target} in ${runId}`);
-    issueJob(ctx, runId, 'INCIDENT_PROPOSAL', { incidentIds: [incidentId], targetReportId: target }, incidentId);
+    askClaude(ctx, runId, incidentId, target);
   },
 );
 
@@ -550,6 +566,7 @@ export const approve_proposal = spacetimedb.reducer({ commandJson: t.string() },
   if (!fieldChange && p.relations.length === 0) deny('INVALID_INPUT', `proposal ${p.proposalId} changes nothing`);
 
   const { prior, next: view } = commitChange(ctx, state, p.incidentId, change, !fieldChange);
+  askClaudeOnConfirmed(ctx, state, p.incidentId, p.addReportIds);
   const reviewer = ctx.sender.toHexString();
   p.relations.forEach((r, n) => {
     const rel: ReportRelation = {
@@ -614,6 +631,7 @@ export const operator_edit = spacetimedb.reducer({ commandJson: t.string() }, (c
   must(checkSourceOwnership(runId, [...(cmd.changes.addReportIds ?? []), ...cmd.sourceReportIds], knownReports(state)));
 
   const { prior, next: view } = commitChange(ctx, state, cmd.incidentId, cmd.changes, false);
+  askClaudeOnConfirmed(ctx, state, cmd.incidentId, cmd.changes.addReportIds ?? []);
   const keys = Object.keys(cmd.changes) as (keyof typeof cmd.changes)[];
   appendReviewEvent(ctx, {
     runId,

@@ -281,4 +281,6 @@ export interface DeskAdapter {
   claimJob(cmd: ClaimJobCommand): Promise<Result<{ job: Job; input: JobInput } | null>>;
   advanceScenario(cmd: AdvanceScenarioCommand): Promise<Result<{ reportId: string } | null>>;
   resetRun(cmd: ResetRunCommand): Promise<Result<{ runId: string }>>;
+  /** Operator asks Claude for a summary proposal on one incident (live only). */
+  askClaude?(incidentId: string): Promise<Result<null>>;
 }

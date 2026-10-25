@@ -25,7 +25,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       const res = await fetch(`${http}/v1/database/${s.database}/call/${reducer}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: JSON.stringify([typeof arg === 'string' ? arg : JSON.stringify(arg)]),
+        body: JSON.stringify(Array.isArray(arg) ? arg : [typeof arg === 'string' ? arg : JSON.stringify(arg)]),
       });
       if (res.ok) return ok(null);
       const text = (await res.text()).trim();
@@ -150,6 +150,10 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
         const i = st.incidents.find((x) => x.incidentId === cmd.incidentId);
         return i && i.revision > cmd.baseRevision ? { incidentId: i.incidentId, revision: i.revision } : undefined;
       });
+    },
+
+    askClaude(incidentId) {
+      return call('issue_incident_job', [incidentId, '']);
     },
 
     async claimJob() {
