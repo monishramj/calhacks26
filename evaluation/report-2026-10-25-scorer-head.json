@@ -1,0 +1,563 @@
+{
+ "date": "2026-10-25",
+ "commit": "eb45db5",
+ "laya": {
+  "worker": {
+   "status": "ready",
+   "runtime": "laya==0.3.20",
+   "revision": "55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851",
+   "scorer": {
+    "kind": "fine_tuned_head",
+    "scores": "uncalibrated fine-tuned-head scores (softmax)",
+    "base_revision": "55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851",
+    "data_sha256": "7c40eefc75e1314bcc9190e3ab4a9f2f64e3154b25e16ff25f4ff631a5cedc47",
+    "scorer_sha256": "1007f0e418d29b2c7bc347e35032483916046ce4614c1a03a86cd737f75baaf7",
+    "decisions": [
+     "action",
+     "attention"
+    ],
+    "candidate_selector": "stock_laya",
+    "safety": "stock and tuned harm floors retained"
+   }
+  },
+  "url": "http://127.0.0.1:8094",
+  "n": 26,
+  "totals": {
+   "false_link": 0,
+   "missed_correction": 2,
+   "attention_confusion": 2,
+   "unjustified_downgrade": 0,
+   "review": 26,
+   "action_match": 9
+  },
+  "timing_ms": {
+   "first": 714.8,
+   "median": 404.4,
+   "max": 714.8,
+   "mean": 364.7
+  },
+  "cases": [
+   {
+    "id": "H01",
+    "category": "paraphrase",
+    "ms": 714.8,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-school",
+     "attention": "POSSIBLE_LIFE_SAFETY"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H02",
+    "category": "paraphrase",
+    "ms": 466.8,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "ACTIVE_NEED",
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-shelter",
+     "attention": "ACTIVE_NEED"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H03",
+    "category": "paraphrase",
+    "ms": 396.9,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-bridge",
+     "attention": "INFORMATION"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H04",
+    "category": "paraphrase",
+    "ms": 435.8,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-depot",
+     "attention": "ACTIVE_NEED"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H05",
+    "category": "hearsay",
+    "ms": 246.1,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "action": "NEW_INCIDENT",
+     "candidate": null,
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H06",
+    "category": "hearsay",
+    "ms": 430.9,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-court",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H07",
+    "category": "hearsay",
+    "ms": 230.5,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-road"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H08",
+    "category": "hearsay",
+    "ms": 424.9,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "NEW_INCIDENT",
+     "candidate": null,
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H09",
+    "category": "negation",
+    "ms": 426.8,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-bridge",
+     "attention": "INFORMATION"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": true,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H10",
+    "category": "negation",
+    "ms": 242.3,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "ACTIVE_NEED",
+    "expect": {
+     "candidate": "i-shelter",
+     "attention": "ACTIVE_NEED"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H11",
+    "category": "negation",
+    "ms": 425.9,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-depot",
+     "attention": "ACTIVE_NEED"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": true,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H12",
+    "category": "negation",
+    "ms": 396.4,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "FLAG_CONFLICT",
+     "candidate": "i-road"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H13",
+    "category": "rescue-question",
+    "ms": 435.0,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-court",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H14",
+    "category": "rescue-question",
+    "ms": 411.9,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-school",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H15",
+    "category": "rescue-question",
+    "ms": 230.3,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-bridge",
+     "attention": "INFORMATION"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H16",
+    "category": "rescue-question",
+    "ms": 423.6,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "NEW_INCIDENT",
+     "candidate": null,
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H17",
+    "category": "partial-all-clear",
+    "ms": 426.7,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-court",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H18",
+    "category": "partial-all-clear",
+    "ms": 428.8,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-school",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H19",
+    "category": "partial-all-clear",
+    "ms": 242.2,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "ACTIVE_NEED",
+    "expect": {
+     "action": "ATTACH_REPORT",
+     "candidate": "i-shelter",
+     "attention": "ACTIVE_NEED"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H20",
+    "category": "partial-all-clear",
+    "ms": 426.3,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-school",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H21",
+    "category": "delayed-old-report",
+    "ms": 300.3,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "candidate": "i-court",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H22",
+    "category": "delayed-old-report",
+    "ms": 295.1,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-depot",
+     "attention": "ACTIVE_NEED"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H23",
+    "category": "delayed-old-report",
+    "ms": 238.2,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-road",
+     "attention": "INFORMATION"
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H24",
+    "category": "delayed-old-report",
+    "ms": 295.3,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "candidate": "i-school",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": false,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": true
+   },
+   {
+    "id": "H25",
+    "category": "correction",
+    "ms": 237.7,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": "POSSIBLE_LIFE_SAFETY",
+    "expect": {
+     "action": "FLAG_CORRECTION",
+     "candidate": "i-bridge"
+    },
+    "false_link": false,
+    "missed_correction": true,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   },
+   {
+    "id": "H26",
+    "category": "correction",
+    "ms": 252.6,
+    "action": "REQUEST_REVIEW",
+    "candidate": null,
+    "attention": null,
+    "expect": {
+     "action": "FLAG_CORRECTION",
+     "candidate": "i-court",
+     "keeps_concern": true
+    },
+    "false_link": false,
+    "missed_correction": true,
+    "attention_confusion": false,
+    "unjustified_downgrade": false,
+    "review": true,
+    "action_match": false
+   }
+  ]
+ },
+ "codec": {
+  "model_codec": "not run (CODEC_MODEL_PATH not configured)",
+  "sets": {
+   "R01-R12 (fixture reports)": {
+    "texts": 12,
+    "raw": 777,
+    "zlib9": 795,
+    "gzip9": 939,
+    "raw+framing": 825,
+    "zlib9+framing": 843,
+    "gzip9+framing": 987,
+    "kit_packet_nomodel": {
+     "bytes": 531,
+     "packets": 12,
+     "methods(0 raw,1 unishox,2 model)": {
+      "1": 12
+     },
+     "encode_ms_median": 0.06
+    }
+   },
+   "sample.jsonl first 100": {
+    "texts": 100,
+    "raw": 8900,
+    "zlib9": 7936,
+    "gzip9": 9136,
+    "raw+framing": 9300,
+    "zlib9+framing": 8336,
+    "gzip9+framing": 9536,
+    "kit_packet_nomodel": {
+     "bytes": 5975,
+     "packets": 100,
+     "methods(0 raw,1 unishox,2 model)": {
+      "1": 100
+     },
+     "encode_ms_median": 0.07
+    }
+   }
+  }
+ }
+}

@@ -1,6 +1,6 @@
 {
  "date": "2026-10-25",
- "commit": "2734526",
+ "commit": "eb45db5",
  "laya": {
   "worker": {
    "status": "ready",
@@ -18,16 +18,16 @@
    "action_match": 9
   },
   "timing_ms": {
-   "first": 473.5,
-   "median": 450.65,
-   "max": 473.5,
-   "mean": 407.2
+   "first": 415.3,
+   "median": 404.75,
+   "max": 436.8,
+   "mean": 352.2
   },
   "cases": [
    {
     "id": "H01",
     "category": "paraphrase",
-    "ms": 473.5,
+    "ms": 415.3,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "POSSIBLE_LIFE_SAFETY",
@@ -46,7 +46,7 @@
    {
     "id": "H02",
     "category": "paraphrase",
-    "ms": 449.8,
+    "ms": 430.3,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "ACTIVE_NEED",
@@ -65,7 +65,7 @@
    {
     "id": "H03",
     "category": "paraphrase",
-    "ms": 423.3,
+    "ms": 398.8,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -84,7 +84,7 @@
    {
     "id": "H04",
     "category": "paraphrase",
-    "ms": 465.7,
+    "ms": 429.9,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -103,7 +103,7 @@
    {
     "id": "H05",
     "category": "hearsay",
-    "ms": 256.7,
+    "ms": 242.8,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -122,7 +122,7 @@
    {
     "id": "H06",
     "category": "hearsay",
-    "ms": 453.1,
+    "ms": 430.8,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -140,7 +140,7 @@
    {
     "id": "H07",
     "category": "hearsay",
-    "ms": 244.9,
+    "ms": 230.3,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -157,7 +157,7 @@
    {
     "id": "H08",
     "category": "hearsay",
-    "ms": 466.2,
+    "ms": 426.3,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -176,7 +176,7 @@
    {
     "id": "H09",
     "category": "negation",
-    "ms": 468.4,
+    "ms": 427.0,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -195,7 +195,7 @@
    {
     "id": "H10",
     "category": "negation",
-    "ms": 272.1,
+    "ms": 242.1,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "ACTIVE_NEED",
@@ -213,7 +213,7 @@
    {
     "id": "H11",
     "category": "negation",
-    "ms": 464.4,
+    "ms": 426.9,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "POSSIBLE_LIFE_SAFETY",
@@ -232,7 +232,7 @@
    {
     "id": "H12",
     "category": "negation",
-    "ms": 426.3,
+    "ms": 395.7,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -250,7 +250,7 @@
    {
     "id": "H13",
     "category": "rescue-question",
-    "ms": 462.6,
+    "ms": 436.8,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -269,7 +269,7 @@
    {
     "id": "H14",
     "category": "rescue-question",
-    "ms": 439.3,
+    "ms": 410.7,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -288,7 +288,7 @@
    {
     "id": "H15",
     "category": "rescue-question",
-    "ms": 240.0,
+    "ms": 231.0,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "INFORMATION",
@@ -306,7 +306,7 @@
    {
     "id": "H16",
     "category": "rescue-question",
-    "ms": 451.5,
+    "ms": 425.7,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -325,7 +325,7 @@
    {
     "id": "H17",
     "category": "partial-all-clear",
-    "ms": 430.3,
+    "ms": 432.4,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -344,7 +344,7 @@
    {
     "id": "H18",
     "category": "partial-all-clear",
-    "ms": 471.4,
+    "ms": 427.7,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -363,7 +363,7 @@
    {
     "id": "H19",
     "category": "partial-all-clear",
-    "ms": 252.8,
+    "ms": 242.2,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "ACTIVE_NEED",
@@ -382,7 +382,7 @@
    {
     "id": "H20",
     "category": "partial-all-clear",
-    "ms": 456.1,
+    "ms": 431.3,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "POSSIBLE_LIFE_SAFETY",
@@ -400,7 +400,7 @@
    {
     "id": "H21",
     "category": "delayed-old-report",
-    "ms": 452.3,
+    "ms": 296.7,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -418,7 +418,7 @@
    {
     "id": "H22",
     "category": "delayed-old-report",
-    "ms": 400.3,
+    "ms": 296.8,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -436,7 +436,7 @@
    {
     "id": "H23",
     "category": "delayed-old-report",
-    "ms": 373.6,
+    "ms": 238.9,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "INFORMATION",
@@ -454,7 +454,7 @@
    {
     "id": "H24",
     "category": "delayed-old-report",
-    "ms": 458.1,
+    "ms": 298.0,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -472,7 +472,7 @@
    {
     "id": "H25",
     "category": "correction",
-    "ms": 451.6,
+    "ms": 239.1,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": null,
@@ -490,7 +490,7 @@
    {
     "id": "H26",
     "category": "correction",
-    "ms": 383.1,
+    "ms": 254.9,
     "action": "REQUEST_REVIEW",
     "candidate": null,
     "attention": "POSSIBLE_LIFE_SAFETY",

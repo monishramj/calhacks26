@@ -69,8 +69,8 @@ Put keys in the root `.env` (see `.env.example`):
 
 ## Known limits and next steps
 
-1. Laya's action scores never reach the 0.6 certainty bar, so every suggestion goes to review. Proposed fix: a threshold of about 0.4 with a 0.2 margin, chosen on training validation data, never on the evaluation cases.
-2. One coordinator loop runs both Laya and Claude jobs, so a Claude picture (about 10 s) delays Laya.
+1. Every Laya suggestion still goes to review. The action bar (top score ≥ 0.6, lead ≥ 0.2) was re-chosen on the fine-tune's 40-example validation split only (`services/local-laya/finetune/threshold.py`, results in `threshold.json`). No lower bar keeps at least 90% of accepted actions correct, so it stays at 0.6. On the 26 held-out cases neither stock Laya nor the fine-tuned head clears it (`evaluation/report-2026-10-25.*`, `report-2026-10-25-scorer-head.json`). Better training data is the next lever, not a lower bar.
+2. Laya and Claude jobs run in separate coordinator loops, so a Claude picture (about 10 s) no longer delays Laya. Only one Claude job runs at a time.
 3. `operator_edit` does not check the input signature.
 4. The Laya and Claude notices are inferred from waiting jobs, not from a heartbeat.
 5. The radio and codec bridge (`services/codec-radio`) is being done separately and is not wired into `dev:live`.
