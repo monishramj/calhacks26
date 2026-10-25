@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "verify": "tsc -b --noEmit && vitest run && playwright test"
   },
   "dependencies": {
     "@react-three/fiber": "8.17.10",
@@ -19,6 +21,7 @@
     "three": "0.169.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.48.2",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.0.1",
     "@testing-library/user-event": "14.5.2",

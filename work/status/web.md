@@ -4,9 +4,10 @@ _Updated: 2026-10-25 by lead lane (Claude Code, C4)_
 
 ## Now
 
-- **Gate / phase:** shell done; replay adapter + §18 fixture done (M1 data path). Lanes: scene (G7) and panels (G6 UI) render it.
-- **Last commit:** `[ws/web][G8][IMPL] Replay adapter over the §18 exercise`
-- **Exact next step (lead):** merge `origin/ws/web-scene` and `origin/ws/web-panels` into `ws/web` as they push. When `[contract] v1` merges, replace `src/adapters/contract.ts` with `packages/domain` imports and `src/adapters/derived.ts` with `packages/domain/src/rules`.
+- **Gate / phase:** shell, replay adapter + §18 fixture, panels (G6 UI IMPL, merged from ws/web-panels), e2e browser story on replay (3/3 green). Scene (G7) in progress on ws/web-scene (Codex).
+- **Last commit:** `[ws/web][G8][TEST] e2e replay story + verify script`
+- **Exact next step (lead):** merge `origin/ws/web-scene` when Codex pushes, then `npm run verify`. When `[contract] v1` merges, replace `src/adapters/contract.ts` with `packages/domain` imports and `src/adapters/derived.ts` with `packages/domain/src/rules`. Then G6 panels REVIEW and the live adapter wiring.
+- **Automation on C4:** the lead's Claude session runs a 6-minute tick: it answers questions-board items for `web`, merges lane branches when `verify` stays green, and watches `main` for the contract. `questions.py watch` is also running, but it can't auth (`claude` CLI login 401) until someone runs `claude` → `/login` on C4.
 
 ## For the lanes: how to get data (read this)
 
@@ -25,6 +26,8 @@ npm install          # .npmrc disables a local lockfile; ws/state owns the root 
 npm run dev:replay   # http://localhost:5173, banner says LOCAL REPLAY
 npm run dev          # same shell, banner says NOT CONNECTED
 npm test             # vitest + jsdom + Testing Library
+npm run test:e2e     # Playwright story in tests/e2e on replay (Windows uses installed Edge; E2E_CHANNEL overrides)
+npm run verify       # typecheck + unit + e2e; the merge gate for lanes
 npm run typecheck
 npm run build
 ```
