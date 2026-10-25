@@ -2,7 +2,7 @@
 
 _Maintained by the orchestrator on `main`. Status comes from validation files, never from claims alone._
 
-**Last orchestrator pass:** 2026-10-25 01:35 PDT. C1: kit imported, G1 TEST red, radios and the C1 codec runtime verified. C2 lane `ws/state-spacetimedb`: SpacetimeDB 2.13 toolchain + placeholder TS module. C4: shell and lane skeleton pushed. C3: nothing pushed yet. G0 not started on any branch. Open questions to state and inference are unanswered.
+**Last orchestrator pass:** 2026-10-25 01:45 PDT. C3 split into lead (Claude) + laya (Codex) lanes and keeps G5. ws/web: replay adapter over §18 (interim §17 types, labeled fixture outputs); scene lane G7 TEST. Earlier, 01:35: C1: kit imported, G1 TEST red, radios and the C1 codec runtime verified. C2 lane `ws/state-spacetimedb`: SpacetimeDB 2.13 toolchain + placeholder TS module. C4: shell and lane skeleton pushed. C3: nothing pushed yet. G0 not started on any branch. Open questions to state and inference are unanswered.
 
 Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` · `blocked` · `unverified (provider unavailable)`
 
@@ -17,7 +17,7 @@ Status values: `not started` · `TEST red` · `IMPL green` · `REVIEW passed` ·
 | G4 local Laya | P0 | ws/inference | not started | `work/validation/G4.md` | Needs a loadable Laya. |
 | G5 Claude enrichment | P1 | ws/inference | not started | `work/validation/G5.md` | Fixture tools first, live after G3. |
 | G6 queue and history | P0 | ws/state + ws/web (panels lane) | not started | `G6-state.md`, `G6-panels.md` | Rules in `packages/domain/src/rules`. |
-| G7 scene and heatmap | P0 | ws/web (scene lane) | not started | `G7-scene.md` | Fixture adapter first. |
+| G7 scene and heatmap | P0 | ws/web (scene lane) | TEST red | `G7-scene.md` | Fixture adapter first. |
 | G8 resilience | P0 | all | not started | `G8-state.md`, `G8-inference.md`, `G8-web.md` | After the G3–G7 real paths. |
 | G9 end-to-end | P0 | all | not started | `G9-radio.md`, `G9-integration.md` | Every pitched feature. |
 
