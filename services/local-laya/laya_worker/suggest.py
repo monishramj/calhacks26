@@ -1,4 +1,5 @@
 """Contract v1 JobInput in, provisional LocalSuggestion out; never changes confirmed state."""
+import json
 import logging
 import sys
 from pathlib import Path
@@ -53,12 +54,21 @@ def validate_job(job: dict) -> None:
         raise InvalidJob("Invalid local suggestion job")
 
 
-def _certain(answer: dict) -> str | None:
+def _action_p_min(scorer_path: str) -> float:
+    # Chosen on the fine-tune validation split by finetune/threshold.py; 0.6 if absent.
+    try:
+        data = json.loads((Path(__file__).resolve().parents[1] / "finetune/threshold.json").read_text())
+        return float(data["head" if scorer_path else "stock"]["action_p_min"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return 0.6
+
+
+def _certain(answer: dict, p_min: float = 0.6) -> str | None:
     probabilities = answer["probabilities"]
     choice = answer["choice"]
     others = [p for label, p in probabilities.items() if label != choice]
     # shortcut: authored review thresholds, revisit only after separate calibration evaluation.
-    if probabilities[choice] >= 0.6 and probabilities[choice] - max(others, default=0) >= 0.2:
+    if probabilities[choice] >= p_min and probabilities[choice] - max(others, default=0) >= 0.2:
         return choice
     return None
 
@@ -124,7 +134,7 @@ def suggest(job: dict, runtime) -> dict:
          "kind": "score" if scorer_path and qid in ("action", "attention") else "probability"}
         for qid, answer in answers.items() for label, value in answer["probabilities"].items()
     ]
-    result["action"] = _certain(answers["action"]) or "REQUEST_REVIEW"
+    result["action"] = _certain(answers["action"], _action_p_min(scorer_path)) or "REQUEST_REVIEW"
     if result["action"] in LINK_ACTIONS:
         candidate = None
         if len(candidates) == 1:
