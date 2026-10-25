@@ -32,8 +32,9 @@ async function http(url, init = {}, timeoutMs = 5000) {
 }
 
 /** SQL over HTTP; rows come back as arrays in schema order. */
-async function sql(uri, db, query) {
-  const res = await http(`${uri}/v1/database/${db}/sql`, { method: 'POST', body: query });
+async function sql(uri, db, query, token) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  const res = await http(`${uri}/v1/database/${db}/sql`, { method: 'POST', headers, body: query });
   if (!res.ok) throw new Error(`sql ${res.status}: ${(await res.text()).slice(0, 200)}`);
   const [result] = await res.json();
   const names = result.schema.elements.map((e) => e.name.some);
@@ -83,10 +84,10 @@ async function readLocal() {
 const MIRROR_TABLES = { reports: 'mirror_report', relations: 'mirror_relation', reviewEvents: 'mirror_review_event', incidents: 'mirror_incident' };
 
 /** What the mirror has acknowledged for this site and epoch: key -> hash. */
-async function readMirror(epoch) {
+async function readMirror(epoch, token) {
   const acked = {};
   for (const [kind, table] of Object.entries(MIRROR_TABLES)) {
-    const rows = await sql(MIRROR_URI, MIRROR_DB, `SELECT key, hash FROM ${table} WHERE site_id = ${quote(SITE)} AND epoch = ${quote(epoch)}`);
+    const rows = await sql(MIRROR_URI, MIRROR_DB, `SELECT key, hash FROM ${table} WHERE site_id = ${quote(SITE)} AND epoch = ${quote(epoch)}`, token);
     acked[kind] = new Map(rows.map((r) => [r.key, r.hash]));
   }
   return acked;
@@ -125,7 +126,7 @@ export async function cycle(token) {
     log('nothing-to-share', { note: 'no reports on the local desk yet' });
     return { sent: 0 };
   }
-  const acked = await readMirror(local.epoch);
+  const acked = await readMirror(local.epoch, token);
   const prefix = `${SITE}/${local.epoch}/`;
   const pending = { reports: [], relations: [], reviewEvents: [], incidents: [] };
   for (const kind of Object.keys(pending)) {
