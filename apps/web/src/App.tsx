@@ -68,8 +68,10 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
         <ScenarioControls />
         {state && <FailureNotices state={state} {...replayControls} />}
       </ModeBanner>
+      {/* The hierarchy covers the desk instead of hiding it, so the 3D map keeps its size and camera. */}
+      <div className="views">
       {tab === 'hierarchy' && <ClaudeHierarchy {...selection} onOpenDesk={() => setTab('desk')} />}
-      <main className="workspace" hidden={tab !== 'desk'}>
+      <main className="workspace">
         <section className="scene-pane" aria-label="Exercise scene">
           <Scene {...selection} />
         </section>
@@ -91,6 +93,7 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
           </Section>
         </aside>
       </main>
+      </div>
     </div>
   );
 }

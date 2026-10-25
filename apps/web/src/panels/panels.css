@@ -46,7 +46,7 @@
 .place-summary { margin: 0; font-size: 13px; }
 .place-card.fresh { animation: place-fresh 1.6s ease-out; }
 .place-reports { margin-top: 12px; padding-left: 12px; border-left: 2px solid var(--border); }
-.place-reports > li { padding: 8px 0; }
+.report-timeline.place-reports > li { display: block; padding: 8px 0; }
 @keyframes place-fresh { from { background: var(--selected); } to { background: transparent; } }
 @media (prefers-reduced-motion: reduce) { .place-card.fresh { animation: none; } }
 .report-timeline li { display: grid; grid-template-columns: 42px 1fr; gap: 12px; padding: 10px 0; }

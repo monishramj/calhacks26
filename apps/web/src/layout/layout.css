@@ -41,7 +41,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .scenario-controls .clock { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .workspace { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 460px); }
-.workspace[hidden] { display: none; }
+.views { flex: 1; min-height: 0; position: relative; display: flex; }
+.views > .workspace { flex: 1; min-width: 0; }
 .tabs { display: inline-flex; gap: 2px; padding: 2px; border-radius: 6px; background: var(--panel); }
 .tabs button { background: none; color: var(--muted); border: 0; border-radius: 5px; padding: 5px 10px; font: inherit; cursor: pointer; white-space: nowrap; }
 .tabs button[aria-selected='true'] { background: var(--selected); color: var(--accent); }
@@ -59,7 +60,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .queue-filters button { background: none; color: var(--muted); border: 0; border-radius: 999px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
 .queue-filters button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent-text); }
 @media (max-width: 800px) {
-  .workspace { grid-template-columns: 1fr; grid-template-rows: 50vh auto; overflow-y: auto; }
+  .workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: 50vh auto; overflow-y: auto; }
   .side-pane { overflow-y: visible; }
   .mode-banner { padding: 8px 12px; gap: 12px; flex-shrink: 0; }
 }

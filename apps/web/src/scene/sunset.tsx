@@ -312,7 +312,21 @@ function Beacon({ incident, offset, selected, onSelect }: { incident: SceneIncid
     </mesh>
     <Label title={place.name} detail={selected ? `${attentionLabel(incident.attention)} · ${incident.status.toLowerCase()}` : null}
       accent={color} selected={selected} position={[x, site.h + (selected ? 68 : 48), z]} />
+    {selected && <Pointer x={x} y={site.h + 40} z={z} color={color} />}
   </group>;
+}
+
+/** Bobbing, spinning arrow above the selected site, pointing down at the building. */
+function Pointer({ x, y, z, color }: { x: number; y: number; z: number; color: string }) {
+  const arrow = useRef<Mesh>(null);
+  useFrame(() => {
+    const t = performance.now() / 1000;
+    if (arrow.current) { arrow.current.position.y = y + Math.sin(t * 3) * 6; arrow.current.rotation.y = t * 1.5; }
+  });
+  return <mesh ref={arrow} position={[x, y, z]} rotation-x={Math.PI}>
+    <coneGeometry args={[9, 22, 4]} />
+    <meshBasicMaterial color={color} />
+  </mesh>;
 }
 
 function SiteHighlights() {

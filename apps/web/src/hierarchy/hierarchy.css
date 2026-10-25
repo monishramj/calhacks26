@@ -1,4 +1,4 @@
-.hierarchy { flex: 1; min-height: 0; overflow: auto; padding: 24px; }
+.hierarchy { position: absolute; inset: 0; z-index: 5; overflow: auto; padding: 24px; background: var(--bg); }
 .tree { width: max-content; }
 .branch { display: flex; align-items: flex-start; }
 /* Connectors, aligned to each node's title row: node → children, then a spine with one stub per child. */
