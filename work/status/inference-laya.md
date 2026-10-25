@@ -1,13 +1,13 @@
 # Status · ws/inference · laya lane (C4, D-008)
 
-_Updated: 2026-10-25 02:30 PDT by the laya lane (Cursor agent on C4)_
+_Updated: 2026-10-25 02:58 PDT by the laya lane (Cursor agent on C4)_
 
 ## Now
 
-- **Gate / phase:** G4 TEST done (red, recorded), contract v1.0.0 merged and tests rerun against it (81 red on stubs, 4 green, 0 skipped). Stopped before IMPLEMENT.
+- **Gate / phase:** G4 IMPLEMENT **paused partway** for a human check-in. Worker code is written; mocked suite 66 passed / 19 skipped. The real-model run is not done (C4 was at 100% CPU).
 - **Branch / worktree:** `ws/inference-laya` at `../calhacks26-inference-laya` (sibling of the main clone) (C4). `origin/main` merged at session start.
 - **Owns:** `services/local-laya/**` only. Evidence is in `work/validation/G4.md` (as instructed; the lead's lane table says `G4-laya.md`, but G4 is laya-only, so there is no collision).
-- **Exact next step:** G4 IMPLEMENT, which is a separate request. Build `laya_worker/suggest.py` and `laya_worker/server.py` until the reviewed tests in `services/local-laya/tests` pass without weakening them. The G4 worker reads a v1.0.0 `JobInput` and validates its output with `domain_contract`.
+- **Exact next step:** on a quiet C4 (close other heavy apps), run `LAYA_MODEL_PATH=../laya-models/laya ../laya-env/Scripts/python -m pytest services/local-laya/tests -q -rs`. If the 17 real-model tests pass, record the timings and the dev-case results in `work/validation/G4.md` and mark IMPLEMENT green. Then start the worker with `cd services/local-laya && python -m laya_worker` for the coordinator. G4 REVIEW comes after that.
 
 ## How to run what exists
 

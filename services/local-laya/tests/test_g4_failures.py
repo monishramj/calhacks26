@@ -27,8 +27,10 @@ def malformed(kind):
                     probs["SOMETHING_ELSE"] = 0.0
                 elif kind == "sum":
                     probs = {k: 0.7 for k in keys}
-                elif kind == "negative":
+                elif kind == "negative" and len(keys) > 1:
                     probs[keys[0]], probs[keys[1]] = -0.2, probs[keys[1]] + 0.2
+                elif kind == "negative":
+                    probs[keys[0]] = -0.2
                 elif kind == "unknown_choice":
                     choice = "SOMETHING_ELSE"
                 answers[qid] = {"type": "choice", "choice": choice, "probabilities": probs}
