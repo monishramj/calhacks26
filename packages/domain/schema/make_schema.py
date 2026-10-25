@@ -22,6 +22,9 @@ MAX_ID_LENGTH = 128
 # radio text fits, while operator text stays short. Revisit with C1's measured ratio.
 MAX_REPORT_TEXT_BYTES = 1000
 MAX_SHORT_TEXT = 500
+# Boundary limits for wire text from another process: checked before/while parsing.
+MAX_WIRE_BYTES = 1_048_576
+MAX_DEPTH = 16
 MAX_SUMMARY = 2000
 INT32_MAX = 2**31 - 1
 
@@ -38,6 +41,16 @@ SUMMARY = {"type": "string", "minLength": 1, "maxLength": MAX_SUMMARY}
 COUNT = {"type": "integer", "minimum": 0, "maximum": INT32_MAX}
 POSITIVE = {"type": "integer", "minimum": 1, "maximum": INT32_MAX}
 NULL = {"type": "null"}
+
+
+def described(s: dict, text: str) -> dict:
+    return {**s, "description": text}
+
+
+SENT_AT = described(TIMESTAMP, "Sender's clock when the report was sent (RFC 3339). Unverified; null if unknown.")
+EVENT_AT = described(TIMESTAMP, "Time the report says the event happened (RFC 3339). Null if the report gives none.")
+RECEIVED_AT = described(TIMESTAMP, "Backend receive time (RFC 3339, backend clock). Never sender-supplied.")
+LEASE_AT = described(TIMESTAMP, "Backend time when the worker's claim lapses (RFC 3339).")
 
 ATTENTION = ["POSSIBLE_LIFE_SAFETY", "ACTIVE_NEED", "INFORMATION"]
 LOCAL_ACTIONS = ["NEW_INCIDENT", "ATTACH_REPORT", "FLAG_CORRECTION", "FLAG_CONFLICT", "REQUEST_REVIEW"]
@@ -106,8 +119,8 @@ defs["ReportInput"] = closed(
         "messageId": ID,
         "text": TEXT,
         "origin": enum(["radio", "scenario", "operator"]),
-        "sentAt": nullable(TIMESTAMP),
-        "reportedEventAt": nullable(TIMESTAMP),
+        "sentAt": nullable(SENT_AT),
+        "reportedEventAt": nullable(EVENT_AT),
         "reportedLocation": nullable(LOCATION),
         "transport": TRANSPORT,
     },
@@ -126,8 +139,8 @@ defs["ReportInput"] = closed(
 
 defs["Report"] = closed({
     "reportId": ID,
-    "receiveSequence": POSITIVE,
-    "receivedAt": TIMESTAMP,
+    "receiveSequence": described(POSITIVE, "Backend-assigned, monotonic per run. The only receive order."),
+    "receivedAt": RECEIVED_AT,
     "provenance": enum(["live", "simulated", "recorded", "fixture"]),
     "input": ref("ReportInput"),
 })
@@ -220,7 +233,7 @@ defs["ProposalRecord"] = closed(
     when({"submittedByRole": {"const": "worker"}}, {"proposal": {"properties": {"provider": enum(["claude", "recording", "fixture"])}}}),
 )
 
-CLAIM = closed({"workerIdentity": ID, "leaseExpiresAt": TIMESTAMP})
+CLAIM = closed({"workerIdentity": ID, "leaseExpiresAt": LEASE_AT})
 defs["Job"] = closed(
     {
         "runId": ID,
@@ -228,6 +241,7 @@ defs["Job"] = closed(
         "kind": enum(JOB_KINDS),
         "reportId": nullable(ID),
         "incidentId": nullable(ID),
+        "baseIncidentVersions": described(VERSIONS, "Incident revisions the job was issued against (also folded into inputSignature)."),
         "inputSignature": ID,
         "state": enum(JOB_STATES),
         "attempts": {"type": "integer", "minimum": 0, "maximum": 1000},
@@ -242,8 +256,8 @@ JOB_REPORT = closed({
     "reportId": ID,
     "receiveSequence": POSITIVE,
     "text": TEXT,
-    "sentAt": nullable(TIMESTAMP),
-    "reportedEventAt": nullable(TIMESTAMP),
+    "sentAt": nullable(SENT_AT),
+    "reportedEventAt": nullable(EVENT_AT),
     "reportedLocation": nullable(LOCATION),
 })
 PLACE = closed({"placeId": ID, "aliases": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 100}, "maxItems": 32}})
@@ -342,6 +356,8 @@ SCHEMA = {
     "x-contractVersion": CONTRACT_VERSION,
     "x-maxIdLength": MAX_ID_LENGTH,
     "x-maxReportTextBytes": MAX_REPORT_TEXT_BYTES,
+    "x-maxWireBytes": MAX_WIRE_BYTES,
+    "x-maxDepth": MAX_DEPTH,
     "x-crossFieldRules": [
         "LocalSuggestion: a non-null candidateIncidentId is a key of baseIncidentVersions",
         "IncidentProposal: incidentId is a key of baseIncidentVersions",

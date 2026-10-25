@@ -1,7 +1,7 @@
 // Contract rules shared by the live SpacetimeDB module and the replay adapter:
 // intake identity, idempotency, permissions, provenance, freshness, source
 // ownership, and the model-facing job input. Pure functions, no I/O.
-import { sha256Hex } from './sha256.ts';
+import { sha256Hex } from './sha256';
 import type {
   AdapterMethod,
   IncidentProposal,
@@ -14,8 +14,8 @@ import type {
   ReportProvenance,
   Result,
   Role,
-} from './types.ts';
-import { fail, isId, validateWire } from './validate.ts';
+} from './types';
+import { fail, isId, validateWire } from './validate';
 
 export const ATTENTIONS = Object.freeze(['POSSIBLE_LIFE_SAFETY', 'ACTIVE_NEED', 'INFORMATION'] as const);
 export const LOCAL_ACTIONS = Object.freeze(['NEW_INCIDENT', 'ATTACH_REPORT', 'FLAG_CORRECTION', 'FLAG_CONFLICT', 'REQUEST_REVIEW'] as const);

@@ -4,15 +4,16 @@ _Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
 
 ## Now
 
-- **Gate / phase:** G0 / **IMPL green** (`work/validation/G0.md`). Contract **v1.0.0** on `ws/state`. vitest 770/770, pytest 482/482. Not on main yet: that waits for REVIEW and a `[contract] v1` PR.
-- **Last commit:** `[ws/state][G0][IMPL] ...` on `ws/state`
-- **Exact next step:** G0 REVIEW (§20 common context + G0 REVIEW prompt).
-  - Check every producer/consumer meaning against GROUND_TRUTH: place aliases, R11 timing, starting state, R07 checkpoint, no labels in model inputs.
-  - Read C1's answer on 1025-020711-state-codec-radio (intake transport, 1000-byte bound).
-  - Settle the ws/web differences (G0.md "Contract choices" 2, 5, 7, 8).
-  - Mutation-check a few rules (e.g. let a worker approve and confirm the tests catch it).
-  - Then open `[contract] v1` PR to main.
-- **G0 ETA posted on the board (1025-005903):** `[contract] v1` PR ~03:30 PDT, merged ~03:45. On track.
+- **Gate / phase:** G0 / **REVIEW passed** (`work/validation/G0.md`). Contract **v1.0.0**; `[contract] v1` PR open to main (link in G0.md / the PR list). vitest 777/777, pytest 486/486.
+- **Last commit:** `[ws/state][G0][REVIEW] ...` on `ws/state`
+- **Exact next step:** G6 rules TEST (§20 common context + G6 TEST prompt, ws/state slice). Write pure-function tests in `packages/domain/src/rules/` for:
+  - confirmed queue order (attention category, then earlier open-cycle sequence; no numeric score; duplicates never raise severity)
+  - review band
+  - timeline (sent/event/receive kept apart; late old reports never erase newer concerns)
+  - change flags (new unconfirmed evidence flags reassessment)
+
+  After the PR merges, merge `origin/main` first. If C1 answers 1025-020711 with a different byte bound or transport, that's a v1.x `[contract]` change.
+- **G0 ETA posted on the board (1025-005903):** PR ~03:30 PDT, merged ~03:45. The PR is open on time.
 
 ## How to run what exists
 
@@ -41,7 +42,7 @@ None. Coordinator ownership is settled by **D-007**: ws/inference owns `apps/coo
 - ws/codec-radio: confirm the frozen radio-intake transport and the 1000-byte text bound (board 1025-020711-state-codec-radio, `packages/domain/README.md`).
 - ws/codec-radio: agree on the radio-intake transport during G0. C2 proposal: the C4 bridge calls the `receiveReport` reducer through SpacetimeDB's HTTP reducer-call API with its own identity (unverified in 2.13, checked in G0). Fallback: HTTP POST of `ReportInput` to the coordinator, host/port from env.
 - ws/inference: `apps/coordinator/**` is yours (D-007), including `package.json`. ws/state regenerates the root lockfile on merge.
-- ws/web: G0 differs from `apps/web/src/adapters/contract.ts` on `Report.provenance`, flat vs nested proposal records, `ScenarioState.nextMessageId` (dropped), `claimJob.workerId` (dropped), and `approveProposal` (now carries `inputSignature` + `baseIncidentVersions`). See `work/validation/G0.md`; settled in G0 REVIEW.
+- ws/web, ws/inference, ws/codec-radio: adopt contract v1.0.0 once the PR merges. Per-workstream ready packages and the ws/web diff list are in `work/validation/G0.md` (REVIEW → "Ready work packages").
 - ws/web: when `apps/web` merges, its lockfile folds into the root `package-lock.json`. ws/state resolves that conflict.
 
 ## Inbox acknowledged

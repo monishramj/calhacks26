@@ -1,6 +1,15 @@
 // @calhacks26/domain: contract v1. See README.md and CHANGELOG.md.
-export * from './types.ts';
-export { CONTRACT_VERSION, MAX_ID_LENGTH, MAX_REPORT_TEXT_BYTES, WIRE_TYPES, parseWire, validateWire } from './validate.ts';
+export * from './types';
+export {
+  CONTRACT_VERSION,
+  MAX_DEPTH,
+  MAX_ID_LENGTH,
+  MAX_REPORT_TEXT_BYTES,
+  MAX_WIRE_BYTES,
+  WIRE_TYPES,
+  parseWire,
+  validateWire,
+} from './validate';
 export {
   ADAPTER_METHODS,
   ATTENTIONS,
@@ -20,5 +29,5 @@ export {
   computeInputSignature,
   recallCommand,
   recordCommand,
-} from './rules.ts';
-export type { Assigned, BuildJobInputArgs, CommandLedger, FreshnessCurrent, FreshnessSubmitted, SignatureInput } from './rules.ts';
+} from './rules';
+export type { Assigned, BuildJobInputArgs, CommandLedger, FreshnessCurrent, FreshnessSubmitted, SignatureInput } from './rules';

@@ -411,6 +411,7 @@ JOB = {
     "kind": "LOCAL_SUGGESTION",
     "reportId": "rep-000007",
     "incidentId": None,
+    "baseIncidentVersions": {"inc-school": 2},
     "inputSignature": SIG,
     "state": "QUEUED",
     "attempts": 0,
@@ -434,6 +435,7 @@ job = {
         ("state RUNNING", with_(JOB, state="RUNNING")),
         ("kind DISPATCH", with_(JOB, kind="DISPATCH")),
         ("missing inputSignature", without(JOB, "inputSignature")),
+        ("negative base version", with_(JOB, baseIncidentVersions={"inc-school": -1})),
     ],
 }
 

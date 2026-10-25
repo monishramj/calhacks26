@@ -1,6 +1,6 @@
 {
   "exerciseVersion": "exercise-v1",
-  "about": "Authored §18 exercise (docs/GROUND_TRUTH.md). Synthetic messages, never historical Helene transcripts. Private: never model input, never a client-visible table. Coordinates are local scene units, not lat/long. sentAt values are authored; R10 has none, and every reportedEventAt is unknown (null). R11 is an older gym report delivered late: it was sent at 09:02, before R07 at 09:40, and is delivered after R10.",
+  "about": "Authored §18 exercise (docs/GROUND_TRUTH.md). Synthetic messages, never historical Helene transcripts. Private: never model input, never a client-visible table. Coordinates are local scene units, not lat/long. sentAt values are authored; R10 has none, and every reportedEventAt is unknown (null). reportedLocation is explicit named-place metadata from the sender (§18: no geocoder); subareas stay in the text. R11 is an older gym report delivered late: it was sent at 09:02, before R07 at 09:40, and is delivered after R10.",
   "places": [
     {
       "placeId": "school",
@@ -104,7 +104,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:00:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -126,7 +129,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:05:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "shelter",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -148,7 +154,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:10:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "residence",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -170,7 +179,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:20:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "shelter",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -192,7 +204,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:25:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -214,7 +229,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:30:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "residence",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -236,7 +254,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:40:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -258,7 +279,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:45:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -280,7 +304,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:50:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -302,7 +329,10 @@
         "origin": "scenario",
         "sentAt": null,
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -324,7 +354,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T09:02:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",
@@ -346,7 +379,10 @@
         "origin": "scenario",
         "sentAt": "2026-10-25T10:05:00Z",
         "reportedEventAt": null,
-        "reportedLocation": null,
+        "reportedLocation": {
+          "placeId": "school",
+          "source": "sender_explicit"
+        },
         "transport": {
           "verification": "not_applicable",
           "encoding": "not_applicable",

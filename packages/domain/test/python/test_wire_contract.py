@@ -157,3 +157,22 @@ def test_worker_echoes_job_signature_unchanged():
 def test_committed_files_match_their_generator(generator):
     r = subprocess.run([sys.executable, str(DOMAIN / generator), "--check"], cwd=DOMAIN)
     assert r.returncode == 0, f"{generator} output is stale; rerun it and commit"
+
+
+def test_deep_nesting_is_a_violation_not_a_recursion_error():
+    deep = 1
+    for _ in range(5000):
+        deep = {"a": deep}
+    assert domain_contract.validate("ReportInput", deep) != []
+
+
+def test_mesh_node_ids_map_to_contract_source_ids():
+    assert domain_contract.mesh_source_id("!f99260d4") == "mesh-f99260d4"
+    payload = bridge_report_input("Shelter needs blankets for tonight.")
+    payload["sourceId"] = domain_contract.mesh_source_id("!F99260D4")
+    assert domain_contract.validate("ReportInput", payload) == []
+    raw = bridge_report_input("Shelter needs blankets for tonight.")
+    raw["sourceId"] = "!f99260d4"  # the raw Meshtastic form is not a contract ID
+    assert domain_contract.validate("ReportInput", raw) != []
+    with pytest.raises(ValueError):
+        domain_contract.mesh_source_id("!not-hex")

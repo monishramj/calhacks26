@@ -1,7 +1,7 @@
 // G0 TEST · report intake: exact originals, backend-assigned receive order, distinct
 // times, duplicate identities, visible rejection (§9, §17, AGENTS hard rules).
 import { describe, expect, it } from 'vitest';
-import { MAX_REPORT_TEXT_BYTES, acceptReport, classifyIntake, parseWire, validateWire } from '../src/index.ts';
+import { MAX_REPORT_TEXT_BYTES, MAX_WIRE_BYTES, acceptReport, classifyIntake, parseWire, validateWire } from '../src/index.ts';
 import { firstValid } from './helpers.ts';
 
 const assigned = (seq: number, provenance = 'live') => ({
@@ -134,5 +134,34 @@ describe('parseWire never throws on hostile text', () => {
     const escaped = JSON.stringify(input).replace(/[\u007f-￿]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
     const r = parseWire('ReportInput', escaped);
     expect(r.ok && (r.value as any).text).toBe('Água — 🙏');
+  });
+});
+
+describe('G0 REVIEW regressions: hostile wire text', () => {
+  it('deeply nested JSON is INVALID_INPUT, not a stack overflow', () => {
+    const deep = '['.repeat(100_000) + ']'.repeat(100_000);
+    let r: ReturnType<typeof parseWire> | undefined;
+    expect(() => (r = parseWire('ReportInput', deep))).not.toThrow();
+    expect(r).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+  });
+
+  it('a deeply nested parsed value is INVALID_INPUT, not a stack overflow', () => {
+    const deepObj = JSON.parse('{"a":'.repeat(5000) + '1' + '}'.repeat(5000));
+    expect(() => validateWire('ReportInput', deepObj)).not.toThrow();
+    expect(validateWire('ReportInput', deepObj)).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+  });
+
+  it('JSON text over the wire limit is rejected before parsing', () => {
+    expect(MAX_WIRE_BYTES).toBeGreaterThan(0);
+    const huge = JSON.stringify({ ...firstValid('ReportInput'), text: 'a'.repeat(MAX_WIRE_BYTES) });
+    const r = parseWire('ReportInput', huge);
+    expect(r).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+    if (!r.ok) expect(r.error.message).toMatch(/wire limit/);
+  });
+
+  it('a __proto__ key is an unknown field, not a prototype write', () => {
+    const json = JSON.stringify(firstValid('ReportInput')).replace('{', '{"__proto__":{"role":"operator"},');
+    expect(parseWire('ReportInput', json)).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+    expect(({} as any).role).toBeUndefined();
   });
 });

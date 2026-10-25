@@ -27,11 +27,12 @@ wire = domain_contract.dumps(payload)   # UTF-8 kept, NaN/Infinity -> ValueError
 ## Rules worth knowing
 
 - **Closed objects, explicit nulls.** Every property is required (unknown → `null`), and unknown fields are rejected. There is nowhere to put a team, headcount, urgency score, delete flag, free-text identity, or future scenario data.
-- **IDs:** `[A-Za-z0-9][A-Za-z0-9._:-]{0,127}`. **Timestamps:** RFC 3339 with `Z` or an offset, stored as sent. `sentAt`, `reportedEventAt`, and the backend's `receivedAt`/`receiveSequence` are separate fields, and a sender can't supply the last two.
+- **IDs:** `[A-Za-z0-9][A-Za-z0-9._:-]{0,127}`. Meshtastic node IDs (`!f99260d4`) aren't valid IDs; the bridge uses `domain_contract.mesh_source_id(node_id)` → `mesh-f99260d4` as `sourceId`. **Timestamps:** RFC 3339 with `Z` or an offset, stored as sent. `sentAt`, `reportedEventAt`, and the backend's `receivedAt`/`receiveSequence` are separate fields, and a sender can't supply the last two.
+- **Wire limits:** at most 1 MiB of JSON text (`MAX_WIRE_BYTES`) and nesting depth 16 (`MAX_DEPTH`). `parseWire` and `validateWire` never throw, even on hostile input. They return `INVALID_INPUT`.
 - **Text** is stored exactly: no trim, no normalization. Over 1000 UTF-8 bytes it is rejected with `INVALID_INPUT`, never truncated. The 1000 is an authored bound pending C1's measured codec ratio.
 - **Roles** come from the caller's backend identity: `operator`, `bridge`, `simulator`, `worker`. Only operators approve, reject, edit, advance, or reset. Workers can't submit as `operator`, and operators can't submit as `claude` (`authorize`).
 - **Provider honesty** (`checkProviderAllowed`): in a live run, `fixture` output is `INVALID_SOURCE`. In a replay run, only `fixture`, `recording`, and `operator` are allowed.
-- **Freshness:** the backend computes `inputSignature` (`sig1:` + SHA-256 over the run, the ordered relevant report IDs, and incident revisions) when it issues a job. Workers return it unchanged. `checkFreshness` returns `WRONG_RUN`, then `STALE_REVISION`, for any moved incident or any new relevant report. Base version `0` means "incident doesn't exist yet".
+- **Freshness:** the backend computes `inputSignature` (`sig1:` + SHA-256 over the run, the ordered relevant report IDs, and incident revisions) when it issues a job. Workers return it unchanged. `checkFreshness` returns `WRONG_RUN`, then `STALE_REVISION`, for any moved incident or any new relevant report. Base version `0` means "incident doesn't exist yet". Operator-authored proposals copy the current signature from `DeskState.inputSignatures[incidentId]`; the browser never computes one. Replay may compute signatures with `computeInputSignature`.
 - **Cross-field rules** JSON Schema can't express (schema `x-crossFieldRules`) are enforced by both `validateWire` and `domain_contract.validate`.
 - **Future truth:** `buildJobInput` copies fields by name from delivered `Report`s and `IncidentView`s only. The §18 script and expectations in `fixtures/private/exercise/` never reach it. A test scans the domain, coordinator, Laya, and web sources for references to `fixtures/private`.
 
@@ -39,6 +40,7 @@ wire = domain_contract.dumps(payload)   # UTF-8 kept, NaN/Infinity -> ValueError
 
 The C4 bridge calls SpacetimeDB directly. There's no coordinator hop.
 
+0. `sourceId` = `mesh_source_id(sender node)`. `messageId` = a per-sender message ID that stays the same across retransmissions and the raw fallback (C1 defines it in the packet envelope). `sentAt` = the sender's stated time if the packet carries one, else `null`. `reportedLocation` = `{placeId, source: 'sender_explicit'}` only if the sender picked a named place, else `null`.
 1. Once per bridge install: `POST {SPACETIMEDB_URI}/v1/identity` returns `{identity, token}`. Keep the token outside git on the bridge machine. An operator grants that identity the `bridge` role (G3 reducer).
 2. Per verified report: `POST {SPACETIMEDB_URI}/v1/database/{SPACETIMEDB_DATABASE}/call/receive_report` with `Authorization: Bearer <token>`, `Content-Type: application/json`, and body `[<ReportInput as a JSON string>]`. That's a one-element array holding `domain_contract.dumps(report_input)`.
 3. Retransmit with the same `messageId`. `classifyIntake` turns a repeat into a duplicate of the stored report, and the same `messageId` with different text into a visible conflict.

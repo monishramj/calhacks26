@@ -84,6 +84,16 @@ describe('exercise fixture (fixtures/private/exercise/exercise.json)', () => {
     expect(sub('school main building')).not.toBe(sub('school gym'));
   });
 
+  it('every report carries explicit named-place metadata, never coordinates (§18: no geocoder)', () => {
+    const expected: Record<string, string> = { R02: 'shelter', R04: 'shelter', R03: 'residence', R06: 'residence' };
+    for (const r of gt) {
+      const loc = ev(r.id)?.input?.reportedLocation;
+      expect(loc?.source, r.id).toBe('sender_explicit');
+      expect(['school', 'residence', 'shelter'], r.id).toContain(loc?.placeId);
+      expect(loc?.placeId, r.id).toBe(expected[r.id] ?? 'school');
+    }
+  });
+
   it('the house beside the school is the separate residence place', () => {
     const residence = exercise?.places?.find((p: any) => p.placeId === 'residence');
     expect(residence?.aliases ?? []).toContain('house beside the school');

@@ -26,6 +26,8 @@ def _schema() -> dict:
 
 CONTRACT_VERSION: str = _schema()["x-contractVersion"]
 MAX_REPORT_TEXT_BYTES: int = _schema()["x-maxReportTextBytes"]
+MAX_WIRE_BYTES: int = _schema()["x-maxWireBytes"]
+MAX_DEPTH: int = _schema()["x-maxDepth"]
 
 
 @lru_cache(maxsize=None)
@@ -36,16 +38,19 @@ def _validator(type_name: str):
     return Draft202012Validator({"$ref": f"#/$defs/{type_name}", **root})
 
 
-def _finite(v) -> bool:
-    if isinstance(v, bool):
-        return True
+def _shape_problem(v, depth: int = 0) -> str | None:
+    """Depth-bounded walk: floats finite, nesting within MAX_DEPTH (never RecursionError)."""
     if isinstance(v, float):
-        return math.isfinite(v)
-    if isinstance(v, list):
-        return all(_finite(x) for x in v)
-    if isinstance(v, dict):
-        return all(_finite(x) for x in v.values())
-    return True
+        return None if math.isfinite(v) else "numbers must be finite"
+    if not isinstance(v, (list, dict)):
+        return None
+    if depth >= MAX_DEPTH:
+        return f"nesting deeper than {MAX_DEPTH}"
+    for x in v if isinstance(v, list) else v.values():
+        p = _shape_problem(x, depth + 1)
+        if p:
+            return p
+    return None
 
 
 def _too_long(text: str) -> bool:
@@ -82,13 +87,22 @@ def validate(type_name: str, payload: object) -> list[str]:
     """Return a list of contract violations for `payload` as `type_name` (empty = valid)."""
     if type_name not in _schema()["$defs"]:
         return [f"unknown wire type {type_name!r}"]
-    if not _finite(payload):
-        return [f"{type_name}: numbers must be finite"]
+    shape = _shape_problem(payload)
+    if shape:
+        return [f"{type_name}: {shape}"]
     errors = [f"{type_name}{'/' + '/'.join(map(str, e.absolute_path)) if e.absolute_path else ''}: {e.message}"
               for e in _validator(type_name).iter_errors(payload)]
     if errors:
         return errors
     return [f"{type_name}: {m}" for m in _cross_field(type_name, payload)]
+
+
+def mesh_source_id(node_id: str) -> str:
+    """Map a Meshtastic node ID ("!f99260d4") to a contract sourceId ("mesh-f99260d4")."""
+    hex_part = node_id[1:] if node_id.startswith("!") else node_id
+    if not (1 <= len(hex_part) <= 16) or any(c not in "0123456789abcdef" for c in hex_part.lower()):
+        raise ValueError(f"not a Meshtastic node id: {node_id!r}")
+    return f"mesh-{hex_part.lower()}"
 
 
 def dumps(payload: object) -> str:

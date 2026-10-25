@@ -2,4 +2,9 @@
 
 One line per `CONTRACT_VERSION`. Newest first.
 
-- v1.0.0 · 2026-10-25 · G0 freeze. §17 types verbatim; §9 records (`Report`, `ReportRelation`, `SuggestionRecord`, `ProposalRecord`, `Job`, `JobInput`, `ReviewEvent`, `ScenarioState`), commands, roles, and errors as listed in `schema/contract.schema.json` and `work/validation/G0.md`. Radio intake: the bridge calls the `receive_report` reducer over SpacetimeDB HTTP with its own identity (README).
+- v1.0.0 · 2026-10-25 · G0 freeze (REVIEW passed).
+  - §17 types verbatim.
+  - §9 records: `Report`, `ReportRelation`, `SuggestionRecord`, `ProposalRecord`, `Job` (with `baseIncidentVersions`), `JobInput`, `ReviewEvent`, `ScenarioState`.
+  - Commands, roles, errors, and `DeskState`/`DeskAdapter` (with backend `inputSignatures`), as in `schema/contract.schema.json` and `work/validation/G0.md`.
+  - Wire limits: 1000 B text, 1 MiB JSON, depth 16.
+  - Radio intake: the bridge calls the `receive_report` reducer over SpacetimeDB HTTP with its own identity, and `sourceId = mesh_source_id(node)` (README).

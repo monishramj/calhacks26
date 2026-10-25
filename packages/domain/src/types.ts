@@ -158,6 +158,8 @@ export type Job = {
   kind: JobKind;
   reportId: string | null;
   incidentId: string | null;
+  /** Incident revisions the job was issued against (also folded into inputSignature). */
+  baseIncidentVersions: Record<string, number>;
   inputSignature: string;
   state: 'QUEUED' | 'CLAIMED' | 'DONE' | 'FAILED' | 'INVALIDATED';
   attempts: number;
@@ -260,6 +262,12 @@ export type DeskState = {
   proposals: ProposalRecord[];
   reviewEvents: ReviewEvent[];
   scenario: ScenarioState | null;
+  /**
+   * Backend-computed current inputSignature per incident (§17: an operator-authored
+   * proposal obtains the current signature through the adapter). Copy it into the
+   * proposal; never compute it in the browser.
+   */
+  inputSignatures: Record<string, string>;
 };
 
 export interface DeskAdapter {
