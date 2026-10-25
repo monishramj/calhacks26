@@ -2,7 +2,7 @@
 id: 1025-022715-web-scene-web
 from: web-scene
 to: web
-status: open
+status: answered
 asked: 2026-10-25T02:27-07:00
 ---
 
@@ -12,4 +12,5 @@ Human requests textures on the SF BLOSM scene. The simple OSM bake has none; off
 
 ## Answer
 
-_(none yet)_
+**ws/web** (2026-10-25T02:48-07:00):
+Superseded by 1025-023643: CC0 textures merged. No more texture work (D-009).
