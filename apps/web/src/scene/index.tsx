@@ -95,6 +95,8 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
   const unique = useMemo(() => [...new Map(incidents.map((row) => [row.incidentId, row])).values()], [incidents]);
   const unplaced = unique.filter((row) => !placePosition(row.confirmedPlaceId));
   const threeD = webgl && !use2d;
+  // Map overlays (stats, legend, hints) can be condensed or hidden so the map itself stays visible.
+  const [info, setInfo] = useState<'full' | 'compact' | 'hidden'>('full');
   function incidentButton(row: SceneIncident) {
     const point = placePosition(row.confirmedPlaceId);
     const geographic = point ? sceneToGeographic(point.x, point.z) : null;
@@ -124,19 +126,21 @@ export function Scene({ selectedIncidentId, onSelectIncident, incidents: supplie
         disabled={v.id === 'selected' && !selectedIncidentId} onClick={() => setView(v.id)}>{v.label}</button>)}
       {layer === 'incidents' && <button type="button" className="scene-mode" aria-pressed={heatmap} onClick={() => setHeatmap((value) => !value)}>Heatmap {heatmap ? 'on' : 'off'}</button>}
       {threeD && heatmap && layer === 'incidents' && <button type="button" className="scene-mode" aria-pressed={raised} onClick={() => setRaised((value) => !value)}>Raised</button>}
+      <button type="button" className="scene-mode scene-info-toggle" aria-label={`Map info: ${info}`} title="Show, condense, or hide map info"
+        onClick={() => setInfo((v) => (v === 'full' ? 'compact' : v === 'compact' ? 'hidden' : 'full'))}>Info: {info === 'full' ? 'Full' : info === 'compact' ? 'Compact' : 'Hidden'}</button>
     </div>
-    <div className="scene-overlay-bottom">
-      {layer === 'network' && <NetworkStats />}
-      {heatmap && layer === 'incidents' && <div className="scene-legend" role="note" aria-label="Heatmap legend">
+    <div className={`scene-overlay-bottom info-${info}`}>
+      {layer === 'network' && info !== 'hidden' && <NetworkStats />}
+      {heatmap && layer === 'incidents' && info !== 'hidden' && <div className="scene-legend" role="note" aria-label="Heatmap legend">
         <strong>Confirmed unresolved incident concentration</strong>
         <span className="scene-legend-ramp" /><span className="scene-legend-ticks"><span>0</span><span>1</span><span>2</span><span>3+</span></span>
         <span>One equal contribution per open located incident · fixed radius {HEATMAP_RADIUS} m · fixed height scale {HEATMAP_HEIGHT_SCALE} m per contribution.</span>
         <span>Height is not severity, terrain, or flood depth. Repeated reports add no height.</span>
         {!threeD && <span>2D shows equal fixed-radius density footprints; elevation requires 3D.</span>}
       </div>}
-      {unplaced.length > 0 && <section className="scene-unplaced" aria-label="Unplaced incidents"><h3>Unplaced incidents</h3><p>Unknown location · excluded from heatmap</p>{unplaced.map(incidentButton)}</section>}
-      {unique.length === 0 && <p className="scene-empty">No confirmed incidents. Reports appear after an adapter connects.</p>}
-      <span className="scene-view-label">{threeD ? '3D · drag to orbit · right-drag to pan · scroll to zoom' : webgl ? '2D map · same coordinates as 3D' : 'WebGL unavailable · 2D map'}</span>
+      {unplaced.length > 0 && info !== 'hidden' && <section className="scene-unplaced" aria-label="Unplaced incidents"><h3>Unplaced incidents</h3><p>Unknown location · excluded from heatmap</p>{unplaced.map(incidentButton)}</section>}
+      {unique.length === 0 && info === 'full' && <p className="scene-empty">No confirmed incidents. Reports appear after an adapter connects.</p>}
+      {info === 'full' && <span className="scene-view-label">{threeD ? '3D · drag to orbit · right-drag to pan · scroll to zoom' : webgl ? '2D map · same coordinates as 3D' : 'WebGL unavailable · 2D map'}</span>}
       <footer className="scene-footer">Map data © OpenStreetMap contributors (ODbL) · exercise sites are synthetic overlays on real buildings</footer>
     </div>
   </div>;

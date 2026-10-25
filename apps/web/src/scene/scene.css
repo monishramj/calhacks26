@@ -32,3 +32,9 @@
 .network-stats small { font-weight:400; color:#aebfb9; }
 .legend-row { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; }
 .legend-row i { display:inline-block; width:9px; height:9px; border-radius:50%; }
+
+/* Condensed map info: headline numbers only. */
+.info-compact .stats-grid > span:nth-child(n+5), .info-compact .stats-grid > b:nth-child(n+5) { display:none; }
+.info-compact .scene-legend > span:not(.scene-legend-ramp):not(.scene-legend-ticks):not(.stats-grid) { display:none; }
+.info-compact .scene-legend { padding:8px 10px; }
+.info-hidden .scene-footer, .info-compact .scene-footer { font-size:9px; opacity:.7; }
