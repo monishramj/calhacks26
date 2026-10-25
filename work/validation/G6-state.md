@@ -2,7 +2,9 @@
 
 The UI slice is `G6-panels.md` (ws/web). This file covers the pure derived views in `packages/domain/src/rules/views.ts`, which replay and live both use.
 
-## TEST · 2026-10-25 03:25–03:50 PDT · David's Claude Code session (C2)
+## TEST · 2026-10-25 ~02:10–02:29 PDT · David's Claude Code session (C2)
+
+_(Time corrected in IMPLEMENT: the TEST commit 5981075 is stamped 02:29 PDT; the original header said 03:25–03:50.)_
 
 - **Contract version:** 1.0.0 (unchanged; these views are new exports, not wire types).
 - **Harness:**
@@ -60,3 +62,39 @@ npm run test:py -w @calhacks26/domain   # 486 passed (unchanged)
 ### Not covered here
 
 The UI rendering is G6-panels (ws/web). Live-DB checks run after G3. Replaying with older and duplicate arrivals reordered is G6 REVIEW.
+
+## IMPLEMENT · 2026-10-25 02:32–02:40 PDT · David's Claude Code session (C2)
+
+- **Contract version:** 1.0.0, unchanged. No wire type, schema, or test was edited.
+- **File changed:** `packages/domain/src/rules/views.ts` only. Each call builds a small index (this run's reports in receive order, confirmed-in map, pending links per report, late-older set), then sorts with stable keys. No tree or graph engine.
+- **Pending link** = a PENDING suggestion, a PENDING proposal that adds or relates the report, or a PROVISIONAL relation. Approved, rejected, and stale records never link.
+
+### Choices made beyond what the tests pin (for G6 REVIEW)
+
+1. **Named-place match prefers OPEN incidents, then falls back to a RESOLVED one.** A new report about a resolved place still flags it for reassessment. TEST choice 2 said OPEN only; no test covers the resolved case.
+2. **A provisional relation alone counts as pending output.** Its report is PENDING_CHANGE (or CONTRADICTION for CONFLICT), not UNKNOWN.
+3. **Timeline standing ignores the named-place match.** R10 names the school but stays UNASSIGNED until something links it, as the test requires. The band and change flags still tie it to the school by place.
+4. **`applyIncidentChange` rejects a change with no effect** (INVALID_INPUT), not only `{}`. OPEN on an OPEN incident is not an error by itself; only RESOLVED on RESOLVED is. The G3 reducer should skip the call when an approved proposal changes nothing on the incident row (relations only).
+5. **Incident-level unknowns** (OPEN, null attention) sort after report-level unknowns, by incident ID. `needsReassessment` leaves them out: they're unknown, not new evidence.
+6. **Change flags for one incident** use links aimed at that incident or at no incident yet. A possible-harm hint for a new incident still flags the place's incident.
+7. Labels match ws/web's interim `derived.ts` word for word, so the swap is one import.
+
+### Commands
+
+```bash
+npx tsc --noEmit -p packages/domain       # clean
+npm test                                  # 846/846 passed (G6 69/69, G0 777/777)
+npm run test:py -w @calhacks26/domain     # 486 passed
+(cd spacetimedb && npx tsc --noEmit)      # clean
+```
+
+### Green result
+
+- **vitest 846/846**: every G6 test passes against the implementation. The 5 TEST-phase vacuous passes now run against real logic and still hold.
+- pytest 486/486 and the SpacetimeDB module typecheck are unchanged.
+- **Real providers exercised:** none. These are pure functions. Live-DB use comes in G3.
+
+### Not done here (G6 REVIEW)
+
+- Replaying with older and duplicate arrivals reordered, a stale approval from a second window, and mutation checks on the rules.
+- Settling choices 1–6 above with ws/web (panels lane) before they swap `derived.ts` for these exports.

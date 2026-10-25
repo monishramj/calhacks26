@@ -1,12 +1,12 @@
 # Status · ws/state (C2)
 
-_Updated: 2026-10-25 02:08 PDT by David's Claude Code session (C2)_
+_Updated: 2026-10-25 02:40 PDT by David's Claude Code session (C2)_
 
 ## Now
 
-- **Gate / phase:** G6 rules / **TEST red** (`work/validation/G6-state.md`). G6: 64 of 69 failing, all on assertions against the stubs in `packages/domain/src/rules/views.ts`. G0 stays green (777/777, pytest 486/486). Root `npm test` is red on `ws/state` until G6 IMPLEMENT. Don't PR to main before then.
-- **Last commit:** `[ws/state][G6][TEST] ...` on `ws/state`
-- **Exact next step:** G6 IMPLEMENT (§20 common context + G6 IMPLEMENT prompt, rules slice). Implement `confirmedQueue`, `reviewBand`, `needsReassessment`, `timeline`, `incidentGroups`, `changeFlags`, `applyIncidentChange`, `deskInvariants`, and `ATTENTION_LABEL` in `src/rules/views.ts`, following G6-state.md "Choices". Don't weaken tests. Then REVIEW, then G3.
+- **Gate / phase:** G6 rules / **IMPL green** (`work/validation/G6-state.md`). vitest 846/846 (G6 69/69), pytest 486/486. Root `npm test` is green on `ws/state` again.
+- **Last commit:** `[ws/state][G6][IMPL] ...` on `ws/state`
+- **Exact next step:** G6 REVIEW (§20 common context + G6 REVIEW prompt, rules slice). Replay the exercise with older/duplicate arrivals reordered, try a stale approval from a second window, mutation-check the rules, and settle G6-state.md IMPLEMENT "Choices" 1–6 with ws/web. Timebox from the orchestrator (1025-022435): about 45 min for G6 rules in total, then G3 right away.
 - **G0:** merged as v1.0.0 (PR #2); Windows fix merged (PR #3).
 
 ## How to run what exists
