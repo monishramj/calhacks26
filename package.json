@@ -1,0 +1,19 @@
+{
+  "name": "calhacks26",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Mesh Codec + Incident Desk. npm workspaces; see AGENTS.md for owners.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "dev:replay": "npm run dev:replay -w @calhacks26/web",
+    "build": "npm run build -w @calhacks26/web",
+    "test:e2e": "npm run test:e2e -w @calhacks26/web"
+  }
+}
