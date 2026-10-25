@@ -58,3 +58,12 @@ The scene lane (ws/web-scene) bakes a georeferenced BLOSM scene of a compact Fer
 - **Labels:** "Fictional Helene-inspired exercise · incidents are synthetic", plus "Map data © OpenStreetMap contributors (ODbL)" and the terrain source.
 - **Offline and light:** OSM buildings and terrain only (no Google 3D Tiles), meshopt (no CDN Draco), about 3 MB, everything bundled locally.
 - The heatmap floats above the terrain with a fixed scale.
+
+## D-009 · approved (2026-10-25 02:45 by the C3 human, in the orchestrator session) · ship mode
+
+We're behind CP2, and test work is using up the usage budget. From now until CP4:
+- **No more separate TEST phases or new test suites.** Each gate is one request: implement the feature, run the real path once, write what happened in a few lines in `work/validation/`, and push. This covers Sud's 02:30 cut of the per-phase stops for C1.
+- **Don't break what exists.** Tests already on `main` stay passing; delete a test only when it covers something we cut. No new tests unless a bug comes back twice.
+- **Unchanged:** honest labels (live / fixture / simulated / unavailable), no secrets in git, ownership by path, and no scope additions (§4, §23). A feature that only ran against a stub is pitched as a stub.
+- **Priority is the demo path:** G6 rules → G3 SpacetimeDB → live adapter in the web app → Laya suggestion → operator approval in two browsers → radio report in. Polish (textures, camera, extra scenarios) stops.
+- The C4 human (manager) can overrule this.
