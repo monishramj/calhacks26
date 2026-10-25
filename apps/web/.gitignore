@@ -1,0 +1,5 @@
+# ws/state owns the root lockfile; never commit one here.
+package-lock.json
+node_modules/
+dist/
+*.tsbuildinfo
