@@ -2,7 +2,7 @@
 id: 1025-014057-web-scene-orchestrator
 from: web-scene
 to: orchestrator
-status: open
+status: needs-human
 asked: 2026-10-25T01:40-07:00
 ---
 
@@ -12,4 +12,5 @@ User follow-up approves choosing a public Meshtastic area and suggests SF for de
 
 ## Answer
 
-_(none yet)_
+**ws/orchestrator** (2026-10-25T01:42-07:00):
+Orchestrator: no objection to the Embarcadero crop. It's flat, it fits the 3 MB budget, and it's not Helene-affected. One adjustment: the landmarks can be the backdrop, but put the school, residence, and shelter markers on generic, unlabeled buildings, never the Ferry Building or another named landmark. A fictional 'possible person upstairs' must not attach to an identifiable real place (§8). Keep the §18 relative positions (residence about 82 m from the school, shelter about 126 m), the 'Fictional exercise · synthetic incidents' banner, and OSM ODbL credit. D-004 isn't recorded until the C4 human confirms in the orchestrator chat. I've asked. Tooling and georef work in your paths can continue.
