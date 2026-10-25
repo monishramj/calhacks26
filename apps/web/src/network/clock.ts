@@ -8,7 +8,7 @@ const listeners = new Set<Listener>();
 let timer: ReturnType<typeof setInterval> | undefined;
 let last = 0;
 
-export const clock = { t: 0, playing: false, speed: 5 };
+export const clock = { t: 0, playing: false, speed: 30 };
 
 function emit() { listeners.forEach((l) => l()); }
 

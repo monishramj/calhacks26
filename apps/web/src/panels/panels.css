@@ -5,11 +5,9 @@
 .tag-active-need { color: var(--active-need); }
 .tag-information { color: var(--information); }
 .tag-unknown { color: var(--muted); }
-.panel-list { list-style: none; margin: 0; padding: 0; }
-.panel-card { padding: 16px 0; border-bottom: 1px solid var(--border); }
-.panel-card:first-child { padding-top: 4px; }
-.panel-card:last-child { border-bottom: 0; padding-bottom: 0; }
-.panel-card.selected { background: var(--selected); border-radius: 6px; padding: 12px; margin: 4px -12px; }
+.panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel-card { padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+.panel-card.selected { border-color: var(--accent); background: var(--selected); }
 .panel-card button.card-select { border: 0; padding: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; display: block; width: 100%; }
 .card-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 .original-text { margin: 0 0 8px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
@@ -21,10 +19,10 @@
 .ai-block > div { min-width: 0; }
 .ai-summary, .ai-reason { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .panel-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
-.panel-actions button { border: 0; background: transparent; color: var(--muted); padding: 7px 12px; border-radius: 5px; font: inherit; cursor: pointer; }
-.panel-actions button[data-approve] { background: var(--accent); color: #0c1520; font-weight: 600; min-width: 100px; }
+.panel-actions button { border: 1px solid var(--border); background: transparent; color: var(--text); padding: 7px 12px; border-radius: 5px; font: inherit; cursor: pointer; }
+.panel-actions button[data-approve] { background: var(--accent); color: #fff; font-weight: 600; flex: 1 1 100%; padding: 10px 12px; border-radius: 7px; }
 .panel-actions button:hover:not(:disabled) { filter: brightness(1.15); color: var(--text); }
-.panel-actions button[data-approve]:hover:not(:disabled) { color: #0c1520; }
+.panel-actions button[data-approve]:hover:not(:disabled) { color: #fff; }
 .panel-actions input, .panel-actions select { max-width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font: inherit; padding: 6px; }
 .panel-actions label { display: grid; gap: 4px; }
 .panel-error { color: var(--life-safety); }
@@ -46,3 +44,22 @@
 .report-timeline li { display: grid; grid-template-columns: 42px 1fr; gap: 12px; padding: 10px 0; }
 .report-timeline time { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; padding-top: 2px; }
 .report-timeline .original-text { font-size: 13px; margin: 0; }
+
+/* FlyBy-style review card */
+.rc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.rc-icon { width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 7px; background: #000; display: grid; place-items: center; flex: none; }
+.rc-icon::after { content: ''; width: 9px; height: 9px; border: 2px solid var(--accent); border-radius: 2px; }
+.rc-id { display: flex; flex-direction: column; line-height: 1.25; }
+.rc-id strong { font-size: 14px; }
+.rc-id .muted { font-size: 11px; }
+.rc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.pill { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border); color: var(--muted); }
+.pill-need { border-color: var(--text); color: var(--text); }
+.pill-alert { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.rc-title { display: block; font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.rc-title small { font-size: 11px; font-weight: 400; color: var(--muted); margin-left: 8px; }
+.rc-scores > * + *::before { content: '·'; margin-right: 6px; color: var(--muted); }
+.rc-scores { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; font-weight: 600; }
+.rc-ai { margin: 10px 0 2px; padding: 8px 10px; border-left: 2px solid var(--accent); background: #000; border-radius: 0 6px 6px 0; font-size: 12px; }
+.rc-ai p { margin: 0 0 3px; }
+.rc-ai b { color: var(--accent); }
