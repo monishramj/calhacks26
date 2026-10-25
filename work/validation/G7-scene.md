@@ -111,3 +111,5 @@ Next: lead merges ws/web-scene and runs verify; scene continues independently on
 
 
 C4 readiness follow-up: unchanged codec endpoint_check.py ran and reported model UNAVAILABLE (no CODEC_MODEL_PATH). Docker daemon 29.8.2 responds; pinned SpacetimeDB image pull/start in progress, not yet verified. These machine tasks do not establish radio/backend success. C3 lead reports integrated v1 replay verification green; local C4 rerun pending. No new tests or polish work.
+
+C4 v1 integration rerun: npm run verify PASS (70 tests,3 replay browser tests). Actual SpacetimeDB2.13.0 startup verified after initializing ownership of empty named volume; /v1/ping200 locally and via10.253.1.187:3000 from C4. Remote client/module/identity persistence not tested. State owner notified of compose provisioning defect; no shared-code edits.
