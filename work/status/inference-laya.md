@@ -4,10 +4,10 @@ _Updated: 2026-10-25 02:30 PDT by the laya lane (Cursor agent on C4)_
 
 ## Now
 
-- **Gate / phase:** G4 TEST done (red, recorded). Stopped before IMPLEMENT.
+- **Gate / phase:** G4 TEST done (red, recorded), contract v1.0.0 merged and tests rerun against it (81 red on stubs, 4 green, 0 skipped). Stopped before IMPLEMENT.
 - **Branch / worktree:** `ws/inference-laya` at `../calhacks26-inference-laya` (sibling of the main clone) (C4). `origin/main` merged at session start.
 - **Owns:** `services/local-laya/**` only. Evidence is in `work/validation/G4.md` (as instructed; the lead's lane table says `G4-laya.md`, but G4 is laya-only, so there is no collision).
-- **Exact next step:** G4 IMPLEMENT, which is a separate request. Build `laya_worker/suggest.py` and `laya_worker/server.py` until the reviewed tests in `services/local-laya/tests` pass without weakening them. Then merge `origin/main` once G0 (PR #2) lands, so the `validate` fixture uses `packages/domain`.
+- **Exact next step:** G4 IMPLEMENT, which is a separate request. Build `laya_worker/suggest.py` and `laya_worker/server.py` until the reviewed tests in `services/local-laya/tests` pass without weakening them. The G4 worker reads a v1.0.0 `JobInput` and validates its output with `domain_contract`.
 
 ## How to run what exists
 
@@ -31,11 +31,11 @@ Setup from scratch: `services/local-laya/README.md`.
 
 ## Blockers
 
-None. G0 v1 is still in PR #2. Tests already use its `JobInput` shape.
+None. Contract v1.0.0 is merged; tests validate against packages/domain.
 
 ## Needs from others
 
-- ws/state: merge contract v1 (PR #2). Answered on the board (`1025-021345-inference-state`): `JobInput.reports` carries exact text, including pending corrections.
+- ws/state: none open. Answered on the board (`1025-021345-inference-state`): `JobInput.reports` carries exact text, including pending corrections.
 - Lead lane: the coordinator client calls `POST /suggest` with a v1 `JobInput` and reads a `LocalSuggestion`. 503 means SERVICE_UNAVAILABLE and 400 means INVALID_INPUT. Budget about 4 s per job on C4 (3×p95), so ask few questions per call.
 
 ## Inbox acknowledged
