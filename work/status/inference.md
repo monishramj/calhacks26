@@ -19,7 +19,7 @@ Lanes never edit each other's paths. Lead merges `origin/ws/inference-laya` into
 
 ## How to run what exists
 
-Nothing yet.
+- Claude smoke (lead): needs `ANTHROPIC_API_KEY` + `CLAUDE_MODEL` in `.env`, and `@anthropic-ai/sdk` (asked C2 to add it to the workspace, board 1025-011817). Until then: `npm i --prefix <scratch> @anthropic-ai/sdk` and `NODE_PATH=<scratch>/node_modules node --env-file=.env apps/coordinator/src/inference/claude/smoke.cjs`. Tested with SDK 1.3.0: exits 2 `unavailable` without a key (no key on C3 yet).
 
 ## Preflight (§19)
 
@@ -29,7 +29,7 @@ Nothing yet.
 | Laya loads locally (device, load time) | unknown | |
 | Warm latency p50 / p95 on this machine | unknown | |
 | Output semantics (probabilities / ordinal score / P(true)) | unknown | |
-| Claude model ID that works for this account | unknown | |
+| Claude model ID that works for this account | unavailable (no key on C3 yet) | smoke.cjs ready |
 
 ## Blockers
 
