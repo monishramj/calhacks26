@@ -16,6 +16,8 @@ export LAYA_MODEL_PATH=<dir outside git>          # the command post: ../laya-mo
 ../laya-env/Scripts/python -m pytest services/local-laya/tests -rs   # model tests skip as "unavailable" without LAYA_MODEL_PATH
 ```
 
+If a verified checkpoint already exists on this machine, point `LAYA_MODEL_PATH` at it and skip `setup_laya.py`. The worker checks the weights SHA-256 at load. `LAYA_DEVICE` selects the torch device (default `cpu`).
+
 ## Layout
 
 ```text
