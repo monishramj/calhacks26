@@ -24,7 +24,7 @@ describe('App shell', () => {
     expect(screen.getByTestId('run-mode')).toHaveTextContent('LOCAL REPLAY');
     expect(screen.getByText(/Inference: fixture/)).toBeInTheDocument();
     expect(screen.getByText('6 / 12 delivered')).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Send next report (R07)' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Send next report (#7)' }));
     expect(await screen.findByText('7 / 12 delivered')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Reset run' }));
     expect(await screen.findByText('6 / 12 delivered')).toBeInTheDocument();

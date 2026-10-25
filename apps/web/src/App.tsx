@@ -6,7 +6,8 @@ import { ScenarioControls } from './layout/ScenarioControls';
 import { Section } from './layout/Section';
 import { Scene } from './scene';
 import { ConfirmedQueue, IncidentHistory, IncomingFeed, ReviewBand } from './panels';
-import type { DeskAdapter } from './adapters/contract';
+import type { DeskAdapter, DeskState } from './adapters/contract';
+import { inferenceLabel, sourceLabel } from './adapters/derived';
 
 // `vite --mode replay` (npm run dev:replay) runs the isolated browser replay.
 // The live adapter (ws/state, SpacetimeDB) plugs in here after G3.
@@ -23,6 +24,11 @@ export function App({ adapter }: { adapter?: DeskAdapter | null }) {
   );
 }
 
+// Replay never runs a model: say so up front instead of waiting for the first fixture output.
+function inferenceText(state: DeskState): string {
+  return state.mode === 'LOCAL REPLAY' ? 'fixture · authored outputs, no model ran' : inferenceLabel(state);
+}
+
 function Desk() {
   const { state } = useDesk();
   // Selection is the only UI state shared between the scene and the panels.
@@ -33,8 +39,8 @@ function Desk() {
     <div className="app">
       <ModeBanner
         mode={state?.mode ?? 'NOT CONNECTED'}
-        sourceProvenance={state?.sourceProvenance ?? 'none'}
-        inferenceProvenance={state?.inferenceProvenance ?? 'none'}
+        sourceProvenance={state ? sourceLabel(state) : 'none'}
+        inferenceProvenance={state ? inferenceText(state) : 'none'}
       >
         <ScenarioControls />
       </ModeBanner>

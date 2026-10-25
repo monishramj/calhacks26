@@ -10,7 +10,7 @@ import { AttentionTag, useCommand } from './shared';
 export function ConfirmedQueue({ selectedIncidentId, onSelectIncident }: PanelProps) {
   const { state } = useDesk();
   if (!state) return <p className="empty">No source connected.</p>;
-  const queue = confirmedQueue(state.incidents);
+  const queue = confirmedQueue(state);
   if (queue.length === 0) return <p className="empty">No confirmed incidents.</p>;
   const flagged = needsReassessment(state);
   return (
@@ -89,9 +89,9 @@ function OverrideControl({ incident }: { incident: IncidentView }) {
         commandId,
         incidentId: id,
         baseRevision: incident.revision,
-        attention: attention === 'UNKNOWN' ? null : attention,
-        status,
+        changes: { attention: attention === 'UNKNOWN' ? null : attention, status },
         reason: reason.trim(),
+        sourceReportIds: [],
       }),
     );
     if (r?.ok) {

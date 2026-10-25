@@ -27,7 +27,7 @@ describe('IncidentHistory', () => {
     expect(await screen.findByText('Incident not found.')).toBeInTheDocument();
   });
 
-  it('lists R01 and R05 as confirmed with the authored seed review event', async () => {
+  it('lists R01 and R05 as confirmed with the authored starting state labeled', async () => {
     setup('INC-school');
     const timeline = await screen.findByRole('list', { name: 'Timeline for INC-school, receive order' });
     const items = within(timeline).getAllByRole('listitem');
@@ -39,11 +39,12 @@ describe('IncidentHistory', () => {
     expect(items[1]).toHaveTextContent('Confirmed');
     expect(items[1]).toHaveTextContent('Event: not given');
 
-    const history = screen.getByRole('list', { name: 'Review history for INC-school' });
-    expect(history).toHaveTextContent('Fixture (authored)');
-    expect(history).toHaveTextContent('Rev 0 → 1');
-    expect(history).toHaveTextContent(/authored starting state: INFORMATION, reports R01, R05/);
-    expect(history).toHaveTextContent(/Reason: Authored §18 starting condition/);
+    // v1 review events are operator-only, so the authored start is labeled, not an event.
+    const start = screen.getByTestId('starting-state');
+    expect(start).toHaveTextContent('Fixture (authored)');
+    expect(start).toHaveTextContent('Rev 0 → 1');
+    expect(start).toHaveTextContent(/authored §18 starting state/);
+    expect(screen.getByText('No review events.')).toBeInTheDocument();
     expect(screen.getByText('No proposals.')).toBeInTheDocument();
     expect(screen.queryByText(/summary may be out of date/)).not.toBeInTheDocument();
   });
@@ -51,7 +52,7 @@ describe('IncidentHistory', () => {
   it('after R07, shows it as pending review with a PENDING proposal', async () => {
     const { adapter, runId } = setup('INC-school');
     await act(async () => {
-      const r = await adapter.advanceScenario({ runId: runId(), commandId: 'hist-r07' });
+      const r = await adapter.advanceScenario({ runId: runId(), commandId: 'hist-r07', expectedDeliveredCount: 6 });
       expect(r.ok).toBe(true);
     });
     const r07 = (await screen.findByText(exerciseFixture.reports.R07.text)).closest('li')!;

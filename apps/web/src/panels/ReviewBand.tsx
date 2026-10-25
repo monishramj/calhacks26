@@ -1,7 +1,7 @@
 // Pinned review band (§5): unconfirmed possible life-safety concerns, contradictions,
 // unknowns. Nothing here changes the confirmed queue until the operator approves.
 import { useState } from 'react';
-import type { DeskState, LocalSuggestion, ReportRecord } from '../adapters/contract';
+import type { DeskState, LocalSuggestion, Report } from '../adapters/contract';
 import { reviewBand, type ReviewItem } from '../adapters/derived';
 import { useDesk } from '../adapters/DeskContext';
 import type { PanelProps } from './index';
@@ -50,14 +50,23 @@ function ReviewCard({
   const [reason, setReason] = useState('');
   const report = state.reports.find((r) => r.reportId === item.reportId);
   if (!report) return null;
-  const suggestion: LocalSuggestion | undefined = state.suggestions.find((s) => s.reportId === item.reportId);
-  const proposal = item.proposal && item.proposal.reviewState === 'PENDING' ? item.proposal : null;
+  const suggestion: LocalSuggestion | undefined = state.suggestions.find((s) => s.suggestion.reportId === item.reportId)?.suggestion;
+  const proposal = item.proposal && item.proposal.reviewState === 'PENDING' ? item.proposal.proposal : null;
   const msgId = (reportId: string) =>
-    state.reports.find((r: ReportRecord) => r.reportId === reportId)?.input.messageId ?? reportId;
+    state.reports.find((r: Report) => r.reportId === reportId)?.input.messageId ?? reportId;
 
   async function approve() {
     if (!proposal) return;
-    await run((a, runId, commandId) => a.approveProposal({ runId, commandId, proposalId: proposal.proposalId }));
+    // Send what the operator saw; the adapter re-validates it against current state.
+    await run((a, runId, commandId) =>
+      a.approveProposal({
+        runId,
+        commandId,
+        proposalId: proposal.proposalId,
+        inputSignature: proposal.inputSignature,
+        baseIncidentVersions: proposal.baseIncidentVersions,
+      }),
+    );
   }
   async function reject() {
     if (!proposal || !reason.trim()) return;
