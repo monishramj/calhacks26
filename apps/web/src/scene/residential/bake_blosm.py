@@ -166,6 +166,7 @@ for name, x, z in [('school', 0, 0), ('residence', 80, 20), ('shelter', -120, 40
     if hit is None:
         raise RuntimeError('Exercise anchor is outside the imported terrain')
     exercise_ground[name] = hit.z - vertical_origin
+road_validation = []
 generic_counts = {}
 meshes = []
 for obj in list(scene.objects):
@@ -203,6 +204,32 @@ for obj in list(scene.objects):
     ]:
         bmesh.ops.bisect_plane(bm, geom=list(bm.verts) + list(bm.edges) + list(bm.faces),
             dist=0.001, plane_co=point, plane_no=normal, clear_inner=True, clear_outer=False)
+    if group == 'roads':
+        # BLOSM curve modifiers can retain heights above a steep terrain after
+        # evaluation. Drape the exported surface itself, in the same world frame.
+        bmesh.ops.triangulate(bm, faces=list(bm.faces))
+        for _ in range(10):
+            long_edges = [edge for edge in bm.edges if edge.calc_length() > 4]
+            if not long_edges:
+                break
+            bmesh.ops.subdivide_edges(bm, edges=long_edges, cuts=1, use_grid_fill=True)
+        missing_ground = []
+        for vertex in bm.verts:
+            hit, _, _, _ = terrain_tree.ray_cast(Vector((vertex.co.x, vertex.co.y, 1000)), Vector((0, 0, -1)))
+            if hit is None:
+                missing_ground.append(vertex)
+                continue
+            vertex.co.z = hit.z - vertical_origin + 1.15
+        if missing_ground:
+            bmesh.ops.delete(bm, geom=missing_ground, context='VERTS')
+        bm.normal_update()
+        errors = []
+        for face in bm.faces:
+            center = face.calc_center_median()
+            hit, _, _, _ = terrain_tree.ray_cast(Vector((center.x, center.y, 1000)), Vector((0, 0, -1)))
+            if hit is not None:
+                errors.append(abs(center.z - (hit.z - vertical_origin + 1.15)))
+        road_validation.append(dict(vertices=len(bm.verts), maxFaceCenterErrorMeters=max(errors, default=0)))
     if group == 'terrain' and args.water:
         shore = json.loads(Path(args.water).read_text())
         if args.geo_libs:
@@ -235,9 +262,29 @@ for obj in list(scene.objects):
             bmesh.ops.delete(bm, geom=[face], context='FACES_ONLY')
     bm.to_mesh(obj.data)
     bm.free()
+    if group == 'terrain':
+        # Sample the final clipped render triangles, not BLOSM's original quads.
+        # Non-planar quads can triangulate differently and cause road burial.
+        obj.data.calc_loop_triangles()
+        terrain_tree = BVHTree.FromPolygons(
+            [vertex.co + Vector((0, 0, vertical_origin)) for vertex in obj.data.vertices],
+            [tuple(triangle.vertices) for triangle in obj.data.loop_triangles], all_triangles=True)
     if not obj.data.polygons:
         bpy.data.objects.remove(obj, do_unlink=True)
         continue
+    if group == 'roads':
+        # A shallow slab extends down into terrain; the top clears interpolation
+        # differences without thin surfaces flickering through the ground.
+        for polygon in obj.data.polygons:
+            if polygon.normal.z < 0:
+                polygon.flip()
+        modifier = obj.modifiers.new('road-slab', 'SOLIDIFY')
+        modifier.thickness = 1.3
+        modifier.offset = -1
+        evaluated = obj.evaluated_get(bpy.context.evaluated_depsgraph_get())
+        slab = bpy.data.meshes.new_from_object(evaluated)
+        obj.modifiers.clear()
+        obj.data = slab
     obj.data.materials.clear()
     obj.data.materials.append(materials[group])
     if group == 'terrain':
@@ -343,6 +390,7 @@ metadata = {
     'terrainMaxY': terrain_max,
     'exerciseGroundY': exercise_ground,
     'triangleCount': triangles,
+    'roadDrape': {'surfaceOffsetMeters': 1.15, 'slabThicknessMeters': 1.3, 'maxEdgeMeters': 4, 'objects': road_validation},
     'assetBytes': glb_path.stat().st_size,
     'assetSha256': hashlib.sha256(glb_path.read_bytes()).hexdigest(),
     'osmSha256': hashlib.sha256(Path(args.osm).read_bytes()).hexdigest(),

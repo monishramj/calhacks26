@@ -31,9 +31,44 @@
     "residence": 83.915771484375,
     "shelter": 65.2071533203125
   },
-  "triangleCount": 11304,
-  "assetBytes": 203468,
-  "assetSha256": "255c9da02735a37321df033b98cfa57ce460596117a4c27a2cd330d76f5cca16",
+  "triangleCount": 46543,
+  "roadDrape": {
+    "surfaceOffsetMeters": 1.15,
+    "slabThicknessMeters": 1.3,
+    "maxEdgeMeters": 4,
+    "objects": [
+      {
+        "vertices": 1682,
+        "maxFaceCenterErrorMeters": 0.7476943969726548
+      },
+      {
+        "vertices": 6053,
+        "maxFaceCenterErrorMeters": 0.38165130615234943
+      },
+      {
+        "vertices": 742,
+        "maxFaceCenterErrorMeters": 0.25087127685546307
+      },
+      {
+        "vertices": 440,
+        "maxFaceCenterErrorMeters": 0.22566070556640483
+      },
+      {
+        "vertices": 162,
+        "maxFaceCenterErrorMeters": 0.16963043212891193
+      },
+      {
+        "vertices": 0,
+        "maxFaceCenterErrorMeters": 0
+      },
+      {
+        "vertices": 0,
+        "maxFaceCenterErrorMeters": 0
+      }
+    ]
+  },
+  "assetBytes": 395480,
+  "assetSha256": "e99af598fb4b5ebc128326cdd89f33b89ea31e5d5c8515830f5c0d7adf820301",
   "osmSha256": "080505259cf108b58d153e52818941088f19f34d4a90837b15c0fc9c682b791b",
   "blenderVersion": "4.5.15 LTS",
   "blosmVersion": "2.7.28",
