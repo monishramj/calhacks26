@@ -1,7 +1,7 @@
 // LIVE adapter: SpacetimeDB subscription -> replay-shaped DeskState; each command -> its reducer.
 // Rows are subscribed through the generated bindings; reducers are called over HTTP so a rejected
 // call comes back as "CODE: message" (HTTP 530) and maps straight to a contract Result error.
-import type { ContractError, DeskAdapter, DeskState, ErrorCode, Result, ReportInput } from '../contract';
+import type { ContractError, DeskAdapter, DeskState, ErrorCode, JobKind, Result, ReportInput } from '../contract';
 import type { ReplayFixture } from '../replay';
 import { DbConnection } from './module_bindings';
 
@@ -13,14 +13,25 @@ const CODES = new Set<string>([
 const fail = (code: ErrorCode, message: string): { ok: false; error: ContractError } => ({ ok: false, error: { code, message } });
 const ok = <T>(value: T): Result<T> => ({ ok: true, value });
 
+function queued(c: DbConnection, runId: string): DeskState['queuedJobs'] {
+  const n: NonNullable<DeskState['queuedJobs']> = {};
+  for (const j of c.db.job.iter()) if (j.runId === runId && j.state === 'QUEUED') n[JSON.parse(j.json).kind as JobKind] = (n[JSON.parse(j.json).kind as JobKind] ?? 0) + 1;
+  return n;
+}
+
 export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdapter {
   const http = s.uri.replace(/^ws/, 'http');
   const listeners = new Set<(st: DeskState) => void>();
   let state: DeskState | null = null;
   let conn: DbConnection | null = null;
+  // §10: true from the moment the database connection drops until the resubscription is applied.
+  let degraded = false;
   const order = [...fixture.initial.deliver, ...fixture.script];
 
+  const DOWN = 'Database connection lost: writes are stopped until it returns';
+
   async function call(reducer: string, arg: unknown, token = s.token): Promise<Result<null>> {
+    if (degraded) return fail('SERVICE_UNAVAILABLE', DOWN);
     try {
       const res = await fetch(`${http}/v1/database/${s.database}/call/${reducer}`, {
         method: 'POST',
@@ -58,8 +69,16 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
     return v === undefined ? fail('SERVICE_UNAVAILABLE', `${reducer} accepted, but the result has not arrived`) : ok(v);
   }
 
+  /** Connection lost: keep the last confirmed view on screen, relabeled, and stop writes. */
+  function lose() {
+    degraded = true;
+    if (!state) return;
+    state = { ...state, mode: 'LOCAL DEGRADED' };
+    for (const l of [...listeners]) l(structuredClone(state));
+  }
+
   function rebuild() {
-    if (!conn) return;
+    if (!conn || degraded) return; // while degraded, the last confirmed view stays until the resubscription lands
     const desk = [...conn.db.desk.iter()][0];
     if (!desk) return;
     const rows = <R extends { runId: string; json: string }>(it: Iterable<R>) =>
@@ -87,6 +106,7 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       },
       // ponytail: operator proposals for a not-yet-existing incident (desk.newIncidentSignature) are not offered by the UI yet.
       inputSignatures: Object.fromEntries([...conn.db.incidentSignature.iter()].filter((r) => r.runId === desk.runId).map((r) => [r.incidentId, r.signature])),
+      queuedJobs: queued(conn, desk.runId),
     };
     for (const l of [...listeners]) l(structuredClone(state));
   }
@@ -100,7 +120,14 @@ export function createLiveAdapter(fixture: ReplayFixture, s: Settings): DeskAdap
       .onConnect((c) => {
         const tables = [c.db.desk, c.db.report, c.db.incident, c.db.relation, c.db.suggestion, c.db.proposal, c.db.reviewEvent, c.db.incidentSignature];
         for (const t of tables) (t as any).onInsert(rebuild), (t as any).onUpdate(rebuild), (t as any).onDelete(rebuild);
-        c.subscriptionBuilder().onApplied(rebuild).subscribeToAllTables();
+        c.subscriptionBuilder().onApplied(() => ((degraded = false), rebuild())).subscribeToAllTables();
+      })
+      .withAutomaticReconnect()
+      .onDisconnect(lose)
+      .onConnectError((_c, _e, nextAttempt) => {
+        lose();
+        // A failed first connection is not retried by the SDK; build a new one.
+        if (nextAttempt === undefined) (conn = null), setTimeout(connect, 3000);
       })
       .build();
   }

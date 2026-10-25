@@ -3,6 +3,7 @@ import { DeskProvider, useDesk } from './adapters/DeskContext';
 import { createExerciseReplay, exerciseFixture } from './adapters/replay';
 import { createLiveAdapter } from './adapters/live/liveAdapter';
 import { ModeBanner } from './layout/ModeBanner';
+import { FailureNotices } from './layout/FailureNotices';
 import { ScenarioControls } from './layout/ScenarioControls';
 import { Section } from './layout/Section';
 import { Scene } from './scene';
@@ -26,9 +27,13 @@ function createAdapter(): DeskAdapter | null {
 
 export function App({ adapter }: { adapter?: DeskAdapter | null }) {
   const resolved = useMemo(() => (adapter === undefined ? createAdapter() : adapter), [adapter]);
+  // §10: the operator starts an isolated replay after a database loss. It is a separate adapter,
+  // so it can never write to the live database, even after the connection returns.
+  const [replay, setReplay] = useState<DeskAdapter | null>(null);
+  const fallback = import.meta.env.MODE === 'replay' ? {} : { onStartReplay: () => setReplay(createExerciseReplay()), onExitReplay: replay ? () => setReplay(null) : undefined };
   return (
-    <DeskProvider adapter={resolved}>
-      <Desk />
+    <DeskProvider adapter={replay ?? resolved}>
+      <Desk {...fallback} />
     </DeskProvider>
   );
 }
@@ -38,7 +43,7 @@ function inferenceText(state: DeskState): string {
   return state.mode === 'LOCAL REPLAY' ? 'fixture · authored outputs, no model ran' : inferenceLabel(state);
 }
 
-function Desk() {
+function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () => void }) {
   const { state } = useDesk();
   // Selection is the only UI state shared between the scene and the panels.
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
@@ -52,6 +57,7 @@ function Desk() {
         inferenceProvenance={state ? inferenceText(state) : 'none'}
       >
         <ScenarioControls />
+        {state && <FailureNotices state={state} {...replayControls} />}
       </ModeBanner>
       <main className="workspace">
         <section className="scene-pane" aria-label="Exercise scene">

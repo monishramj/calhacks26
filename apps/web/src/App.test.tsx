@@ -29,4 +29,16 @@ describe('App shell', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Reset run' }));
     expect(await screen.findByText('6 / 12 delivered')).toBeInTheDocument();
   });
+
+  it('on database loss disables writes, then starts an isolated replay on request', async () => {
+    const base = createExerciseReplay();
+    const lost = { ...base, subscribeState: (l: Parameters<typeof base.subscribeState>[0]) => base.subscribeState((s) => l({ ...s, mode: 'LOCAL DEGRADED' })) };
+    render(<App adapter={lost} />);
+    expect(screen.getByTestId('run-mode')).toHaveTextContent('LOCAL DEGRADED');
+    expect(screen.getByText(/writes are stopped/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reset run' })).toBeDisabled();
+    await userEvent.click(screen.getByRole('button', { name: 'Start local replay' }));
+    expect(screen.getByTestId('run-mode')).toHaveTextContent('LOCAL REPLAY');
+    expect(screen.getByRole('button', { name: 'Reset run' })).toBeEnabled();
+  });
 });
