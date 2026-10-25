@@ -78,8 +78,8 @@ def laya():
 
 
 def codec():
-    sets = {"R01-R12 (fixture reports)": [r["text"] for r in json.loads(
-                (ROOT / "fixtures/replay/exercise-r01-r12.json").read_text())["reports"].values()],
+    sets = {"Outer Sunset exercise reports": [r["text"] for r in json.loads(
+                (ROOT / "fixtures/replay/sunset-exercise.json").read_text())["reports"].values()],
             "sample.jsonl first 100": [json.loads(l)["text"] for l in
                                        (ROOT / "services/codec-radio/data/sample.jsonl").read_text().splitlines()[:100]]}
     import mesh_codec

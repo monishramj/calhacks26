@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import type { DeskState } from '../contract';
-import { exerciseFixture } from '../replay';
+import { legacyFixture as exerciseFixture } from '../../test/legacyExercise';
 
 // A fake SpacetimeDB connection: the test fires the builder's callbacks by hand.
 const h = vi.hoisted(() => ({ cb: {} as Record<string, (...a: any[]) => void>, rows: [] as any[], conn: null as any, applied: () => {} }));

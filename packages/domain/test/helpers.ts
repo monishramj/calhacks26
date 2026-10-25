@@ -78,8 +78,11 @@ export function readJsonIfExists(path: string): any | null {
   return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : null;
 }
 
-export const EXERCISE_PATH = join(REPO_ROOT, 'fixtures', 'private', 'exercise', 'exercise.json');
-export const EXPECTATIONS_PATH = join(REPO_ROOT, 'fixtures', 'private', 'exercise', 'expectations.json');
+// The R01–R12 rule-test script (GROUND_TRUTH §18). The demo runs the Outer Sunset exercise in fixtures/private/exercise.
+export const EXERCISE_PATH = join(REPO_ROOT, 'packages', 'domain', 'test', 'fixtures', 'r01-r12.exercise.json');
+export const EXPECTATIONS_PATH = join(REPO_ROOT, 'packages', 'domain', 'test', 'fixtures', 'r01-r12.expectations.json');
+export const SUNSET_EXERCISE_PATH = join(REPO_ROOT, 'fixtures', 'private', 'exercise', 'exercise.json');
+export const SUNSET_EXPECTATIONS_PATH = join(REPO_ROOT, 'fixtures', 'private', 'exercise', 'expectations.json');
 
 /** §18 table rows, parsed from the ground truth so fixtures can't drift from it. */
 export function groundTruthExercise(): { id: string; text: string; expected: string }[] {

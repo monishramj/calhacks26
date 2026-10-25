@@ -136,7 +136,8 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     }
     const p = authored.proposal;
     if (p) {
-      const incident = state.incidents.find((i) => i.incidentId === p.incidentId)!;
+      const incident = state.incidents.find((i) => i.incidentId === p.incidentId);
+      if (!incident) return; // the incident is not confirmed yet: the suggestion alone goes to review
       const relations = p.relations.map((r) => ({ reportId: report.reportId, targetReportId: ids.get(r.target)!, kind: r.kind }));
       const proposalId = `prop-${report.reportId}`;
       state.proposals.push({

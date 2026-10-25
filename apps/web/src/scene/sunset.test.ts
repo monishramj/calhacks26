@@ -11,8 +11,9 @@ describe('bundled Outer Sunset map data', () => {
     expect(SUNSET.buildings.length).toBeGreaterThan(1000);
   });
 
-  it('puts each exercise site on one real building at the spec position', () => {
-    expect(PLACES.map(({ id, x, z }) => [id, x, z])).toEqual([['school', 0, 0], ['residence', 80, 20], ['shelter', -120, 40]]);
+  it('puts each exercise place on one real building, school at the origin', () => {
+    expect(PLACES.length).toBeGreaterThanOrEqual(15);
+    expect(PLACES[0]).toMatchObject({ id: 'school', x: 0, z: 0 });
     for (const place of PLACES) {
       const site = SUNSET.buildings.filter((b) => b.site === place.id);
       expect(site).toHaveLength(1);

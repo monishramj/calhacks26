@@ -14,7 +14,7 @@ export function incident(overrides: Partial<SceneIncident> = {}): SceneIncident 
 
 export const sceneIncidents: readonly SceneIncident[] = [
   incident(),
-  incident({ incidentId: 'residence-incident', confirmedPlaceId: 'residence', attention: 'POSSIBLE_LIFE_SAFETY' }),
-  incident({ incidentId: 'shelter-incident', confirmedPlaceId: 'shelter', attention: 'ACTIVE_NEED' }),
+  incident({ incidentId: 'residence-incident', confirmedPlaceId: 'house-43-lawton', attention: 'POSSIBLE_LIFE_SAFETY' }),
+  incident({ incidentId: 'shelter-incident', confirmedPlaceId: 'south-shelter', attention: 'ACTIVE_NEED' }),
   incident({ incidentId: 'unplaced-incident', confirmedPlaceId: null, attention: null }),
 ];

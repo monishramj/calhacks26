@@ -287,7 +287,7 @@ function Label({ title, detail, accent, selected, position }: { title: string; d
 
 function Beacon({ incident, offset, selected, onSelect }: { incident: SceneIncident; offset: number; selected: boolean; onSelect: () => void }) {
   const place = PLACES.find((p) => p.id === incident.confirmedPlaceId)!;
-  const site = SUNSET.sites[place.id];
+  const site = place;
   const color = attentionColor(incident.attention);
   const ring = useRef<Mesh>(null);
   useFrame(() => {
@@ -425,7 +425,7 @@ export function SunsetCanvas({ incidents, selectedIncidentId, onSelectIncident, 
     <Ocean />
     <SiteHighlights />
     {PLACES.filter((p) => !located.some((row) => row.confirmedPlaceId === p.id)).map((p) =>
-      <Label key={p.id} title={p.name} detail={null} accent="#9fb3b6" selected={false} position={[p.x, SUNSET.sites[p.id].h + 24, p.z]} />)}
+      <Label key={p.id} title={p.name} detail={null} accent="#9fb3b6" selected={false} position={[p.x, p.h + 24, p.z]} />)}
     {located.map((row, i) => <Beacon key={row.incidentId} incident={row} selected={row.incidentId === selectedIncidentId}
       offset={located.slice(0, i).filter((prior) => prior.confirmedPlaceId === row.confirmedPlaceId).length}
       onSelect={() => onSelectIncident(row.incidentId)} />)}

@@ -13,14 +13,9 @@ export type SceneDataProps = {
 
 export type GroundPoint = { x: number; z: number };
 
-const { school, residence, shelter } = SUNSET.sites;
-// §18 positions in scene metres; tools/build_sunset.py puts the map's school building at the origin and real
-// buildings under the other two. Synthetic exercise sites with generic labels only.
-export const PLACES = [
-  { id: 'school', name: 'School', x: school.x, z: school.z },
-  { id: 'residence', name: 'Residence', x: residence.x, z: residence.z },
-  { id: 'shelter', name: 'Shelter', x: shelter.x, z: shelter.z },
-] as const;
+// Exercise places in scene metres, picked by tools/build_sunset.py on real Outer Sunset buildings (school at the
+// origin). Synthetic exercise sites with generic labels only.
+export const PLACES = SUNSET.places.map((p) => ({ id: p.placeId, name: p.label, x: p.x, z: p.z, h: p.h }));
 // Fixed display settings in metres, never dataset-normalized.
 export const HEATMAP_RADIUS = 60;
 export const HEATMAP_HEIGHT_SCALE = 30;

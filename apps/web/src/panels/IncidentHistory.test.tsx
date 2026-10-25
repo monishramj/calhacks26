@@ -1,7 +1,7 @@
 import { act, render, screen, within } from '@testing-library/react';
 import type { DeskState } from '../adapters/contract';
 import { DeskProvider } from '../adapters/DeskContext';
-import { createExerciseReplay, exerciseFixture } from '../adapters/replay';
+import { createLegacyReplay as createExerciseReplay, legacyFixture as exerciseFixture } from '../test/legacyExercise';
 import { IncidentHistory } from './IncidentHistory';
 
 function setup(selectedIncidentId: string | null) {

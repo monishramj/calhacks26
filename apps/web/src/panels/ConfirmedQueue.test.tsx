@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { DeskState } from '../adapters/contract';
 import { DeskProvider } from '../adapters/DeskContext';
-import { createExerciseReplay } from '../adapters/replay';
+import { createLegacyReplay as createExerciseReplay } from '../test/legacyExercise';
 import { ConfirmedQueue } from './ConfirmedQueue';
 
 function setup(selected: string | null = null) {

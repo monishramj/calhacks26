@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from './App';
-import { createExerciseReplay } from './adapters/replay';
+import { createLegacyReplay as createExerciseReplay } from './test/legacyExercise';
 
 // Shell smoke test: layout regions exist, sections collapse by keyboard, mode is labeled.
 describe('App shell', () => {
