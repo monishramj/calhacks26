@@ -80,7 +80,12 @@ function ReviewCard({
   }
 
   return (
-    <li className={`panel-card${selected ? ' selected' : ''}`} data-testid={`review-${report.input.messageId}`}>
+    <li className={`panel-card${selected ? ' selected' : ''}`} data-testid={`review-${report.input.messageId}`}
+      onKeyDown={(e) => {
+        // A approves what the card suggests (the first Approve button); typing in a field never triggers it.
+        if (e.key.toLowerCase() !== 'a' || (e.target as HTMLElement).closest('input, select, textarea')) return;
+        (e.currentTarget.querySelector('[data-approve]') as HTMLButtonElement | null)?.click();
+      }}>
       <button
         type="button"
         className="card-select"
@@ -109,7 +114,7 @@ function ReviewCard({
         </div>
       ) : null}
       {!suggestion && !proposal && <div className="muted">No suggestion · manual review</div>}
-      {suggestion && !proposal && state.mode === 'LIVE' && <SuggestionApprove report={report} suggestion={suggestion} state={state} />}
+      {suggestion && !proposal && state.mode !== 'LOCAL DEGRADED' && <SuggestionApprove report={report} suggestion={suggestion} state={state} />}
       {proposal && (
         <div>
           <div className="muted">
@@ -137,7 +142,7 @@ function ReviewCard({
             </ul>
           )}
           <div className="panel-actions">
-            <button type="button" onClick={approve} disabled={busy}>
+            <button type="button" data-approve onClick={approve} disabled={busy}>
               Approve
             </button>
             {!rejecting ? (
@@ -179,15 +184,19 @@ function ReviewCard({
 const ATTENTION_CHOICES = Object.keys(ATTENTION_LABEL) as Attention[];
 
 /**
- * Live only: the operator approves a local suggestion by naming the incident and attention, through
- * the existing operator_edit reducer (the source report is recorded as the reason). Nothing applies
- * until this click. Replay has fixture proposals instead, so it does not show this form.
+ * The operator approves a local suggestion by naming the incident and attention, through operator_edit
+ * (the source report is recorded as the reason). Prefilled with the suggestion and an incident ID from the
+ * stated place, so approving as suggested is one click (or A). Nothing applies until then.
  */
 function SuggestionApprove({ report, suggestion, state }: { report: Report; suggestion: LocalSuggestion; state: DeskState }) {
   const { run, error, busy } = useCommand();
   const open = state.incidents.filter((i) => i.status === 'OPEN');
   const [target, setTarget] = useState(suggestion.candidateIncidentId ?? '');
-  const [newId, setNewId] = useState('');
+  const place = report.input.reportedLocation?.placeId;
+  const [newId, setNewId] = useState(() => {
+    const base = `INC-${place ?? report.input.messageId}`;
+    return state.incidents.some((i) => i.incidentId === base) ? `${base}-${report.input.messageId}` : base;
+  });
   const [attention, setAttention] = useState<Attention | 'UNKNOWN'>(suggestion.attention ?? 'UNKNOWN');
   const incident = open.find((i) => i.incidentId === target);
   const incidentId = incident ? incident.incidentId : newId.trim();
@@ -239,7 +248,7 @@ function SuggestionApprove({ report, suggestion, state }: { report: Report; sugg
           <option value="UNKNOWN">Unknown</option>
         </select>
       </label>
-      <button type="button" onClick={approve} disabled={busy || !valid}>
+      <button type="button" data-approve onClick={approve} disabled={busy || !valid}>
         Approve
       </button>
       {error && (

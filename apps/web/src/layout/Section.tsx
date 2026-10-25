@@ -6,10 +6,12 @@ type Props = {
   /** Pinned sections (the review band) stay visually distinct. */
   pinned?: boolean;
   defaultOpen?: boolean;
+  /** Shown as a badge next to the title when above zero. */
+  count?: number;
   children: ReactNode;
 };
 
-export function Section({ id, title, pinned = false, defaultOpen = true, children }: Props) {
+export function Section({ id, title, pinned = false, defaultOpen = true, count, children }: Props) {
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = `section-${id}`;
   return (
@@ -17,6 +19,7 @@ export function Section({ id, title, pinned = false, defaultOpen = true, childre
       <h2>
         <button type="button" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((o) => !o)}>
           <span aria-hidden="true">{open ? '▾' : '▸'}</span> {title}
+          {count !== undefined && count > 0 && <span className="count-badge" aria-label={`${count} items`}>{count}</span>}
         </button>
       </h2>
       <div id={bodyId} hidden={!open} className="panel-body">

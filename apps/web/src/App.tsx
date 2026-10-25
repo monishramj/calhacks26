@@ -9,7 +9,7 @@ import { Section } from './layout/Section';
 import { Scene } from './scene';
 import { ConfirmedQueue, IncidentHistory, IncomingFeed, PicturePanel, ReviewBand } from './panels';
 import type { DeskAdapter, DeskState } from './adapters/contract';
-import { inferenceLabel, sourceLabel } from './adapters/derived';
+import { confirmedQueue, inferenceLabel, reviewBand, sourceLabel } from './adapters/derived';
 
 // `vite --mode replay` (npm run dev:replay) runs the isolated browser replay.
 // `vite --mode live` (npm run dev:live) connects to SpacetimeDB; settings come from VITE_STDB_* (see scripts/stdb-setup.sh).
@@ -64,10 +64,10 @@ function Desk(replayControls: { onStartReplay?: () => void; onExitReplay?: () =>
           <Scene {...selection} />
         </section>
         <aside className="side-pane" aria-label="Reports and incidents">
-          <Section id="review" title="Review band" pinned>
+          <Section id="review" title="Review band" pinned count={state ? reviewBand(state).length : 0}>
             <ReviewBand {...selection} />
           </Section>
-          <Section id="queue" title="Confirmed queue">
+          <Section id="queue" title="Confirmed queue" count={state ? confirmedQueue(state).length : 0}>
             <ConfirmedQueue {...selection} />
           </Section>
           <Section id="picture" title="Claude's working picture (unconfirmed)">

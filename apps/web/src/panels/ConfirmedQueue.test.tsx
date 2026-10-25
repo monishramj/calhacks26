@@ -49,7 +49,7 @@ describe('ConfirmedQueue', () => {
   });
 
   it('an override needs a reason and goes through the adapter', async () => {
-    const { get } = setup();
+    const { get } = setup('INC-shelter');
     const shelter = await screen.findByTestId('queue-INC-shelter');
     await userEvent.click(within(shelter).getByRole('button', { name: 'Override INC-shelter' }));
     const apply = within(shelter).getByRole('button', { name: 'Apply override' });

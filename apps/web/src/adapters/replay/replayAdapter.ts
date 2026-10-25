@@ -18,6 +18,7 @@ import type {
   Result,
   ReviewEvent,
 } from '../contract';
+import { applyIncidentChange } from '../../../../../packages/domain/src/rules/views';
 
 export type ReplayFixture = {
   exerciseVersion: string;
@@ -381,28 +382,25 @@ export function createReplayAdapter(fixture: ReplayFixture, options: Options = {
     operatorEdit({ runId, commandId, incidentId, baseRevision, changes: edit, reason, sourceReportIds }) {
       return once(runId, commandId, () => {
         if (!reason?.trim() && sourceReportIds.length === 0) return fail('INVALID_INPUT', 'An override needs a reason');
-        const { attention, status } = edit;
-        const incident = state.incidents.find((i) => i.incidentId === incidentId);
-        if (!incident) return fail('INVALID_INPUT', `Unknown incident ${incidentId}`);
-        if (incident.revision !== baseRevision)
-          return fail('STALE_REVISION', `${incidentId} is at revision ${incident.revision}, edit was made against ${baseRevision}`);
-        const acceptedChanges: ChangeField[] = [];
-        if (attention !== undefined && attention !== incident.attention) {
-          acceptedChanges.push('attention');
-          incident.attention = attention;
-        }
-        if (status && status !== incident.status) {
-          acceptedChanges.push('status');
-          // Reopening keeps the ID and history but starts a new unresolved cycle (§17).
-          if (status === 'OPEN') incident.openCycleStartSequence = state.reports.length;
-          incident.status = status;
-        }
+        // The same shared transition as the database reducer: create, add reports, set place, attention or status.
+        const incident = state.incidents.find((i) => i.incidentId === incidentId) ?? null;
+        if ((incident?.revision ?? 0) !== baseRevision)
+          return fail('STALE_REVISION', `${incidentId} is at revision ${incident?.revision ?? 0}, edit was made against ${baseRevision}`);
+        const unknown = (edit.addReportIds ?? []).find((id) => !state.reports.some((r) => r.reportId === id));
+        if (unknown) return fail('INVALID_SOURCE', `Unknown report ${unknown}`);
+        const fields = ['status', 'attention', 'confirmedPlaceId', 'summary'] as const;
+        const acceptedChanges: ChangeField[] = fields.filter((k) => edit[k] !== undefined && (incident === null || edit[k] !== incident[k]));
+        if (edit.addReportIds?.some((id) => !incident?.confirmedReportIds.includes(id))) acceptedChanges.push('addReportIds');
         if (acceptedChanges.length === 0) return fail('INVALID_INPUT', 'Edit changes nothing');
-        const prior = incident.revision;
-        incident.revision += 1;
+        const next = applyIncidentChange(incident, edit, { runId, incidentId, reopenSequence: state.reports.length });
+        if (!next.ok) return next;
+        const prior = incident?.revision ?? 0;
+        next.value.revision = prior + 1;
+        if (incident) Object.assign(incident, next.value);
+        else state.incidents.push(next.value);
         refreshSignatures();
-        pushEvent({ commandId, incidentId, proposalId: null, priorRevision: prior, newRevision: incident.revision, acceptedChanges, reason, sourceReportIds });
-        return ok({ incidentId, revision: incident.revision });
+        pushEvent({ commandId, incidentId, proposalId: null, priorRevision: prior, newRevision: next.value.revision, acceptedChanges, reason, sourceReportIds });
+        return ok({ incidentId, revision: next.value.revision });
       });
     },
 

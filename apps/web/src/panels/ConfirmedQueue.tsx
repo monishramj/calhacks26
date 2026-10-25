@@ -1,31 +1,59 @@
 // Confirmed queue (§5): only operator-confirmed state, in derived.ts order.
 // Provisional hints never reorder this list.
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type KeyboardEvent } from 'react';
+import { PLACES } from '../scene/model';
 import type { Attention, IncidentView } from '../adapters/contract';
 import { ATTENTION_LABEL, confirmedQueue, needsReassessment } from '../adapters/derived';
 import { useDesk } from '../adapters/DeskContext';
 import type { PanelProps } from './index';
 import { AttentionTag, useCommand } from './shared';
 
+const FILTERS: { id: Attention | 'ALL'; label: string }[] = [
+  { id: 'ALL', label: 'All' },
+  { id: 'POSSIBLE_LIFE_SAFETY', label: 'Life safety' },
+  { id: 'ACTIVE_NEED', label: 'Need' },
+  { id: 'INFORMATION', label: 'Info' },
+];
+const placeName = (id: string | null) => PLACES.find((p) => p.id === id)?.name ?? id ?? 'location unknown';
+
 export function ConfirmedQueue({ selectedIncidentId, onSelectIncident }: PanelProps) {
   const { state } = useDesk();
+  const [filter, setFilter] = useState<Attention | 'ALL'>('ALL');
   if (!state) return <p className="empty">No source connected.</p>;
   const queue = confirmedQueue(state);
   if (queue.length === 0) return <p className="empty">No confirmed incidents.</p>;
   const flagged = needsReassessment(state);
+  const shown = queue.map((incident, i) => ({ incident, rank: i + 1 })).filter(({ incident }) => filter === 'ALL' || incident.attention === filter);
+  // Up/Down move the selection through the visible rows (the scene follows the selection).
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const at = shown.findIndex((row) => row.incident.incidentId === selectedIncidentId);
+    const next = shown[Math.max(0, Math.min(shown.length - 1, at + (e.key === 'ArrowDown' ? 1 : -1)))];
+    if (next) onSelectIncident(next.incident.incidentId);
+    requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`[data-testid="queue-${next?.incident.incidentId}"] .card-select`)?.focus());
+  }
   return (
-    <ol className="panel-list" aria-label="Confirmed incidents in queue order">
-      {queue.map((incident, i) => (
-        <QueueCard
-          key={incident.incidentId}
-          rank={i + 1}
-          incident={incident}
-          flagged={flagged.has(incident.incidentId)}
-          selected={incident.incidentId === selectedIncidentId}
-          onSelectIncident={onSelectIncident}
-        />
-      ))}
-    </ol>
+    <>
+      <div className="queue-filters" role="group" aria-label="Filter by attention">
+        {FILTERS.map((f) => {
+          const n = f.id === 'ALL' ? queue.length : queue.filter((i) => i.attention === f.id).length;
+          return <button key={f.id} type="button" aria-pressed={filter === f.id} onClick={() => setFilter(f.id)}>{f.label} {n}</button>;
+        })}
+      </div>
+      <ol className="panel-list queue-list" aria-label="Confirmed incidents in queue order" onKeyDown={onKeyDown}>
+        {shown.map(({ incident, rank }) => (
+          <QueueCard
+            key={incident.incidentId}
+            rank={rank}
+            incident={incident}
+            flagged={flagged.has(incident.incidentId)}
+            selected={incident.incidentId === selectedIncidentId}
+            onSelectIncident={onSelectIncident}
+          />
+        ))}
+      </ol>
+    </>
   );
 }
 
@@ -43,29 +71,25 @@ function QueueCard({
   onSelectIncident: PanelProps['onSelectIncident'];
 }) {
   return (
-    <li className={`panel-card${selected ? ' selected' : ''}`} data-testid={`queue-${incident.incidentId}`}>
+    <li className={`panel-card queue-row${selected ? ' selected' : ''}`} data-testid={`queue-${incident.incidentId}`}>
       <button
         type="button"
         className="card-select"
         aria-current={selected ? 'true' : undefined}
         onClick={() => onSelectIncident(incident.incidentId)}
       >
-        <strong data-testid="rank">{rank}.</strong> <strong>{incident.incidentId}</strong>{' '}
-        <AttentionTag attention={incident.attention} />
-        <span className="muted">{incident.confirmedPlaceId ?? 'location unknown'}</span>
-        <p className="original-text">{incident.summary ?? <em>No summary</em>}</p>
+        <span className="queue-line">
+          <strong data-testid="rank">{rank}.</strong> <AttentionTag attention={incident.attention} />{' '}
+          <strong className="queue-place">{placeName(incident.confirmedPlaceId)}</strong>
+          {flagged && <span className="change-flag">New evidence · needs reassessment</span>}
+        </span>
+        {(selected || incident.summary) && <p className="original-text">{incident.summary ?? <em>No summary</em>}</p>}
         <span className="muted">
-          rev {incident.revision} · {incident.confirmedReportIds.length} confirmed report
+          {incident.incidentId} · rev {incident.revision} · {incident.confirmedReportIds.length} confirmed report
           {incident.confirmedReportIds.length === 1 ? '' : 's'} · open since #{incident.openCycleStartSequence}
         </span>
-        {flagged && (
-          <>
-            {' '}
-            <span className="change-flag">New evidence · needs reassessment</span>
-          </>
-        )}
       </button>
-      <OverrideControl incident={incident} />
+      {selected && <OverrideControl incident={incident} />}
     </li>
   );
 }
