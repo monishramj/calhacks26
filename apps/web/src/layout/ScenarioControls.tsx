@@ -5,7 +5,7 @@ import { DELIVERIES, SCENARIO } from '../network/mesh';
 
 // Real-time exercise playback: a scenario clock runs at the chosen speed, teams move, and each report is sent to
 // the desk the moment its simulated packet reaches the command post. Only the window that plays or seeks sends.
-const SPEEDS = [1, 5, 15];
+const SPEEDS = [5, 15, 30, 60];
 
 export function ScenarioControls() {
   const { adapter, state } = useDesk();

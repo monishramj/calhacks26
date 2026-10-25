@@ -102,26 +102,38 @@ function ReviewCard({
         aria-current={selected ? 'true' : undefined}
         onClick={() => onSelectIncident(item.incidentId)}
       >
+        <span className="rc-head">
+          <span className="rc-icon" aria-hidden="true" />
+          <span className="rc-id">
+            <strong>{placeName(report.input.reportedLocation?.placeId)}</strong>
+            <span className="muted">{report.input.origin === 'radio' ? 'Over LoRa' : 'Exercise report'}</span>
+          </span>
+        </span>
+        <span className="rc-tags">
+          <span className="pill pill-need">Needs you</span>
+          {item.kind === 'POSSIBLE_LIFE_SAFETY' && <span className="pill pill-alert">Possible life safety</span>}
+          {item.kind === 'CONTRADICTION' && <span className="pill">Conflict</span>}
+          {!suggestion && !proposal && <span className="pill">Waiting for AI review</span>}
+        </span>
+        <span className="rc-title">
+          {proposal ? 'Confirm incident change' : suggestion ? ACTION_LABEL[(actionScore?.label as LocalAction) ?? suggestion.action] : 'Review report'}
+          {suggestion && <small>{suggestion.provider === 'local_laya' ? 'Laya' : suggestion.provider}</small>}
+        </span>
         <p className="original-text">{report.input.text}</p>
-        <span className="report-meta">
-          <strong>{placeName(report.input.reportedLocation?.placeId)}</strong>
+        <span className="rc-scores">
           <AttentionTag attention={proposal?.suggestedAttention ?? suggestion?.attention ?? null} />
           <span className="muted">Unconfirmed</span>
         </span>
       </button>
-      {(suggestion || check?.summary || why || proposal?.suggestedSummary) && <div className="ai-block">
-        <span className="ai-label">AI</span>
-        <div>
-          {suggestion && <p>Laya · {attentionScore && <>{URGENCY_LABEL[attentionScore.label as Attention]} {scoreText(attentionScore)} · </>}
-            {ACTION_LABEL[(actionScore?.label as LocalAction) ?? suggestion.action]}
-            {actionScore && ` · ${scoreText(actionScore)}`}
-          </p>}
-          {(check?.summary || proposal?.suggestedSummary) && <p className="ai-summary" title={check?.summary || proposal?.suggestedSummary || undefined}>Claude · {check?.summary || proposal?.suggestedSummary}</p>}
-          {why && <p className="muted ai-reason" title={why}>Why you: {why}</p>}
-        </div>
+      {(suggestion || check?.summary || why || proposal?.suggestedSummary) && <div className="rc-ai">
+        {suggestion && <p><b>Laya</b>{' · '}{attentionScore && <>{URGENCY_LABEL[attentionScore.label as Attention]} {scoreText(attentionScore)} · </>}
+          {ACTION_LABEL[(actionScore?.label as LocalAction) ?? suggestion.action]}
+          {actionScore && ` · ${scoreText(actionScore)}`}
+        </p>}
+        {(check?.summary || proposal?.suggestedSummary) && <p className="ai-summary" title={check?.summary || proposal?.suggestedSummary || undefined}><b>Claude</b>{' · '}{check?.summary || proposal?.suggestedSummary}</p>}
+        {why && <p className="muted ai-reason" title={why}>Why you: {why}</p>}
       </div>}
       {suggestion && !proposal && <SuggestionApprove report={report} suggestion={suggestion} state={state} selected={selected} />}
-      {!suggestion && !proposal && <p className="muted">Waiting for AI review</p>}
       {proposal && <>
         <div className="panel-actions">
           <button type="button" data-approve onClick={approve} disabled={busy}>Approve</button>
