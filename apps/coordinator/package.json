@@ -2,5 +2,13 @@
   "name": "@calhacks26/coordinator",
   "private": true,
   "version": "0.0.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.3.0",
+    "@calhacks26/domain": "^0.0.0",
+    "tsx": "4.23.15"
+  },
+  "scripts": {
+    "start": "tsx --env-file-if-exists=../../.env src/main.ts"
+  }
 }
